@@ -68,7 +68,7 @@ a {
 /* Layout Containers */
 .container {
   width: 100%;
-  max-width: 800px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -402,7 +402,7 @@ footer {
 /* Wide Container for 2-column post pages */
 .wide-container {
   width: 100%;
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
