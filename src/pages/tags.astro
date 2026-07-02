@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+// Count posts for each tag
+const tagCounts = posts
+  .flatMap((post) => post.data.tags || [])
+  .reduce((acc, tag) => {
+    const trimmed = tag.trim().toLowerCase();
+    acc[trimmed] = (acc[trimmed] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+---
+
+<Layout title="Tags | park-gyutae" description="블로그 포스트들에 지정된 태그별 목록 분류 페이지입니다.">
+  <section class="page-header">
+    <h1 class="page-title">Tags</h1>
+    <p class="page-subtitle">블로그 내 모든 글들의 키워드와 글 개수입니다. 클릭 시 태그 검색으로 연결됩니다.</p>
+  </section>
+
+  <section class="tags-section">
+    <div class="tags-grid-page">
+      {tags.map((tag) => (
+        <a href={`/blog?tag=${tag}`} class="tag-item-card">
+          <span class="tag-name">#{tag}</span>
+          <span class="tag-count">{tagCounts[tag]} posts</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+  }
+
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+
+  /* Tags Grid */
+  .tags-grid-page {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .tags-grid-page {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .tags-grid-page {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .tag-item-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: all var(--transition-speed) ease;
+  }
+
+  .tag-item-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  }
+
+  .tag-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+    transition: color var(--transition-speed) ease;
+  }
+
+  .tag-item-card:hover .tag-name {
+    color: var(--primary-color);
+  }
+
+  .tag-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+</style>

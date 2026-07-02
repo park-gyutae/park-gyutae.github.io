@@ -9,12 +9,14 @@ const pathname = Astro.url.pathname;
         <polyline points="16 18 22 12 16 6"></polyline>
         <polyline points="8 6 2 12 8 18"></polyline>
       </svg>
-      <span>DevLog</span>
+      <span>park-gyutae</span>
     </a>
     <nav class="nav-links">
-      <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>소개</a>
-      <a href="/blog" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`}>게시글</a>
-      <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>프로젝트</a>
+      <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>About</a>
+      <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>Projects</a>
+      <a href="/blog" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`}>Blog</a>
+      <a href="/notes" class={`nav-link ${pathname.startsWith('/notes') ? 'active' : ''}`}>Notes</a>
+      <a href="/tags" class={`nav-link ${pathname.startsWith('/tags') ? 'active' : ''}`}>Tags</a>
       <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme">
         <!-- Sun Icon (Visible in dark mode) -->
         <svg id="theme-toggle-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

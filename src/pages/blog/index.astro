@@ -11,7 +11,7 @@ const posts = (await getCollection('blog', ({ data }) => {
 const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 ---
 
-<Layout title="게시글 | DevLog" description="전체 기술 블로그 포스트 목록을 확인하고 검색할 수 있습니다.">
+<Layout title="Blog | park-gyutae" description="전체 기술 블로그 포스트 목록을 확인하고 검색할 수 있습니다.">
 	<section class="page-header">
 		<h1 class="page-title">모든 게시글</h1>
 		<p class="page-subtitle">수학, 통계, 머신러닝, 소프트웨어 개발 관련 글을 모아둔 공간입니다.</p>
@@ -221,6 +221,21 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 		}
 	};
 
+	// On load: check URL parameters for ?tag=tagname
+	const urlParams = new URLSearchParams(window.location.search);
+	const urlTag = urlParams.get('tag');
+	if (urlTag) {
+		currentTag = urlTag.toLowerCase().trim();
+		tagButtons.forEach(btn => {
+			if (btn.getAttribute('data-tag')?.toLowerCase().trim() === currentTag) {
+				btn.classList.add('active');
+			} else {
+				btn.classList.remove('active');
+			}
+		});
+		filterPosts();
+	}
+
 	searchInput?.addEventListener('input', (e) => {
 		currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
 		filterPosts();
@@ -231,6 +246,13 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 			tagButtons.forEach(b => b.classList.remove('active'));
 			btn.classList.add('active');
 			currentTag = btn.getAttribute('data-tag') || 'all';
+			
+			// Clear URL query param if user clicks tag manually to avoid confusion
+			if (window.history.pushState) {
+				const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + (currentTag === 'all' ? '' : `?tag=${currentTag}`);
+				window.history.pushState({path:newurl},'',newurl);
+			}
+
 			filterPosts();
 		});
 	});
