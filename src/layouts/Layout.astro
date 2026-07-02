@@ -4,18 +4,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
 interface Props {
-	title: string;
+	title?: string;
 	description?: string;
 	image?: string;
 	isWide?: boolean;
 }
 
-const { 
-	title, 
-	description = "A professional developer's technical blog for sharing insights, projects, and tutorials.", 
-	image = "/og-image.png",
-	isWide = false
-} = Astro.props;
+const { frontmatter } = Astro.props;
+
+const title = frontmatter?.title || Astro.props.title || "park-gyutae";
+const description = frontmatter?.description || Astro.props.description || "A professional developer's technical blog for sharing insights, projects, and tutorials.";
+const image = frontmatter?.image || Astro.props.image || "/og-image.png";
+const isWide = frontmatter?.isWide || Astro.props.isWide || false;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://techblog.example.com');
 ---
@@ -76,7 +76,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://techblog
 	<body>
 		<Header />
 		<main class={`${isWide ? 'wide-container' : 'container'} animate-fade-in`} style="flex: 1; padding-top: 2rem; padding-bottom: 3rem;">
-			<slot />
+			{frontmatter ? (
+				<div class="prose">
+					<slot />
+				</div>
+			) : (
+				<slot />
+			)}
 		</main>
 		<Footer />
 	</body>
