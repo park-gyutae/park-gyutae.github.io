@@ -86,13 +86,8 @@ p {
 
 /* Header & Glassmorphism */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background-color: var(--header-bg);
-  border-bottom: 1px solid var(--glass-border);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
   transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
@@ -339,7 +334,7 @@ footer {
 @media (min-width: 768px) {
   .profile-sidebar {
     position: sticky;
-    top: 6.5rem;
+    top: 2rem;
   }
 }
 
