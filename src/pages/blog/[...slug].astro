@@ -1,0 +1,343 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = (await getCollection('blog', ({ data }) => !data.draft))
+		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	
+	return posts.map((post, index) => ({
+		params: { slug: post.slug },
+		props: {
+			post,
+			prev: index < posts.length - 1 ? posts[index + 1] : null,
+			next: index > 0 ? posts[index - 1] : null,
+		},
+	}));
+}
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	prev: CollectionEntry<'blog'> | null;
+	next: CollectionEntry<'blog'> | null;
+}
+
+const { post, prev, next } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
+const { Content } = await post.render();
+
+const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateString('ko-KR', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+}) : null;
+---
+
+<Layout title={`${title} | DevLog`} description={description} image={heroImage}>
+	<!-- Scroll Progress Bar -->
+	<div id="scroll-progress" class="scroll-progress-bar"></div>
+
+	<article class="post-article">
+		<!-- Back Button & Meta -->
+		<div class="article-navigation">
+			<a href="/" class="back-link">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+					<line x1="19" y1="12" x2="5" y2="12"></line>
+					<polyline points="12 19 5 12 12 5"></polyline>
+				</svg>
+				<span>목록으로 돌아가기</span>
+			</a>
+		</div>
+
+		<header class="article-header">
+			<div class="article-meta">
+				<time datetime={pubDate.toISOString()}>{formattedDate}</time>
+				{formattedUpdatedDate && (
+					<span class="updated-date">
+						• (수정일: {formattedUpdatedDate})
+					</span>
+				)}
+			</div>
+			
+			<h1 class="article-title">{title}</h1>
+			<p class="article-desc">{description}</p>
+
+			{tags && tags.length > 0 && (
+				<div class="article-tags">
+					{tags.map((tag) => (
+						<a href={`/#posts`} class="tag-badge">#{tag}</a>
+					))}
+				</div>
+			)}
+		</header>
+
+		{heroImage && (
+			<div class="hero-image-container">
+				<img src={heroImage} alt={title} class="hero-image" />
+			</div>
+		)}
+
+		<hr class="header-divider" />
+
+		<!-- Main Markdown Content -->
+		<div class="prose">
+			<Content />
+		</div>
+
+		<hr class="footer-divider" />
+
+		<!-- Previous / Next post links -->
+		<nav class="post-navigation">
+			<div class="nav-prev">
+				{prev && (
+					<a href={`/blog/${prev.slug}`} class="nav-card">
+						<span class="nav-label">이전 글</span>
+						<span class="nav-title">{prev.data.title}</span>
+					</a>
+				)}
+			</div>
+			<div class="nav-next">
+				{next && (
+					<a href={`/blog/${next.slug}`} class="nav-card">
+						<span class="nav-label">다음 글</span>
+						<span class="nav-title">{next.data.title}</span>
+					</a>
+				)}
+			</div>
+		</nav>
+
+		<!-- Scroll To Top Button -->
+		<button id="scroll-to-top" class="scroll-to-top-btn" aria-label="Scroll to top">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+				<polyline points="18 15 12 9 6 15"></polyline>
+			</svg>
+		</button>
+	</article>
+</Layout>
+
+<style>
+	.scroll-progress-bar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 0%;
+		height: 4px;
+		background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+		z-index: 99;
+		transition: width 0.1s ease-out;
+	}
+
+	.post-article {
+		max-width: 720px;
+		margin: 0 auto;
+		position: relative;
+	}
+
+	.article-navigation {
+		margin-bottom: 2rem;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		font-size: 0.95rem;
+		transition: color var(--transition-speed) ease;
+	}
+
+	.back-link:hover {
+		color: var(--primary-color);
+	}
+
+	.article-header {
+		margin-bottom: 2rem;
+	}
+
+	.article-meta {
+		font-size: 0.95rem;
+		color: var(--text-muted);
+		margin-bottom: 0.75rem;
+		font-weight: 500;
+	}
+
+	.article-title {
+		font-size: 2.5rem;
+		font-weight: 800;
+		line-height: 1.2;
+		margin-bottom: 1rem;
+		color: var(--text-color);
+	}
+
+	.article-desc {
+		font-size: 1.15rem;
+		color: var(--text-muted);
+		margin-bottom: 1.5rem;
+		line-height: 1.6;
+	}
+
+	.article-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.tag-badge {
+		font-size: 0.85rem;
+		font-weight: 600;
+		padding: 0.25rem 0.75rem;
+		border-radius: 9999px;
+		background-color: var(--border-color);
+		color: var(--text-muted);
+		transition: all var(--transition-speed) ease;
+	}
+
+	.tag-badge:hover {
+		background-color: var(--primary-color);
+		color: #ffffff;
+	}
+
+	.hero-image-container {
+		width: 100%;
+		border-radius: 1rem;
+		overflow: hidden;
+		margin-bottom: 2rem;
+		box-shadow: var(--card-shadow);
+	}
+
+	.hero-image {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.header-divider, .footer-divider {
+		border: none;
+		border-top: 1px solid var(--border-color);
+		margin: 2.5rem 0;
+	}
+
+	/* Navigation controls */
+	.post-navigation {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.post-navigation {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.nav-card {
+		display: flex;
+		flex-direction: column;
+		padding: 1.25rem;
+		background-color: var(--card-bg);
+		border: 1px solid var(--border-color);
+		border-radius: 0.75rem;
+		box-shadow: var(--card-shadow);
+		height: 100%;
+		transition: all var(--transition-speed) ease;
+	}
+
+	.nav-card:hover {
+		transform: translateY(-2px);
+		border-color: var(--primary-color);
+		box-shadow: var(--card-hover-shadow);
+	}
+
+	.nav-label {
+		font-size: 0.8rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		margin-bottom: 0.35rem;
+	}
+
+	.nav-title {
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--text-color);
+		line-height: 1.4;
+	}
+
+	/* Scroll to top button */
+	.scroll-to-top-btn {
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+		background-color: var(--card-bg);
+		color: var(--text-color);
+		border: 1px solid var(--border-color);
+		padding: 0.75rem;
+		border-radius: 50%;
+		cursor: pointer;
+		box-shadow: var(--card-shadow);
+		opacity: 0;
+		pointer-events: none;
+		transition: all var(--transition-speed) ease;
+		z-index: 10;
+	}
+
+	.scroll-to-top-btn.visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.scroll-to-top-btn:hover {
+		background-color: var(--primary-color);
+		color: #ffffff;
+		border-color: var(--primary-color);
+		transform: translateY(-4px);
+	}
+
+	@media (max-width: 768px) {
+		.scroll-to-top-btn {
+			bottom: 1.5rem;
+			right: 1.5rem;
+			padding: 0.6rem;
+		}
+	}
+</style>
+
+<script>
+	// Scroll progress indicator
+	window.addEventListener('scroll', () => {
+		const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+		const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+		
+		const progressEl = document.getElementById('scroll-progress');
+		if (progressEl) {
+			progressEl.style.width = scrolled + '%';
+		}
+
+		// Scroll to top button visibility
+		const scrollToTopBtn = document.getElementById('scroll-to-top');
+		if (scrollToTopBtn) {
+			if (winScroll > 300) {
+				scrollToTopBtn.classList.add('visible');
+			} else {
+				scrollToTopBtn.classList.remove('visible');
+			}
+		}
+	});
+
+	// Scroll to top action
+	const scrollToTopBtn = document.getElementById('scroll-to-top');
+	scrollToTopBtn?.addEventListener('click', () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	});
+</script>
