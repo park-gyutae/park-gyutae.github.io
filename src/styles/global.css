@@ -4,37 +4,37 @@
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   --font-mono: 'Fira Code', 'JetBrains Mono', Courier, monospace;
 
-  /* Theme colors - Light Mode Default */
-  --bg-color: #fafafa;
-  --text-color: #1a1a1a;
-  --text-muted: #666666;
-  --primary-color: #4f46e5; /* Indigo */
-  --primary-hover: #4338ca;
-  --accent-color: #06b6d4; /* Cyan */
-  --border-color: #e5e7eb;
+  /* Theme colors - Light Mode Default (Black/White Minimal + Royal Blue) */
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --text-muted: #555555;
+  --primary-color: #0047ab; /* Royal Blue */
+  --primary-hover: #003380;
+  --accent-color: #2563eb;
+  --border-color: #e5e5e5;
   --card-bg: #ffffff;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-  --header-bg: rgba(250, 250, 250, 0.8);
-  --glass-border: rgba(229, 231, 235, 0.5);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  --card-hover-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(229, 229, 229, 0.8);
   
-  --transition-speed: 0.25s;
+  --transition-speed: 0.2s;
 }
 
 [data-theme="dark"] {
-  /* Theme colors - Dark Mode */
-  --bg-color: #0f172a; /* Slate 900 */
-  --text-color: #f1f5f9; /* Slate 100 */
-  --text-muted: #94a3b8; /* Slate 400 */
-  --primary-color: #818cf8; /* Light Indigo */
-  --primary-hover: #6366f1;
-  --accent-color: #22d3ee; /* Bright Cyan */
-  --border-color: #334155; /* Slate 700 */
-  --card-bg: #1e293b; /* Slate 800 */
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-  --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  --header-bg: rgba(15, 23, 42, 0.8);
-  --glass-border: rgba(51, 65, 85, 0.5);
+  /* Theme colors - Dark Mode (Pitch Black + Bright Royal Blue) */
+  --bg-color: #0a0a0a;
+  --text-color: #f5f5f5;
+  --text-muted: #a0a0a0;
+  --primary-color: #3b82f6; /* Bright Royal Blue for dark mode contrast */
+  --primary-hover: #60a5fa;
+  --accent-color: #2563eb;
+  --border-color: #222222;
+  --card-bg: #111111;
+  --card-shadow: none;
+  --card-hover-shadow: none;
+  --header-bg: rgba(10, 10, 10, 0.85);
+  --glass-border: rgba(34, 34, 34, 0.8);
 }
 
 /* Base Styles */
