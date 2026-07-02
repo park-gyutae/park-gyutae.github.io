@@ -1,4 +1,5 @@
 ---
+const pathname = Astro.url.pathname;
 ---
 
 <header>
@@ -11,16 +12,9 @@
       <span>DevLog</span>
     </a>
     <nav class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/#posts" class="nav-link">Posts</a>
-      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem;">
-        GitHub
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-      </a>
+      <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>소개</a>
+      <a href="/blog" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`}>게시글</a>
+      <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>프로젝트</a>
       <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme">
         <!-- Sun Icon (Visible in dark mode) -->
         <svg id="theme-toggle-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

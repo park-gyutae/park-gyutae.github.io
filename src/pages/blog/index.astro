@@ -1,0 +1,237 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+
+const posts = (await getCollection('blog', ({ data }) => {
+	return data.draft !== true;
+})).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Collect all unique tags
+const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+---
+
+<Layout title="게시글 | DevLog" description="전체 기술 블로그 포스트 목록을 확인하고 검색할 수 있습니다.">
+	<section class="page-header">
+		<h1 class="page-title">모든 게시글</h1>
+		<p class="page-subtitle">수학, 통계, 머신러닝, 소프트웨어 개발 관련 글을 모아둔 공간입니다.</p>
+	</section>
+
+	<!-- Filter / Search Section -->
+	<section class="filter-section">
+		<div class="search-container">
+			<svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="11" cy="11" r="8"></circle>
+				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+			</svg>
+			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="Search posts" />
+		</div>
+
+		{allTags.length > 0 && (
+			<div class="tags-container">
+				<button class="tag-filter-btn active" data-tag="all">All</button>
+				{allTags.map(tag => (
+					<button class="tag-filter-btn" data-tag={tag}>#{tag}</button>
+				))}
+			</div>
+		)}
+	</section>
+
+	<!-- Posts Grid Section -->
+	<section class="posts-section">
+		{posts.length === 0 ? (
+			<div class="no-posts">
+				<p>등록된 포스트가 없습니다.</p>
+			</div>
+		) : (
+			<div class="posts-grid" id="posts-grid">
+				{posts.map((post) => (
+					<div 
+						class="post-wrapper" 
+						data-title={post.data.title.toLowerCase()}
+						data-description={post.data.description.toLowerCase()}
+						data-tags={JSON.stringify(post.data.tags.map(t => t.toLowerCase()))}
+					>
+						<BlogPostCard post={post} />
+					</div>
+				))}
+			</div>
+			<div class="no-results hidden" id="no-results">
+				<p>검색 결과와 일치하는 포스트가 없습니다.</p>
+			</div>
+		)}
+	</section>
+</Layout>
+
+<style>
+	.page-header {
+		padding: 2rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		border-bottom: 1px solid var(--border-color);
+		margin-bottom: 2.5rem;
+	}
+
+	.page-title {
+		font-size: 2.5rem;
+		font-weight: 800;
+	}
+
+	.page-subtitle {
+		font-size: 1.1rem;
+		color: var(--text-muted);
+	}
+
+	/* Filter and Search Section */
+	.filter-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.search-container {
+		position: relative;
+		width: 100%;
+	}
+
+	.search-icon {
+		position: absolute;
+		left: 1.25rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: var(--text-muted);
+		pointer-events: none;
+	}
+
+	#search-input {
+		width: 100%;
+		padding: 1rem 1rem 1rem 3.25rem;
+		font-size: 1.05rem;
+		font-family: inherit;
+		background-color: var(--card-bg);
+		color: var(--text-color);
+		border: 1px solid var(--border-color);
+		border-radius: 0.75rem;
+		box-shadow: var(--card-shadow);
+		outline: none;
+		transition: all var(--transition-speed) ease;
+	}
+
+	#search-input:focus {
+		border-color: var(--primary-color);
+		box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
+	}
+
+	.tags-container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.tag-filter-btn {
+		font-size: 0.9rem;
+		font-weight: 600;
+		padding: 0.4rem 1rem;
+		border-radius: 0.5rem;
+		border: 1px solid var(--border-color);
+		background-color: var(--card-bg);
+		color: var(--text-muted);
+		cursor: pointer;
+		transition: all var(--transition-speed) ease;
+	}
+
+	.tag-filter-btn:hover {
+		background-color: var(--border-color);
+		color: var(--text-color);
+	}
+
+	.tag-filter-btn.active {
+		background-color: var(--primary-color);
+		border-color: var(--primary-color);
+		color: #ffffff;
+		box-shadow: 0 4px 6px -1px rgba(0, 71, 171, 0.2);
+	}
+
+	/* Posts grid */
+	.posts-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	@media (min-width: 640px) {
+		.posts-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.no-posts, .no-results {
+		text-align: center;
+		padding: 4rem 0;
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		background-color: var(--card-bg);
+		border: 1px dashed var(--border-color);
+		border-radius: 0.75rem;
+	}
+
+	.hidden {
+		display: none !important;
+	}
+</style>
+
+<script>
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const tagButtons = document.querySelectorAll('.tag-filter-btn');
+	const postWrappers = document.querySelectorAll('.post-wrapper') as NodeListOf<HTMLDivElement>;
+	const noResults = document.getElementById('no-results');
+
+	let currentSearch = '';
+	let currentTag = 'all';
+
+	const filterPosts = () => {
+		let visibleCount = 0;
+
+		postWrappers.forEach((wrapper) => {
+			const title = wrapper.getAttribute('data-title') || '';
+			const desc = wrapper.getAttribute('data-description') || '';
+			const tagsStr = wrapper.getAttribute('data-tags') || '[]';
+			const tags = JSON.parse(tagsStr) as string[];
+
+			const matchesSearch = title.includes(currentSearch) || 
+								  desc.includes(currentSearch) || 
+								  tags.some(tag => tag.includes(currentSearch));
+
+			const matchesTag = currentTag === 'all' || tags.includes(currentTag.toLowerCase());
+
+			if (matchesSearch && matchesTag) {
+				wrapper.classList.remove('hidden');
+				visibleCount++;
+			} else {
+				wrapper.classList.add('hidden');
+			}
+		});
+
+		if (visibleCount === 0 && postWrappers.length > 0) {
+			noResults?.classList.remove('hidden');
+		} else {
+			noResults?.classList.add('hidden');
+		}
+	};
+
+	searchInput?.addEventListener('input', (e) => {
+		currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
+		filterPosts();
+	});
+
+	tagButtons.forEach((btn) => {
+		btn.addEventListener('click', () => {
+			tagButtons.forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+			currentTag = btn.getAttribute('data-tag') || 'all';
+			filterPosts();
+		});
+	});
+</script>

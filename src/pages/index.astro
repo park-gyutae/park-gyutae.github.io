@@ -5,218 +5,217 @@ import BlogPostCard from '../components/BlogPostCard.astro';
 
 const posts = (await getCollection('blog', ({ data }) => {
 	return data.draft !== true;
-})).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-// Collect all unique tags
-const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+}))
+.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+.slice(0, 3); // Display only top 3 recent posts
 ---
 
-<Layout title="DevLog | Technical Blog">
-	<!-- Hero / Profile Section -->
-	<section class="hero-section">
-		<div class="hero-avatar">
-			<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-				<circle cx="12" cy="7" r="4"></circle>
-			</svg>
+<Layout title="박규태 | Math, Stats & Tech Blog" description="수학, 통계학, 데이터 분석 및 소프트웨어 개발을 다루는 박규태의 블로그입니다.">
+	<!-- About / Bio Section -->
+	<section class="about-section">
+		<div class="profile-header">
+			<div class="avatar-container">
+				<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+					<circle cx="12" cy="7" r="4"></circle>
+				</svg>
+			</div>
+			<div>
+				<h1 class="profile-name">박규태 (Park Gyutae)</h1>
+				<p class="profile-title">Mathematics • Statistics • Tech</p>
+			</div>
 		</div>
-		<div class="hero-text">
-			<h1 class="hero-title">안녕하세요, DevLog입니다 👋</h1>
-			<p class="hero-subtitle">
-				소프트웨어 개발, 아키텍처, 기술적 도전과 배움을 기록하는 공간입니다. 복잡한 문제를 단순하게 풀고 지식을 공유하는 것을 좋아합니다.
+
+		<div class="bio-content">
+			<p>
+				안녕하세요! 수학과 통계학, 그리고 테크놀로지를 다루는 공간입니다.
+				복잡한 현상을 정량적으로 모델링하고, 통계적 추론을 통해 데이터 이면의 진실을 탐구하며, 
+				이를 확장 가능하고 견고한 소프트웨어로 구현하는 것에 열정을 지니고 있습니다.
 			</p>
-			<div class="hero-badges">
-				<span class="hero-badge">TypeScript</span>
-				<span class="hero-badge">React</span>
-				<span class="hero-badge">Node.js</span>
-				<span class="hero-badge">Cloud</span>
+			<p>
+				수치적 최적화, 기계 학습 알고리즘, 확률 모형 설계부터 백엔드 및 데이터 엔지니어링 파이프라인 구축까지 
+				경계를 넘나들며 배우고 성장하고 있습니다. 이 블로그에는 공부하며 깊게 고민한 생각의 파편과 증명, 
+				프로젝트의 여정들을 차분히 기록해 나가고자 합니다.
+			</p>
+		</div>
+
+		<div class="focus-areas">
+			<h2 class="section-subtitle">Focus Areas</h2>
+			<div class="focus-grid">
+				<div class="focus-card">
+					<h3>Mathematics & Stats</h3>
+					<p>선형대수학, 다변량해석, 수치 최적화, 베이지안 통계 및 가설 검정</p>
+				</div>
+				<div class="focus-card">
+					<h3>Machine Learning</h3>
+					<p>딥러닝 모델 아키텍처, 통계적 학습 이론, 알고리즘 커스터마이징</p>
+				</div>
+				<div class="focus-card">
+					<h3>Software Engineering</h3>
+					<p>Python/R 기반의 분석 환경 설계, 데이터 파이프라인, 백엔드 아키텍처</p>
+				</div>
 			</div>
 		</div>
 	</section>
 
-	<hr class="section-divider" id="posts" />
+	<hr class="section-divider" />
 
-	<!-- Filter / Search Section -->
-	<section class="filter-section">
-		<div class="search-container">
-			<svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="11" cy="11" r="8"></circle>
-				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-			</svg>
-			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="Search posts" />
+	<!-- Recent Posts Section -->
+	<section class="recent-posts-section">
+		<div class="section-header">
+			<h2 class="section-title">최근 게시글</h2>
+			<a href="/blog" class="all-posts-link">
+				<span>모든 글 보기</span>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
 		</div>
 
-		{allTags.length > 0 && (
-			<div class="tags-container">
-				<button class="tag-filter-btn active" data-tag="all">All</button>
-				{allTags.map(tag => (
-					<button class="tag-filter-btn" data-tag={tag}>#{tag}</button>
-				))}
-			</div>
-		)}
-	</section>
-
-	<!-- Posts Grid Section -->
-	<section class="posts-section">
 		{posts.length === 0 ? (
 			<div class="no-posts">
-				<p>아직 등록된 포스트가 없습니다. 첫 포스트를 작성해 보세요!</p>
+				<p>등록된 포스트가 없습니다.</p>
 			</div>
 		) : (
-			<div class="posts-grid" id="posts-grid">
+			<div class="posts-grid">
 				{posts.map((post) => (
-					<div 
-						class="post-wrapper" 
-						data-title={post.data.title.toLowerCase()}
-						data-description={post.data.description.toLowerCase()}
-						data-tags={JSON.stringify(post.data.tags.map(t => t.toLowerCase()))}
-					>
-						<BlogPostCard post={post} />
-					</div>
+					<BlogPostCard post={post} />
 				))}
-			</div>
-			<div class="no-results hidden" id="no-results">
-				<p>검색 결과와 일치하는 포스트가 없습니다.</p>
 			</div>
 		)}
 	</section>
 </Layout>
 
 <style>
-	/* Hero Section */
-	.hero-section {
-		display: flex;
-		gap: 2rem;
-		align-items: center;
-		padding: 3rem 0;
+	/* About Section */
+	.about-section {
+		padding: 2rem 0;
 	}
 
-	.hero-avatar {
-		flex-shrink: 0;
-		width: 100px;
-		height: 100px;
-		border-radius: 2rem;
-		background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-		color: #ffffff;
+	.profile-header {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.avatar-container {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		background-color: var(--border-color);
+		color: var(--text-color);
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		border: 1px solid var(--border-color);
+	}
+
+	.profile-name {
+		font-size: 2.25rem;
+		font-weight: 800;
+		line-height: 1.1;
+		margin-bottom: 0.25rem;
+	}
+
+	.profile-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: var(--primary-color);
+	}
+
+	.bio-content p {
+		font-size: 1.05rem;
+		line-height: 1.8;
+		color: var(--text-color);
+		margin-bottom: 1.25rem;
+	}
+
+	.section-subtitle {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-top: 2.5rem;
+		margin-bottom: 1.25rem;
+		border-bottom: 1px solid var(--border-color);
+		padding-bottom: 0.5rem;
+	}
+
+	.focus-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.focus-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.focus-card {
+		background-color: var(--card-bg);
+		border: 1px solid var(--border-color);
+		border-radius: 0.5rem;
+		padding: 1.25rem;
 		box-shadow: var(--card-shadow);
 	}
 
-	.hero-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.hero-title {
-		font-size: 2.25rem;
-		font-weight: 800;
-		line-height: 1.2;
-	}
-
-	.hero-subtitle {
+	.focus-card h3 {
 		font-size: 1.1rem;
-		color: var(--text-muted);
-		line-height: 1.6;
-		max-width: 600px;
+		font-weight: 700;
+		color: var(--primary-color);
 		margin-bottom: 0.5rem;
 	}
 
-	.hero-badges {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.hero-badge {
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.25rem 0.75rem;
-		border-radius: 0.5rem;
-		background-color: var(--border-color);
+	.focus-card p {
+		font-size: 0.95rem;
 		color: var(--text-muted);
+		margin-bottom: 0;
+		line-height: 1.5;
 	}
 
 	.section-divider {
 		border: none;
 		border-top: 1px solid var(--border-color);
-		margin: 2rem 0;
+		margin: 3rem 0;
 	}
 
-	/* Filter and Search Section */
-	.filter-section {
+	/* Recent Posts */
+	.recent-posts-section {
+		margin-bottom: 2rem;
+	}
+
+	.section-header {
 		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		margin-bottom: 2.5rem;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1.75rem;
 	}
 
-	.search-container {
-		position: relative;
-		width: 100%;
+	.section-title {
+		font-size: 1.75rem;
+		font-weight: 800;
 	}
 
-	.search-icon {
-		position: absolute;
-		left: 1.25rem;
-		top: 50%;
-		transform: translateY(-50%);
-		color: var(--text-muted);
-		pointer-events: none;
+	.all-posts-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-weight: 700;
+		font-size: 0.95rem;
+		color: var(--primary-color);
+		transition: color var(--transition-speed) ease;
 	}
 
-	#search-input {
-		width: 100%;
-		padding: 1rem 1rem 1rem 3.25rem;
-		font-size: 1.05rem;
-		font-family: inherit;
-		background-color: var(--card-bg);
-		color: var(--text-color);
-		border: 1px solid var(--border-color);
-		border-radius: 1rem;
-		box-shadow: var(--card-shadow);
-		outline: none;
-		transition: all var(--transition-speed) ease;
+	.all-posts-link svg {
+		transition: transform var(--transition-speed) ease;
 	}
 
-	#search-input:focus {
-		border-color: var(--primary-color);
-		box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+	.all-posts-link:hover svg {
+		transform: translateX(4px);
 	}
 
-	.tags-container {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.tag-filter-btn {
-		font-size: 0.9rem;
-		font-weight: 600;
-		padding: 0.4rem 1rem;
-		border-radius: 0.75rem;
-		border: 1px solid var(--border-color);
-		background-color: var(--card-bg);
-		color: var(--text-muted);
-		cursor: pointer;
-		transition: all var(--transition-speed) ease;
-	}
-
-	.tag-filter-btn:hover {
-		background-color: var(--border-color);
-		color: var(--text-color);
-	}
-
-	.tag-filter-btn.active {
-		background-color: var(--primary-color);
-		border-color: var(--primary-color);
-		color: #ffffff;
-		box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.25);
-	}
-
-	/* Posts grid */
 	.posts-grid {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -229,94 +228,19 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 		}
 	}
 
-	.no-posts, .no-results {
+	@media (min-width: 768px) {
+		.posts-grid {
+			/* If there are 3 posts, let's keep grid dynamic or show 2/3 */
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.no-posts {
 		text-align: center;
-		padding: 4rem 0;
+		padding: 3rem 0;
 		color: var(--text-muted);
-		font-size: 1.1rem;
 		background-color: var(--card-bg);
 		border: 1px dashed var(--border-color);
-		border-radius: 1rem;
-	}
-
-	.hidden {
-		display: none !important;
-	}
-
-	@media (max-width: 640px) {
-		.hero-section {
-			flex-direction: column;
-			text-align: center;
-			gap: 1.5rem;
-			padding: 2rem 0;
-		}
-		.hero-avatar {
-			width: 80px;
-			height: 80px;
-		}
-		.hero-badges {
-			justify-content: center;
-		}
+		border-radius: 0.5rem;
 	}
 </style>
-
-<script>
-	// Client-side filtering logic
-	const searchInput = document.getElementById('search-input') as HTMLInputElement;
-	const tagButtons = document.querySelectorAll('.tag-filter-btn');
-	const postWrappers = document.querySelectorAll('.post-wrapper') as NodeListOf<HTMLDivElement>;
-	const noResults = document.getElementById('no-results');
-
-	let currentSearch = '';
-	let currentTag = 'all';
-
-	const filterPosts = () => {
-		let visibleCount = 0;
-
-		postWrappers.forEach((wrapper) => {
-			const title = wrapper.getAttribute('data-title') || '';
-			const desc = wrapper.getAttribute('data-description') || '';
-			const tagsStr = wrapper.getAttribute('data-tags') || '[]';
-			const tags = JSON.parse(tagsStr) as string[];
-
-			const matchesSearch = title.includes(currentSearch) || 
-								  desc.includes(currentSearch) || 
-								  tags.some(tag => tag.includes(currentSearch));
-
-			const matchesTag = currentTag === 'all' || tags.includes(currentTag.toLowerCase());
-
-			if (matchesSearch && matchesTag) {
-				wrapper.classList.remove('hidden');
-				visibleCount++;
-			} else {
-				wrapper.classList.add('hidden');
-			}
-		});
-
-		if (visibleCount === 0 && postWrappers.length > 0) {
-			noResults?.classList.remove('hidden');
-		} else {
-			noResults?.classList.add('hidden');
-		}
-	};
-
-	// Search input event
-	searchInput?.addEventListener('input', (e) => {
-		currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
-		filterPosts();
-	});
-
-	// Tag button click event
-	tagButtons.forEach((btn) => {
-		btn.addEventListener('click', () => {
-			// Remove active class from all
-			tagButtons.forEach(b => b.classList.remove('active'));
-			
-			// Add active class to clicked button
-			btn.classList.add('active');
-
-			currentTag = btn.getAttribute('data-tag') || 'all';
-			filterPosts();
-		});
-	});
-</script>
