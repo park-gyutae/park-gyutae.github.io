@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "4.16.19"
+    "astro": "4.16.19",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   }
 }

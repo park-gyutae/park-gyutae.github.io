@@ -55,6 +55,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://techblog
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+		<!-- KaTeX CSS for math equations -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+
 		<!-- Inline Script to prevent theme flashing -->
 		<script is:inline>
 			const getThemePreference = () => {
