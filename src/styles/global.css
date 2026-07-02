@@ -315,3 +315,87 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* Home 2-Column Grid Layout (Academic/Minimal style) */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .home-grid {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .profile-sidebar {
+    position: sticky;
+    top: 6.5rem;
+  }
+}
+
+.sidebar-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+}
+
+.sidebar-name {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sidebar-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-bio {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.sidebar-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.sidebar-socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.sidebar-socials a:hover {
+  color: var(--primary-color);
+}
+

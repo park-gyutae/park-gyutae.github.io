@@ -11,228 +11,100 @@ const posts = (await getCollection('blog', ({ data }) => {
 ---
 
 <Layout title="박규태 | Math, Stats & Tech Blog" description="수학, 통계학, 데이터 분석 및 소프트웨어 개발을 다루는 박규태의 블로그입니다.">
-	<!-- About / Bio Section -->
-	<section class="about-section">
-		<div class="profile-header">
-			<div class="avatar-container">
-				<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+	<div class="home-grid">
+		<!-- Left: Profile Sidebar (Sticky on Desktop) -->
+		<aside class="profile-sidebar animate-fade-in">
+			<div class="sidebar-avatar">
+				<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
 					<circle cx="12" cy="7" r="4"></circle>
 				</svg>
 			</div>
 			<div>
-				<h1 class="profile-name">박규태 (Park Gyutae)</h1>
-				<p class="profile-title">Mathematics • Statistics • Tech</p>
+				<h1 class="sidebar-name">박규태</h1>
+				<p class="sidebar-title">Math • Stats • Tech</p>
 			</div>
-		</div>
-
-		<div class="bio-content">
-			<p>
-				안녕하세요! 수학과 통계학, 그리고 테크놀로지를 다루는 공간입니다.
+			<p class="sidebar-bio">
+				수학과 통계학, 그리고 테크놀로지를 다루는 공간입니다.
 				복잡한 현상을 정량적으로 모델링하고, 통계적 추론을 통해 데이터 이면의 진실을 탐구하며, 
 				이를 확장 가능하고 견고한 소프트웨어로 구현하는 것에 열정을 지니고 있습니다.
 			</p>
-			<p>
-				수치적 최적화, 기계 학습 알고리즘, 확률 모형 설계부터 백엔드 및 데이터 엔지니어링 파이프라인 구축까지 
-				경계를 넘나들며 배우고 성장하고 있습니다. 이 블로그에는 공부하며 깊게 고민한 생각의 파편과 증명, 
-				프로젝트의 여정들을 차분히 기록해 나가고자 합니다.
-			</p>
-		</div>
+			<nav class="sidebar-socials" aria-label="Social links">
+				<a href="https://github.com/park-gyutae" target="_blank" rel="noopener noreferrer">
+					GitHub
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+						<polyline points="15 3 21 3 21 9"></polyline>
+						<line x1="10" y1="14" x2="21" y2="3"></line>
+					</svg>
+				</a>
+				<a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer">
+					Google Scholar
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+						<polyline points="15 3 21 3 21 9"></polyline>
+						<line x1="10" y1="14" x2="21" y2="3"></line>
+					</svg>
+				</a>
+				<a href="mailto:gyutae.q.park@gmail.com">Email</a>
+			</nav>
+		</aside>
 
-		<div class="focus-areas">
-			<h2 class="section-subtitle">Focus Areas</h2>
-			<div class="focus-grid">
-				<div class="focus-card">
-					<h3>Mathematics & Stats</h3>
-					<p>선형대수학, 다변량해석, 수치 최적화, 베이지안 통계 및 가설 검정</p>
+		<!-- Right: Main Content -->
+		<div class="main-content-area animate-fade-in" style="animation-delay: 0.1s;">
+			<!-- Recent Posts -->
+			<section class="recent-posts-section">
+				<div class="recent-posts-header">
+					<h2 class="section-title">Recent Posts</h2>
+					<a href="/blog" class="all-posts-link">모든 글 보기 →</a>
 				</div>
-				<div class="focus-card">
-					<h3>Machine Learning</h3>
-					<p>딥러닝 모델 아키텍처, 통계적 학습 이론, 알고리즘 커스터마이징</p>
+
+				{posts.length === 0 ? (
+					<div class="no-posts">
+						<p>등록된 포스트가 없습니다.</p>
+					</div>
+				) : (
+					<div class="posts-list-vertical">
+						{posts.map((post) => (
+							<BlogPostCard post={post} />
+						))}
+					</div>
+				)}
+			</section>
+
+			<!-- Focus Areas -->
+			<section class="focus-section" style="margin-top: 3.5rem;">
+				<h2 class="section-title" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Focus Areas</h2>
+				<div class="focus-vertical-list">
+					<div class="focus-item">
+						<h3 class="focus-item-title">Mathematics & Stats</h3>
+						<p class="focus-item-desc">선형대수학, 다변량해석, 수치 최적화, 베이지안 통계 및 가설 검정을 통한 정량적 모델 수립</p>
+					</div>
+					<div class="focus-item">
+						<h3 class="focus-item-title">Machine Learning</h3>
+						<p class="focus-item-desc">딥러닝 모델 아키텍처 구현, 통계적 학습 이론 연구, 알고리즘 맞춤 커스터마이징</p>
+					</div>
+					<div class="focus-item">
+						<h3 class="focus-item-title">Software Engineering</h3>
+						<p class="focus-item-desc">Python 및 R 분석 가용 환경 인프라 설계, 견고한 데이터 파이프라인 및 백엔드 서비스 개발</p>
+					</div>
 				</div>
-				<div class="focus-card">
-					<h3>Software Engineering</h3>
-					<p>Python/R 기반의 분석 환경 설계, 데이터 파이프라인, 백엔드 아키텍처</p>
-				</div>
-			</div>
+			</section>
 		</div>
-	</section>
-
-	<hr class="section-divider" />
-
-	<!-- Recent Posts Section -->
-	<section class="recent-posts-section">
-		<div class="section-header">
-			<h2 class="section-title">최근 게시글</h2>
-			<a href="/blog" class="all-posts-link">
-				<span>모든 글 보기</span>
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</a>
-		</div>
-
-		{posts.length === 0 ? (
-			<div class="no-posts">
-				<p>등록된 포스트가 없습니다.</p>
-			</div>
-		) : (
-			<div class="posts-grid">
-				{posts.map((post) => (
-					<BlogPostCard post={post} />
-				))}
-			</div>
-		)}
-	</section>
+	</div>
 </Layout>
 
 <style>
-	/* About Section */
-	.about-section {
-		padding: 2rem 0;
-	}
-
-	.profile-header {
+	.main-content-area {
 		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		margin-bottom: 2rem;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
-	.avatar-container {
-		width: 80px;
-		height: 80px;
-		border-radius: 50%;
-		background-color: var(--border-color);
-		color: var(--text-color);
+	.posts-list-vertical {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 1px solid var(--border-color);
-	}
-
-	.profile-name {
-		font-size: 2.25rem;
-		font-weight: 800;
-		line-height: 1.1;
-		margin-bottom: 0.25rem;
-	}
-
-	.profile-title {
-		font-size: 1.1rem;
-		font-weight: 600;
-		color: var(--primary-color);
-	}
-
-	.bio-content p {
-		font-size: 1.05rem;
-		line-height: 1.8;
-		color: var(--text-color);
-		margin-bottom: 1.25rem;
-	}
-
-	.section-subtitle {
-		font-size: 1.5rem;
-		font-weight: 700;
-		margin-top: 2.5rem;
-		margin-bottom: 1.25rem;
-		border-bottom: 1px solid var(--border-color);
-		padding-bottom: 0.5rem;
-	}
-
-	.focus-grid {
-		display: grid;
-		grid-template-columns: 1fr;
+		flex-direction: column;
 		gap: 1rem;
-	}
-
-	@media (min-width: 768px) {
-		.focus-grid {
-			grid-template-columns: repeat(3, 1fr);
-		}
-	}
-
-	.focus-card {
-		background-color: var(--card-bg);
-		border: 1px solid var(--border-color);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-		box-shadow: var(--card-shadow);
-	}
-
-	.focus-card h3 {
-		font-size: 1.1rem;
-		font-weight: 700;
-		color: var(--primary-color);
-		margin-bottom: 0.5rem;
-	}
-
-	.focus-card p {
-		font-size: 0.95rem;
-		color: var(--text-muted);
-		margin-bottom: 0;
-		line-height: 1.5;
-	}
-
-	.section-divider {
-		border: none;
-		border-top: 1px solid var(--border-color);
-		margin: 3rem 0;
-	}
-
-	/* Recent Posts */
-	.recent-posts-section {
-		margin-bottom: 2rem;
-	}
-
-	.section-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1.75rem;
-	}
-
-	.section-title {
-		font-size: 1.75rem;
-		font-weight: 800;
-	}
-
-	.all-posts-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		font-weight: 700;
-		font-size: 0.95rem;
-		color: var(--primary-color);
-		transition: color var(--transition-speed) ease;
-	}
-
-	.all-posts-link svg {
-		transition: transform var(--transition-speed) ease;
-	}
-
-	.all-posts-link:hover svg {
-		transform: translateX(4px);
-	}
-
-	.posts-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
-	}
-
-	@media (min-width: 640px) {
-		.posts-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@media (min-width: 768px) {
-		.posts-grid {
-			/* If there are 3 posts, let's keep grid dynamic or show 2/3 */
-			grid-template-columns: repeat(2, 1fr);
-		}
 	}
 
 	.no-posts {
@@ -242,5 +114,36 @@ const posts = (await getCollection('blog', ({ data }) => {
 		background-color: var(--card-bg);
 		border: 1px dashed var(--border-color);
 		border-radius: 0.5rem;
+	}
+
+	/* Focus Items */
+	.focus-vertical-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.focus-item {
+		border-left: 2px solid var(--border-color);
+		padding-left: 1.25rem;
+		transition: border-color var(--transition-speed) ease;
+	}
+
+	.focus-item:hover {
+		border-left-color: var(--primary-color);
+	}
+
+	.focus-item-title {
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--text-color);
+		margin-bottom: 0.25rem;
+	}
+
+	.focus-item-desc {
+		font-size: 0.92rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+		margin-bottom: 0;
 	}
 </style>
