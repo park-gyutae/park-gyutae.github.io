@@ -1,0 +1,228 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface Lecture {
+  title: string;
+  institution: string;
+  semester: string;
+  instructor?: string;
+  topics: string[];
+  driveLink: string;
+}
+
+const lectures: Lecture[] = [
+  {
+    title: "수리통계학 I (Mathematical Statistics I)",
+    institution: "Seoul National University",
+    semester: "2025 Fall",
+    instructor: "김통계 교수",
+    topics: ["확률 공간 및 변수", "극한 정리 (CLT, Slutsky Theorem)", "충분 통계량 및 완비성", "UMVUE (최소분산 불편추정량)"],
+    driveLink: "https://drive.google.com" // Placeholder for Google Drive folder
+  },
+  {
+    title: "선형대수학 및 응용 (Linear Algebra & Applications)",
+    institution: "Seoul National University",
+    semester: "2025 Spring",
+    instructor: "이대수 교수",
+    topics: ["벡터 공간 및 선형 변환", "고유값 분해 및 스펙트럼 정리", "특이값 분해 (SVD)", "양의 정부호 행렬과 최소제곱법"],
+    driveLink: "https://drive.google.com"
+  },
+  {
+    title: "기계학습 및 딥러닝 (Machine Learning & Deep Learning)",
+    institution: "Seoul National University",
+    semester: "2026 Spring",
+    instructor: "박머신 교수",
+    topics: ["서포트 벡터 머신 (SVM)과 커널 기법", "의사결정 나무 및 앙상블 학습", "Convolutional Neural Networks (CNN)", "Transformer 아키텍처 및 어텐션 기법"],
+    driveLink: "https://drive.google.com"
+  }
+];
+---
+
+<Layout title="Lectures | park-gyutae" description="수강한 강의들의 필기 노트와 학습 자료를 구글 드라이브와 연동하여 공유하는 아카이브입니다.">
+  <section class="page-header animate-fade-in">
+    <h1 class="page-title">Lectures</h1>
+    <p class="page-subtitle">수강했던 강의들의 핵심 주제와 수기/디지털 필기 노트를 구글 드라이브(Google Drive) 링크로 공유합니다.</p>
+  </section>
+
+  <section class="lectures-section animate-fade-in" style="animation-delay: 0.1s;">
+    <div class="lectures-grid">
+      {lectures.map((lecture) => (
+        <article class="lecture-card">
+          <div class="lecture-meta">
+            <span class="lecture-inst">{lecture.institution}</span>
+            <span class="meta-dot">•</span>
+            <span class="lecture-sem">{lecture.semester}</span>
+          </div>
+          
+          <h3 class="lecture-title">{lecture.title}</h3>
+          {lecture.instructor && <p class="lecture-inst-name">담당 교수: {lecture.instructor}</p>}
+          
+          <div class="lecture-topics">
+            <h4 class="topics-title">핵심 학습 내용:</h4>
+            <ul class="topics-list">
+              {lecture.topics.map(topic => (
+                <li>{topic}</li>
+              ))}
+            </ul>
+          </div>
+
+          <a href={lecture.driveLink} target="_blank" rel="noopener noreferrer" class="drive-link-btn" aria-label="View Lecture Notes on Google Drive">
+            <svg class="drive-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Google Drive 노트 보기</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+  }
+
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+
+  /* Lectures Grid (3 Columns) */
+  .lectures-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .lectures-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .lecture-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  }
+
+  .lecture-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  }
+
+  [data-theme="dark"] .lecture-card:hover {
+    box-shadow: none;
+  }
+
+  .lecture-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .meta-dot {
+    color: var(--text-muted);
+  }
+
+  .lecture-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .lecture-inst-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .lecture-topics {
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+  }
+
+  .topics-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .topics-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .topics-list li {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    position: relative;
+    padding-left: 0.75rem;
+  }
+
+  .topics-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+  }
+
+  /* Google Drive Button */
+  .drive-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.6rem;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 0.375rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: all var(--transition-speed) ease;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+
+  .drive-link-btn:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-color);
+  }
+
+  .drive-icon {
+    width: 16px;
+    height: 16px;
+  }
+</style>
