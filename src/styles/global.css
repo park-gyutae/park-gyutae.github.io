@@ -45,6 +45,7 @@
 }
 
 html {
+  font-size: 93.75%; /* Sets base font size to 15px (93.75% of 16px) */
   font-family: var(--font-sans);
   background-color: var(--bg-color);
   color: var(--text-color);
