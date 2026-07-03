@@ -11,6 +11,7 @@ const pathname = Astro.url.pathname;
       </svg>
       <span>park-gyutae</span>
     </a>
+    
     <nav class="nav-links">
       <a href="/about" class={`nav-link ${pathname.startsWith('/about') ? 'active' : ''}`}>About</a>
       <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>Projects</a>
@@ -36,6 +37,15 @@ const pathname = Astro.url.pathname;
         </svg>
       </button>
     </nav>
+
+    <!-- Mobile Hamburger Toggle Button -->
+    <button id="mobile-menu-toggle" class="hamburger-btn" aria-label="Toggle navigation menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -46,6 +56,7 @@ const pathname = Astro.url.pathname;
 </style>
 
 <script>
+  // Theme Toggle Logic
   const themeToggle = document.getElementById('theme-toggle');
   const sunIcon = document.getElementById('theme-toggle-sun');
   const moonIcon = document.getElementById('theme-toggle-moon');
@@ -60,11 +71,9 @@ const pathname = Astro.url.pathname;
     }
   };
 
-  // Set initial icons state
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   updateIcons(currentTheme);
 
-  // Toggle theme action
   themeToggle?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const nextTheme = isDark ? 'light' : 'dark';
@@ -72,5 +81,21 @@ const pathname = Astro.url.pathname;
     document.documentElement.setAttribute('data-theme', nextTheme);
     localStorage.setItem('theme', nextTheme);
     updateIcons(nextTheme);
+  });
+
+  // Mobile Menu Toggle Logic
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+
+  menuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navLinks?.classList.toggle('active');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (navLinks?.classList.contains('active') && !navLinks.contains(e.target as Node) && e.target !== menuToggle) {
+      navLinks.classList.remove('active');
+    }
   });
 </script>
