@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-check (deployment retry trigger)
 import { defineConfig } from 'astro/config';
 
 import remarkMath from 'remark-math';
