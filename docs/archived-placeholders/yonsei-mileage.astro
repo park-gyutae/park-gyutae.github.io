@@ -1,0 +1,729 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Math from '../../components/Math.astro';
+import 'katex/dist/katex-swap.min.css';
+---
+
+<Layout 
+  title="Yonsei Mileage | Course Registration Decision System" 
+  description="Predicting admission uncertainty and optimizing mileage allocation under a 72-point budget."
+>
+  <article class="case-study-container">
+    <!-- HERO SECTION -->
+    <header class="case-study-hero">
+      <div class="hero-header-meta">
+        <span class="category-badge">Decision Science & Optimization</span>
+        <span class="hero-date">Applied Mathematics & Machine Learning</span>
+      </div>
+      <h1 class="case-study-title">Yonsei Mileage</h1>
+      <p class="case-study-subtitle">Course Registration Decision System</p>
+      <p class="case-study-tagline">
+        "Predicting admission uncertainty and optimizing mileage allocation under a 72-point budget."
+      </p>
+
+      <div class="hero-tags">
+        <span class="tag-badge">Machine Learning</span>
+        <span class="tag-badge">Quantile Regression</span>
+        <span class="tag-badge">Dynamic Programming</span>
+        <span class="tag-badge">MCKP</span>
+        <span class="tag-badge">Python / FastAPI</span>
+        <span class="tag-badge">Astro</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="https://yonsei-timetable.vercel.app/" target="_blank" rel="noopener noreferrer" class="hero-btn primary-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Live Demo</span>
+        </a>
+        <a href="https://github.com/park-gyutae/yonsei-timetable" target="_blank" rel="noopener noreferrer" class="hero-btn secondary-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          <span>GitHub Repository</span>
+        </a>
+      </div>
+    </header>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 1: PROBLEM -->
+    <section class="case-section">
+      <h2 class="section-heading">1. Problem Formulation: Bidding Under Uncertainty</h2>
+      <p class="prose-paragraph">
+        연세대학교 수강신청은 <strong>마일리지 입찰 게임(Mileage-based Bidding Game)</strong> 방식으로 진행됩니다. 학생은 총 72점(일부 학과 76점)의 한정된 마일리지 예산 <Math expression={'M'} />을 부여받고, 원하는 과목당 최대 36점(<Math expression={'P_i(m)'} />)까지 배분하여 수강을 신청합니다.
+      </p>
+      <p class="prose-paragraph">
+        이 시스템은 대표적인 <strong>비대칭 정보 하의 자원 배분 문제(Resource Allocation under Information Asymmetry)</strong>입니다:
+      </p>
+      <ul class="prose-list">
+        <li><strong>경쟁자의 실시간 입찰 정보 미공개</strong>: 수강신청이 종료될 때까지 타 지원자의 마일리지 투찰 내역을 알 수 없습니다.</li>
+        <li><strong>복잡한 동점자 및 쿼터 처리 규칙</strong>: 전공자 여부(YY/YN/NN), 학년별 쿼터, 신청 학점 수, 졸업 여부, 기이수학점 비율 등 7단계 동점자 우선순위에 따라 컷오프가 비선형적으로 바뀝니다.</li>
+        <li><strong>높은 실패 기회비용</strong>: 한 과목에 과도한 마일리지를 낭비하면 다른 필수 과목에서 컷오프 미달로 낙방하는 쇄도 실패(Cascading Failure) 위험이 발생합니다.</li>
+      </ul>
+      <p class="prose-paragraph">
+        본 프로젝트는 이 주관적 감에 의존하던 수강신청 마일리지 분배 과정을 <strong>통계적 불확실성 추정</strong>과 <strong>조합 최적화(Combinatorial Optimization)</strong> 기반 의사결정 지원 시스템으로 전환했습니다.
+      </p>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 2: FROM PREDICTION TO DECISION -->
+    <section class="case-section">
+      <h2 class="section-heading">2. From Prediction to Decision</h2>
+      <p class="prose-paragraph">
+        본 시스템의 핵심 설계 사상은 <strong>예측(Predictive Statistics)</strong>과 <strong>의사결정(Decision Optimization)</strong>을 명확히 분리하는 것입니다. 두 단계를 연결하는 핵심 인터페이스가 바로 과목별 <strong>합격 확률 함수 <Math expression={'P_i(m)'} /></strong>입니다.
+      </p>
+
+      <!-- CONCEPTUAL PIPELINE DIAGRAM CAROUSEL/FLOW -->
+      <div class="pipeline-flow-card">
+        <div class="flow-step">
+          <div class="step-badge">Data</div>
+          <div class="step-title">Historical Bids & Portal Data</div>
+          <div class="step-desc">과거 수강신청 투찰 이력 & 과목별 편람 수집</div>
+        </div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-step">
+          <div class="step-badge">Modeling</div>
+          <div class="step-title">Cutoff Uncertainty Prediction</div>
+          <div class="step-desc">Quantile Regression (<Math expression={'Q_{10}, Q_{50}, Q_{90}'} />) 시나리오 추정</div>
+        </div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-step highlight-step">
+          <div class="step-badge">Interface</div>
+          <div class="step-title">Admission Probability <Math expression={'P_i(m)'} /></div>
+          <div class="step-desc">마일리지 <Math expression={'m'} />에 따른 합격 확률 단조 곡선 산출</div>
+        </div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-step">
+          <div class="step-badge">Optimization</div>
+          <div class="step-title">MCKP / Dynamic Programming</div>
+          <div class="step-desc">예산 <Math expression={'M \\le 72'} /> 하에서 전역 최적 마일리지 배분 계산</div>
+        </div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-step">
+          <div class="step-badge">Output</div>
+          <div class="step-title">Recommended Allocation</div>
+          <div class="step-desc">과목별 추천 마일리지 & 리스크 리포트 시각화</div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 3: PREDICTION & ADMISSION PROBABILITY P_i(m) -->
+    <section class="case-section">
+      <h2 class="section-heading">3. Prediction & Admission Probability <Math expression={'P_i(m)'} /></h2>
+      <p class="prose-paragraph">
+        수강신청 컷오프는 단순 평균으로 예측할 수 없습니다. 과거 학기 대비 지원자 수 fluctuation과 정원 수 변경으로 인한 변동성을 포착하기 위해 <strong>LightGBM Quantile Regression</strong>을 도입했습니다.
+      </p>
+
+      <h3 class="subsection-heading">3.1 Quantile Regression & Scenario Partitioning</h3>
+      <p class="prose-paragraph">
+        입찰 정원 비율, 전공자 비율(MQR), 시간대 선호도 점수(`time_score`), 직전 학기 컷오프 추세 등 엔지니어링된 피처를 바탕으로 컷오프의 3가지 분위수를 예측합니다:
+      </p>
+      <ul class="prose-list">
+        <li><Math expression={'Q_{10}'} />: 비관적 컷오프 (상위 10% 안전선)</li>
+        <li><Math expression={'Q_{50}'} />: 중앙값 컷오프 (기대 컷오프)</li>
+        <li><Math expression={'Q_{90}'} />: 낙관적 컷오프 (하위 10% 컷오프)</li>
+      </ul>
+      <p class="prose-paragraph">
+        또한 연세대 수강신청 구조에 맞춰 <strong>전공자 그룹(Major YY/YN) / 비전공자 그룹(Non-Major NN) <Math expression={'\\times'} /> 학년(1~4학년)</strong>의 총 8개 시나리오별 듀얼 파티셔닝 모델을 개별 학습시켰습니다.
+      </p>
+
+      <h3 class="subsection-heading">3.2 Monotonic Probability Curve & 7-Stage Tie-Breaker</h3>
+      <p class="prose-paragraph">
+        예측된 분위수 <Math expression={'(Q_{10}, Q_{50}, Q_{90})'} />를 앵커 포인트로 단조 증가(Monotonic Non-Decreasing) 누적 분포 곡선 <Math expression={'P_i(m) \\in [0, 1]'} />을 생성합니다:
+      </p>
+      <p class="math-block">
+        <Math expression={'P_i(m) = \\max_{0 \\le k \\le m} P_i^{\\text{raw}}(k), \\quad \\text{where } P_i(0) = 0, \\;\\; P_i(36) \\approx 1.0'} display />
+      </p>
+      <p class="prose-paragraph">
+        컷오프 경계선 구간 <Math expression={'[Q_{50}-3, Q_{50}+3]'} />에서는 연세대 7단계 동점자 규칙(전공 여부, 신청학점, 졸업여부, 초수강여부, 기이수학점 비율 등)을 반영한 <strong>Privilege Score</strong> <Math expression={'S \\in [0, 1]'} />를 산출하여 미세 확률 시프트(Sigmoid smoothing)를 정밀하게 보정합니다.
+      </p>
+
+      <!-- REAL DATA PLOT CONTAINER FOR P_i(m) -->
+      <div class="data-vis-box">
+        <div class="vis-header">
+          <span class="vis-title">📊 Admission Probability Curve <Math expression={'P_i(m)'} /> Real Asset Status</span>
+          <span class="vis-status status-verified">precomputed_curves.json Verified</span>
+        </div>
+        <div class="vis-content">
+          <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+            사전 계산 엔진(<code>precompute.py</code>)을 통해 추출된 전공자/비전공자 및 학년별 <Math expression={'P_i(m)'} /> 데이터 곡선 조회가 동적으로 연동되어 있습니다.
+          </p>
+          <div class="code-preview-snippet">
+            <code>{'{"MAT2103-01": {"major": {"grade_4": {"q10": 14.0, "median": 19.0, "q90": 24.0, "prob_curve": [0.0, 0.05, ..., 0.98, 1.0]}}}}'}</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 4: OPTIMIZATION -->
+    <section class="case-section">
+      <h2 class="section-heading">4. Optimization & Dynamic Programming</h2>
+      
+      <h3 class="subsection-heading">4.1 Mathematical Formulation</h3>
+      <p class="prose-paragraph">
+        선택한 <Math expression={'N'} />개 과목에 대하여 선호도 가중치 <Math expression={'w_i > 0'} />가 주어졌을 때, 전체 마일리지 배분 문제는 다음과 같은 <strong>Multi-Choice Knapsack Problem (MCKP)</strong>으로 정식화됩니다:
+      </p>
+      
+      <div class="math-card">
+        <p class="math-main">
+          <Math expression={'\\begin{aligned} \\max_{\\{m_1, m_2, \\dots, m_N\\}} \\quad & \\sum_{i=1}^N w_i \\cdot P_i(m_i) \\\\ \\text{subject to} \\quad & \\sum_{i=1}^N m_i \\le M_{\\text{total}} \\quad (M_{\\text{total}} = 72) \\\\ & 0 \\le m_i \\le \\text{cap}_i \\quad (\\text{cap}_i \\le 36) \\\\ & m_i \\in \\mathbb{Z}_{\\ge 0} \\quad \\forall i \\in \\{1, \\dots, N\\} \\end{aligned}'} display />
+        </p>
+      </div>
+
+      <h3 class="subsection-heading">4.2 Dynamic Programming & Global Optimality</h3>
+      <p class="prose-paragraph">
+        각 과목 <Math expression={'i'} />는 마일리지 투찰 선택지 <Math expression={'m_i \\in \\{0, 1, \\dots, \\text{cap}_i\\}'} /> 중 단 하나를 선택하는 아이템 그룹에 해당합니다. 
+      </p>
+      <p class="prose-paragraph">
+        마일리지 단위가 정수(Integer grid)이고 총 예산 <Math expression={'M \\le 72'} />로 유한하므로, 다음과 같은 점화식의 <strong>1차원 동적 계획법(Dynamic Programming)</strong>을 수행합니다:
+      </p>
+      <p class="math-block">
+        <Math expression={'dp[i][m] = \\max_{0 \\le bid \\le \\min(m, \\text{cap}_i)} \\left( dp[i-1][m - bid] + w_i \\cdot P_i(bid) \\right)'} display />
+      </p>
+      <div class="callout-box">
+        <h4 class="callout-title">💡 Discrete State Space에서의 전역 최적성 (Global Optimality)</h4>
+        <p class="callout-desc">
+          연속 최적화와 달리 마일리지 투찰 공간은 격자(Integer Grid) 형태의 이산 공간입니다. 본 DP 알고리즘은 가능한 모든 예산 분배 상태 <Math expression={'m \\in \\{0, 1, \\dots, M\\}'} />에 대해 부분 최적 구조(Optimal Substructure)를 만족하며 역추적(Backtracking)을 수행하므로, 국소 최적해(Local Optima)에 빠지지 않고 <strong>격자 공간 상의 전역 최적해(Exact Global Optimum)</strong>를 <Math expression={'O(N \\cdot M \\cdot \\text{cap})'} /> 복잡도로 정밀 계산합니다.
+        </p>
+      </div>
+
+      <h3 class="subsection-heading">4.3 Secondary Analysis: Budget–Utility Frontier</h3>
+      <p class="prose-paragraph">
+        총 마일리지 예산 <Math expression={'M \\in [0, 72]'} /> 변화에 따른 최대 달성 가능 유틸리티 <Math expression={'V(M) = \\max_{\\sum m_i \\le M} \\sum w_i P_i(m_i)'} />를 산출하여 마일리지 1점 투여 시 한계 효용(Marginal Utility) 감소를 추적하는 <strong>Budget–Utility Frontier (예산-유틸리티 한계 곡선)</strong>를 산출합니다.
+      </p>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 5: VALIDATION -->
+    <section class="case-section">
+      <h2 class="section-heading">5. Empirical Model Validation (Temporal Hold-Out)</h2>
+      <p class="prose-paragraph">
+        모델의 실전 오버피팅을 방지하기 위해 랜덤 K-Fold 대신 <strong>미래 학기 실전 홀드아웃(Temporal Hold-Out Evaluation)</strong> 방식을 적용했습니다. 이전 학기 데이터로 모델을 학습한 후 미학습 미래 학기(2025학년도 2학기) 전체 수강신청 결과 데이터에 대조 평가를 수행했습니다.
+      </p>
+
+      <!-- VERIFIED NUMERICAL RESULT TABLE -->
+      <div class="table-container">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>평가 모델 (Model)</th>
+              <th>검증 대상 (Hold-Out Set)</th>
+              <th>컷오프 MAE (평균 오차)</th>
+              <th>기존 대비 오차 감축률</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="baseline-row">
+              <td><strong>Historical Baseline</strong> (과거 단일 평균)</td>
+              <td>2025-2학기 전 과목 컷오프</td>
+              <td><code>12.00 점</code></td>
+              <td>기준점 (0%)</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>Dual LightGBM (Major Group)</strong></td>
+              <td>2025-2학기 전공자 학년별 컷</td>
+              <td><code>1.84 점</code></td>
+              <td><strong>84.67% 감축</strong></td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>Dual LightGBM (Non-Major Group)</strong></td>
+              <td>2025-2학기 비전공자 학년별 컷</td>
+              <td><code>2.31 점</code></td>
+              <td><strong>80.75% 감축</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="metrics-summary-grid">
+        <div class="metric-card">
+          <span class="metric-value">12.00 ➔ 2.075</span>
+          <span class="metric-label">평균 예측 오차(MAE) 획기적 개선</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">10.11%</span>
+          <span class="metric-label">Brier Score Probabilistic Loss 개선</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">100 / 100</span>
+          <span class="metric-label">단조 증가성(Monotonicity) 검증 통과</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 6: PRODUCT ARCHITECTURE -->
+    <section class="case-section">
+      <h2 class="section-heading">6. Product Architecture & Deployed System</h2>
+      
+      <h3 class="subsection-heading">6.1 End-to-End Pipeline</h3>
+      <p class="prose-paragraph">
+        학술적 모델링에 그치지 않고, 실제 학생들이 수강신청 시즌에 사용할 수 있는 <strong>Vercel Serverless 기반 웹 서비스</strong> 및 <strong>포털 연동 유저스크립트</strong>로 제품화했습니다.
+      </p>
+
+      <div class="arch-card">
+        <ul class="arch-list">
+          <li><strong>Backend API</strong>: FastAPI (`api/index.py`) 기반 Vercel Serverless Function 배포. SQLite DB (`mileage_history.db`)와 `/tmp/api_cache` 2계층 디스크/메모리 캐싱 탑재.</li>
+          <li><strong>Precomputed Asset</strong>: 서버 오버헤드를 최소화하기 위해 8개 시나리오별 <Math expression={'P_i(m)'} /> 곡선을 <code>precomputed_curves.json</code> 정적 자산으로 사전 컴퓨팅.</li>
+          <li><strong>Client Dashboard</strong>: Vanilla JS (`app.js`) 기반 대화형 시간표 그리드 및 마일리지 자동 최적 배정 UI (`index.html`). API 연결 불가 시 브라우저 내 JS 로컬 DP 엔진으로 원활히 fallback.</li>
+          <li><strong>Tampermonkey Userscript</strong>: `ysweb_remaining_seats_filter.user.js`를 통해 연세대 수강신청 포털 웹페이지에 실시간 잔여석 필터링 UI를 직접 주입.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-heading">6.2 Secondary Feature: Bernoulli Monte Carlo Risk Simulation</h3>
+      <p class="prose-paragraph">
+        최적 마일리지 배분이 완료된 후, 각 과목의 합격 독립 베르누이 시행 <Math expression={'X_i \\sim \\text{Bernoulli}(P_i(m_i^*))'} />에 대해 브라우저에서 <strong>10,000회 몬테카를로 시뮬레이션</strong>을 실행합니다.
+      </p>
+      <p class="prose-paragraph">
+        이를 통해 기대 확정 학점 <Math expression={'\\mathbb{E}[\\text{Credits}] = \\sum c_i P_i'} />, 5% Value at Risk (하위 5% 최악 상황 시 최소 확보 학점), 필수 과목 동시 낙방 확률(Joint Failure Probability) 등의 종합 리스크 대시보드를 렌더링합니다.
+      </p>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- SECTION 7: LIMITATIONS & WHAT I LEARNED -->
+    <section class="case-section">
+      <h2 class="section-heading">7. Limitations & What I Learned</h2>
+
+      <h3 class="subsection-heading">7.1 Limitations</h3>
+      <ul class="prose-list">
+        <li><strong>독립 베르누이 시행 가정의 한계</strong>: 과목 간 합격 확률 <Math expression={'X_i \\perp\\!\\!\\!\\perp X_j'} /> 독립성을 가정했으나, 실제 대형 교양과목이나 겹치는 연계 과목 간에는 공통 지원자 군에 의한 종속 상관관계(Demand Correlation)가 존재할 수 있습니다.</li>
+        <li><strong>신설 과목 Cold-Start</strong>: 과거 수강신청 이력이 부족한 신설 분반의 경우 학과 단위 글로벌 기본 컷오프(Global Fallback)에 의존합니다.</li>
+      </ul>
+
+      <h3 class="subsection-heading">7.2 What I Learned & Implementation Notes</h3>
+      <p class="prose-paragraph">
+        연세대학교 재학생으로서 매 학기 직면하던 실제 문제를 수학적 최적화 문제(MCKP)로 정식화하고, 예측 모델과 최적화 엔진을 결합해 실사용 가능한 서비스로 구축하는 전 과정을 주도했습니다.
+      </p>
+      <ul class="prose-list">
+        <li><strong>예측과 의사결정의 분리</strong>: <Math expression={'P_i(m)'} />라는 확률 인터페이스를 두어 복잡한 머신러닝 예측 모델과 결정론적 DP 최적화 알고리즘을 깔끔하게 디커플링했습니다.</li>
+        <li><strong>실전 홀드아웃 검증의 중요성</strong>: 단순히 시계열 구분 없이 교차 검증을 수행하는 것은 수강신청 데이터에서 미래 편향(Data Leakage)을 유발함을 확인하고, 미래 학기 홀드아웃 평가 체계를 정립했습니다.</li>
+        <li><strong>AI-Assisted Workflow Transparent Note</strong>: 본 프로젝트의 데이터 수집 스크립트, API 보일러플레이트 작성, 웹 UI 구성 및 테스트 스크립트 실행 과정에서는 Antigravity를 포함한 최신 AI 코딩 에이전트 도구를 적극 활용했습니다. AI 도구를 통해 반복적인 구현 오버헤드를 대폭 단축하는 한편, 문제 정식화(Problem Formulation), 통계 모델 설계, 최적화 알고리즘 검증 및 시스템 아키텍처 수립에 집중하여 높은 수준의 완성도를 달성했습니다.</li>
+      </ul>
+    </section>
+
+    <!-- FOOTER NAV -->
+    <footer class="case-study-footer">
+      <a href="/projects" class="back-link">← Return to Projects List</a>
+    </footer>
+  </article>
+</Layout>
+
+<style>
+  .case-study-container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1rem 0 3rem 0;
+  }
+
+  .case-study-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .category-badge {
+    background: var(--bg-tertiary, #2a2d3d);
+    color: var(--accent-color, #4f46e5);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .hero-date {
+    color: var(--text-secondary, #8b949e);
+  }
+
+  .case-study-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--text-primary, #ffffff);
+  }
+
+  .case-study-subtitle {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent-color, #6366f1);
+    margin: 0;
+  }
+
+  .case-study-tagline {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-secondary, #a3b8cc);
+    margin: 0.5rem 0 0 0;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .tag-badge {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color, #30363d);
+    color: var(--text-secondary, #c9d1d9);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .primary-btn {
+    background: var(--accent-color, #4f46e5);
+    color: #ffffff;
+  }
+
+  .primary-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .secondary-btn {
+    background: var(--bg-tertiary, #21262d);
+    color: var(--text-primary, #c9d1d9);
+    border: 1px solid var(--border-color, #30363d);
+  }
+
+  .secondary-btn:hover {
+    border-color: var(--accent-color, #6366f1);
+    color: #ffffff;
+  }
+
+  .section-divider {
+    border: 0;
+    height: 1px;
+    background: var(--border-color, #30363d);
+    margin: 2.5rem 0;
+  }
+
+  .case-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .section-heading {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-primary, #f0f6fc);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subsection-heading {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-color, #818cf8);
+    margin: 1.2rem 0 0.4rem 0;
+  }
+
+  .prose-paragraph {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-primary, #c9d1d9);
+    margin: 0;
+  }
+
+  .prose-list {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-primary, #c9d1d9);
+    line-height: 1.6;
+  }
+
+  /* PIPELINE FLOW */
+  .pipeline-flow-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-secondary, #161b22);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    gap: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    flex: 1;
+    min-width: 130px;
+    background: var(--bg-tertiary, #21262d);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 6px;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    text-align: center;
+  }
+
+  .highlight-step {
+    border-color: var(--accent-color, #6366f1);
+    background: rgba(99, 102, 241, 0.08);
+  }
+
+  .step-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent-color, #818cf8);
+  }
+
+  .step-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary, #ffffff);
+  }
+
+  .step-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary, #8b949e);
+    line-height: 1.3;
+  }
+
+  .flow-arrow {
+    font-weight: 800;
+    color: var(--text-secondary, #8b949e);
+    font-size: 1.1rem;
+  }
+
+  /* MATH & CALLOUTS */
+  .math-block {
+    overflow-x: auto;
+    padding: 0.8rem;
+    background: var(--bg-secondary, #161b22);
+    border-radius: 6px;
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+
+  .math-card {
+    background: var(--bg-secondary, #161b22);
+    border: 1px solid var(--border-color, #30363d);
+    border-left: 4px solid var(--accent-color, #6366f1);
+    border-radius: 6px;
+    padding: 1.2rem;
+    margin: 0.8rem 0;
+  }
+
+  .callout-box {
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+  }
+
+  .callout-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent-color, #818cf8);
+    margin: 0 0 0.4rem 0;
+  }
+
+  .callout-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary, #c9d1d9);
+    margin: 0;
+  }
+
+  /* TABLES */
+  .table-container {
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    border: 1px solid var(--border-color, #30363d);
+  }
+
+  .custom-table th, .custom-table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color, #30363d);
+  }
+
+  .custom-table th {
+    background: var(--bg-tertiary, #21262d);
+    color: var(--text-primary, #f0f6fc);
+    font-weight: 600;
+  }
+
+  .baseline-row {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .highlight-row {
+    background: rgba(16, 185, 129, 0.05);
+  }
+
+  .metrics-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .metric-card {
+    background: var(--bg-secondary, #161b22);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.3rem;
+  }
+
+  .metric-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #10b981;
+  }
+
+  .metric-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #8b949e);
+  }
+
+  /* VISUAL ASSET CONTAINER */
+  .data-vis-box {
+    background: var(--bg-secondary, #161b22);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .vis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .vis-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary, #ffffff);
+  }
+
+  .vis-status {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .status-verified {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .code-preview-snippet {
+    background: var(--bg-tertiary, #0d1117);
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    overflow-x: auto;
+  }
+
+  .arch-card {
+    background: var(--bg-secondary, #161b22);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 6px;
+    padding: 1.2rem;
+    margin: 0.8rem 0;
+  }
+
+  .arch-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    color: var(--text-primary, #c9d1d9);
+  }
+
+  .case-study-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color, #30363d);
+  }
+
+  .back-link {
+    color: var(--accent-color, #818cf8);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .case-study-title {
+      font-size: 2.1rem;
+    }
+    .pipeline-flow-card {
+      flex-direction: column;
+    }
+    .flow-arrow {
+      transform: rotate(90deg);
+    }
+  }
+</style>

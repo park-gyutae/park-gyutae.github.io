@@ -1,48 +1,54 @@
 ---
 layout: ../layouts/Layout.astro
-title: "About | park-gyutae"
-description: "수학, 통계학, 그리고 테크놀로지를 다루는 박규태의 소개 페이지입니다."
+title: "소개 | 박규태"
+description: "연세대학교에서 수학을 공부하는 박규태입니다. 대수학과 정수론을 중심으로 공부하며, 확률론과 확률과정에도 관심이 있습니다."
 ---
 
-<div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;" class="animate-fade-in">
-  <img src="/avatar.png" alt="박규태" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);" />
-  <div>
-    <h1 style="margin: 0 0 0.25rem 0; font-size: 2.25rem; font-weight: 800;">박규태</h1>
-    <p style="margin: 0; font-size: 1.05rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Mathematics • Statistics • Technology</p>
-  </div>
-</div>
+# 박규태
 
-안녕하세요! 수학과 통계학을 도구 삼아 복잡한 실세계 데이터를 해석하고, 이를 강력한 테크놀로지로 구현하는 것에 깊은 관심을 둔 **박규태**입니다.
+연세대학교에서 수학을 공부하고 있습니다. 추상적인 구조를 이해하는 것과, 현실의 문제를 수학적으로 다시 표현하는 과정에 관심이 많습니다.
 
-이 공간은 공부하며 배우고 느낀 학문적 통찰과 실무 개발 경험을 정돈하여 기록하는 개인 연구실이자 디지털 정원입니다. 
+특히 **대수학과 정수론**을 중심으로 공부하고 있으며, 확률론과 확률과정에도 관심이 있습니다. 앞으로 이러한 수학을 더 깊이 공부하면서 암호학과 연결되는 문제들까지 관심을 넓혀가고 싶습니다.
 
----
+수학적 아이디어를 실제 문제에 적용하는 것도 좋아합니다. 이때 통계, 최적화, 계산과 프로그래밍은 문제를 분석하고 아이디어를 실험하기 위한 도구로 사용합니다.
 
-### 🔬 관심 연구 및 기술 분야 (Research Interests)
-
-- **수리통계학 (Mathematical Statistics)**: 
-  - 확률수렴론, 극한이론 및 모수적/비모수적 추론론
-  - 베이지안 분석과 MCMC(Markov Chain Monte Carlo) 수치 시뮬레이션
-- **머신러닝 & 시계열 (Machine Learning & Time Series)**:
-  - 시계열 이상탐지(Anomaly Detection) 및 하이브리드 인공신경망 아키텍처
-  - 고차원 데이터 차원 축소와 매니폴드 학습
-- **테크 & 사이언티픽 컴퓨팅 (Scientific Computing)**:
-  - Python(PyTorch, NumPy), R, Stan 기반 시뮬레이션 엔진 최적화
-  - 빌드 타임 컴파일 기반 정적 웹 기술과 수식 미리 렌더링 최적화
+이 공간은 공부하면서 이해한 수학, 직접 진행한 프로젝트, 그 과정에서의 시행착오와 생각을 정리해두는 **개인 연구실이자 디지털 정원**입니다.
 
 ---
 
-### 🎓 학업 및 배경 (Education & Experience)
+### 관심 분야
 
-- **Focus Area**: 확률론, 수리통계학, 회귀분석, 선형대수학
-- **Tech Stack**:
-  - **Languages**: Python, R, TypeScript, SQL, C++
-  - **Frameworks & Tools**: PyTorch, Stan, Astro, Git, Docker
+**Mathematics**
+
+- Algebra & Number Theory
+- Probability & Stochastic Processes
+- Linear Algebra
+
+**Exploring**
+
+- Cryptography
+- Optimization & Decision Problems
+- Statistical & Computational Methods
 
 ---
 
-### ✉️ Contact & Links
+### Education
 
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
-- **GitHub**: [github.com/park-gyutae](https://github.com/park-gyutae)
-- **LinkedIn**: [linkedin.com/in/yourprofile](https://linkedin.com)
+**Yonsei University**\
+B.S. in Mathematics — Undergraduate
+
+현재 대수학, 정수론, 확률과정론 등을 공부하고 있습니다.
+
+---
+
+### Tools
+
+Python · R · TypeScript · SQL · Git
+
+---
+
+### Contact & Links
+
+- **Academic Email:** [rbparkxo@yonsei.ac.kr](mailto:rbparkxo@yonsei.ac.kr)
+- **Email:** [gyutae.q.park@gmail.com](mailto:gyutae.q.park@gmail.com)
+- **GitHub:** [github.com/park-gyutae](https://github.com/park-gyutae)

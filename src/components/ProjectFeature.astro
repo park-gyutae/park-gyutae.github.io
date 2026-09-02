@@ -1,0 +1,27 @@
+---
+import { mileage } from '../data/portfolio';
+import ProjectSummary from './ProjectSummary.astro';
+---
+<article class="featured-project">
+  <div class="project-story">
+    <p class="eyebrow">{mileage.category}</p>
+    <h2><a href={mileage.href}>{mileage.title}</a></h2>
+    <ProjectSummary />
+    <ul class="topic-list" aria-label="프로젝트 주제">
+      {mileage.tags.map(tag => <li>{tag}</li>)}
+    </ul>
+    <div class="action-links">
+      <a class="button-primary" href={mileage.href}>프로젝트 살펴보기 <span aria-hidden="true">↗</span></a>
+      <a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <div class="project-approach">
+    <p class="eyebrow">문제에서 검증까지</p>
+    <ol>
+      <li><span class="step-number">01</span><div><h3>불확실성을 표현하기</h3><p>컷오프 하나에서 마일리지별 성공확률로</p></div></li>
+      <li><span class="step-number">02</span><div><h3>선호도를 배분으로 바꾸기</h3><p>예산 제약 아래 기대효용을 비교하는 DP</p></div></li>
+      <li><span class="step-number">03</span><div><h3>실제 결과로 돌아보기</h3><p>예측 오차, 배포 오류, 의사결정의 성과를 나누어 평가</p></div></li>
+    </ol>
+    <a class="text-link" href={mileage.article}>만들면서 배운 점 읽기 →</a>
+  </div>
+</article>

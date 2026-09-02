@@ -8,13 +8,13 @@ const posts = (await getCollection('blog', ({ data }) => {
 })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Collect all unique tags
-const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.trim().toLowerCase())))];
 ---
 
-<Layout title="Blog | park-gyutae" description="전체 기술 블로그 포스트 목록을 확인하고 검색할 수 있습니다.">
+<Layout title="프로젝트 기록 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
 	<section class="page-header">
-		<h1 class="page-title">모든 게시글</h1>
-		<p class="page-subtitle">수학, 통계, 머신러닝, 소프트웨어 개발 관련 글을 모아둔 공간입니다.</p>
+		<h1 class="page-title">프로젝트 기록</h1>
+		<p class="page-subtitle">문제를 정의하고, 만들고, 실제 결과를 확인하며 배운 것들.</p>
 	</section>
 
 	<!-- Filter / Search Section -->
@@ -24,20 +24,21 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 				<circle cx="11" cy="11" r="8"></circle>
 				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 			</svg>
-			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="Search posts" />
+			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="글 검색" />
 		</div>
 
 		{allTags.length > 0 && (
 			<div class="tags-container">
-				<button class="tag-filter-btn active" data-tag="all">All</button>
+				<button class="tag-filter-btn active" data-tag="" aria-pressed="true">전체</button>
 				{allTags.map(tag => (
-					<button class="tag-filter-btn" data-tag={tag}>#{tag}</button>
+					<button class="tag-filter-btn" data-tag={tag} aria-pressed="false">#{tag}</button>
 				))}
 			</div>
 		)}
 	</section>
 
 	<!-- Posts Grid Section -->
+	<p id="search-status" role="status" aria-live="polite">{posts.length}개의 글</p>
 	<section class="posts-section">
 		{posts.length === 0 ? (
 			<div class="no-posts">
@@ -50,7 +51,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 						class="post-wrapper" 
 						data-title={post.data.title.toLowerCase()}
 						data-description={post.data.description.toLowerCase()}
-						data-tags={JSON.stringify(post.data.tags.map(t => t.toLowerCase()))}
+						data-tags={JSON.stringify(post.data.tags.map(t => t.trim().toLowerCase()))}
 					>
 						<BlogPostCard post={post} />
 					</div>
@@ -184,76 +185,51 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 
 <script>
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
-	const tagButtons = document.querySelectorAll('.tag-filter-btn');
-	const postWrappers = document.querySelectorAll('.post-wrapper') as NodeListOf<HTMLDivElement>;
+	const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
+	const posts = [...document.querySelectorAll<HTMLElement>('.post-wrapper')].map(element => ({
+		element,
+		text: [element.dataset.title, element.dataset.description, ...(JSON.parse(element.dataset.tags || '[]') as string[])].join(' ').toLowerCase(),
+		tags: JSON.parse(element.dataset.tags || '[]') as string[],
+	}));
 	const noResults = document.getElementById('no-results');
-
-	let currentSearch = '';
-	let currentTag = 'all';
-
+	const status = document.getElementById('search-status');
+	let currentTag = '';
 	const filterPosts = () => {
-		let visibleCount = 0;
-
-		postWrappers.forEach((wrapper) => {
-			const title = wrapper.getAttribute('data-title') || '';
-			const desc = wrapper.getAttribute('data-description') || '';
-			const tagsStr = wrapper.getAttribute('data-tags') || '[]';
-			const tags = JSON.parse(tagsStr) as string[];
-
-			const matchesSearch = title.includes(currentSearch) || 
-								  desc.includes(currentSearch) || 
-								  tags.some(tag => tag.includes(currentSearch));
-
-			const matchesTag = currentTag === 'all' || tags.includes(currentTag.toLowerCase());
-
-			if (matchesSearch && matchesTag) {
-				wrapper.classList.remove('hidden');
-				visibleCount++;
-			} else {
-				wrapper.classList.add('hidden');
-			}
+		const query = searchInput.value.trim().toLowerCase();
+		let count = 0;
+		posts.forEach(({ element, text, tags }) => {
+			const visible = text.includes(query) && (!currentTag || tags.includes(currentTag));
+			element.classList.toggle('hidden', !visible);
+			if (visible) count++;
 		});
-
-		if (visibleCount === 0 && postWrappers.length > 0) {
-			noResults?.classList.remove('hidden');
-		} else {
-			noResults?.classList.add('hidden');
-		}
+		noResults?.classList.toggle('hidden', count > 0);
+		if (status) status.textContent = `${count}개의 글`;
+		tagButtons.forEach(button => {
+			const active = button.dataset.tag === currentTag;
+			button.classList.toggle('active', active);
+			button.setAttribute('aria-pressed', String(active));
+		});
 	};
-
-	// On load: check URL parameters for ?tag=tagname
-	const urlParams = new URLSearchParams(window.location.search);
-	const urlTag = urlParams.get('tag');
-	if (urlTag) {
-		currentTag = urlTag.toLowerCase().trim();
-		tagButtons.forEach(btn => {
-			if (btn.getAttribute('data-tag')?.toLowerCase().trim() === currentTag) {
-				btn.classList.add('active');
-			} else {
-				btn.classList.remove('active');
-			}
-		});
+	const restoreURL = () => {
+		const params = new URLSearchParams(location.search);
+		currentTag = (params.get('tag') || '').trim().toLowerCase();
+		searchInput.value = params.get('q') || '';
 		filterPosts();
-	}
-
-	searchInput?.addEventListener('input', (e) => {
-		currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
+	};
+	const updateURL = (push: boolean) => {
+		const url = new URL(location.href);
+		if (currentTag) url.searchParams.set('tag', currentTag); else url.searchParams.delete('tag');
+		if (searchInput.value.trim()) url.searchParams.set('q', searchInput.value.trim()); else url.searchParams.delete('q');
+		if (url.href !== location.href) {
+			if (push) history.pushState(null, '', url); else history.replaceState(null, '', url);
+		}
 		filterPosts();
-	});
-
-	tagButtons.forEach((btn) => {
-		btn.addEventListener('click', () => {
-			tagButtons.forEach(b => b.classList.remove('active'));
-			btn.classList.add('active');
-			currentTag = btn.getAttribute('data-tag') || 'all';
-			
-			// Clear URL query param if user clicks tag manually to avoid confusion
-			if (window.history.pushState) {
-				const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + (currentTag === 'all' ? '' : `?tag=${currentTag}`);
-				window.history.pushState({path:newurl},'',newurl);
-			}
-
-			filterPosts();
-		});
-	});
+	};
+	searchInput.addEventListener('input', () => updateURL(false));
+	tagButtons.forEach(button => button.addEventListener('click', () => {
+		currentTag = button.dataset.tag || '';
+		updateURL(true);
+	}));
+	window.addEventListener('popstate', restoreURL);
+	restoreURL();
 </script>

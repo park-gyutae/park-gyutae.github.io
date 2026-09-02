@@ -1,6 +1,8 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import 'katex/dist/katex-swap.min.css';
+import { profile, mileage } from '../../data/portfolio';
 
 export async function getStaticPaths() {
 	const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -23,7 +25,7 @@ interface Props {
 }
 
 const { post, prev, next } = Astro.props;
-const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
+const { title, description, pubDate, updatedDate, heroImage, tags, subtitle, showHero, tocDepth, project } = post.data;
 const { Content, headings } = await post.render();
 
 const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
@@ -39,7 +41,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 }) : null;
 ---
 
-<Layout title={`${title} | park-gyutae`} description={description} image={heroImage} isWide={true}>
+<Layout title={title} description={description} image={heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
 
@@ -68,37 +70,42 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 				</div>
 				
 				<h1 class="article-title">{title}</h1>
-				<p class="article-desc">{description}</p>
+				<p class="article-desc">{subtitle || description}</p>
 
 				{tags && tags.length > 0 && (
 					<div class="article-tags">
 						{tags.map((tag) => (
-							<a href={`/blog?tag=${tag}`} class="tag-badge">#{tag}</a>
+							<a href={`/blog?tag=${encodeURIComponent(tag.trim().toLowerCase())}`} class="tag-badge">#{tag}</a>
 						))}
 					</div>
 				)}
 			</header>
 
-			{heroImage && (
+			{heroImage && showHero && (
 				<div class="hero-image-container">
 					<img src={heroImage} alt={title} class="hero-image" />
 				</div>
 			)}
 
-			<hr class="header-divider" />
+			{project === 'yonsei-mileage' && <nav class="article-project-links action-links" aria-label="관련 프로젝트">
+              <a class="text-link" href={mileage.href}>프로젝트 개요</a>
+              <a class="text-link" href={mileage.demo} target="_blank" rel="noopener noreferrer">서비스 ↗</a>
+              <a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            </nav>}
+            <hr class="header-divider" />
 
 			<!-- 1. Mobile-Only Inline Table of Contents (Visible only on mobile/tablet) -->
 			{headings && headings.length > 0 && (
-				<nav class="post-toc-inline" aria-label="Table of contents (Mobile)">
-					<h3 class="toc-title">목차</h3>
+				<details class="post-toc-inline">
+					<summary class="toc-title">목차 펼치기</summary>
 					<ul class="toc-list">
-						{headings.filter(h => h.depth <= 3).map((h) => (
+						{headings.filter(h => h.depth <= tocDepth).map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
 								<a href={`#${h.slug}`} class="toc-link">{h.text}</a>
 							</li>
 						))}
 					</ul>
-				</nav>
+				</details>
 			)}
 
 			<!-- Main Markdown Content -->
@@ -111,12 +118,12 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 			<!-- Author Bio Card -->
 			<div class="author-card">
 				<div class="author-avatar">
-					<img src="/avatar.png" alt="박규태" />
+					<img src="/avatar.webp" alt="박규태" width="56" height="56" loading="lazy" decoding="async" />
 				</div>
 				<div class="author-info">
 					<span class="author-label">Written by</span>
 					<h4 class="author-name">박규태</h4>
-					<p class="author-bio">수학과 통계학, 그리고 테크놀로지를 다루는 공간입니다. 복잡한 문제를 단순하게 풀고 지식을 공유합니다.</p>
+					<p class="author-bio">{profile.description}</p>
 					<div class="author-socials">
 						<a href="https://github.com/park-gyutae" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub Profile">
 							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -153,11 +160,11 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 		<!-- 2. Desktop-Only Sticky Table of Contents (Visible only on Desktop >= 1024px) -->
 		{headings && headings.length > 0 && (
-			<aside class="post-toc-sidebar" aria-label="Table of contents (Desktop)">
+			<aside class="post-toc-sidebar" aria-label="글 목차">
 				<div class="toc-sticky-container">
 					<h3 class="toc-title">목차</h3>
 					<ul class="toc-list">
-						{headings.filter(h => h.depth <= 3).map((h) => (
+						{headings.filter(h => h.depth <= tocDepth).map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
 								<a href={`#${h.slug}`} class="toc-link" data-slug={h.slug}>{h.text}</a>
 							</li>
@@ -195,19 +202,20 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		gap: 3rem;
 		align-items: stretch;
 		width: 100%;
-		max-width: 1200px;
+		max-width: 1088px;
 		margin: 0 auto;
 	}
 
 	@media (min-width: 1024px) {
 		.post-layout-container {
-			grid-template-columns: 1fr 260px;
+			grid-template-columns: minmax(0, 800px) 240px;
 		}
 	}
 
 	.post-article {
 		width: 100%;
-		max-width: 840px;
+		max-width: 800px;
+		margin-inline: auto;
 		position: relative;
 		min-width: 0; /* Prevents layout overflow */
 	}
@@ -242,7 +250,8 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	}
 
 	.article-title {
-		font-size: 2.5rem;
+		font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+		word-break: keep-all;
 		font-weight: 800;
 		line-height: 1.25;
 		margin-bottom: 1rem;
@@ -363,6 +372,8 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	.toc-sticky-container {
 		position: sticky;
 		top: 2rem;
+		max-height: calc(100vh - 4rem);
+		overflow-y: auto;
 		border-left: 1px solid var(--border-color);
 		padding-left: 1.25rem;
 	}
@@ -560,7 +571,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	scrollToTopBtn?.addEventListener('click', () => {
 		window.scrollTo({
 			top: 0,
-			behavior: 'smooth'
+			behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
 		});
 	});
 

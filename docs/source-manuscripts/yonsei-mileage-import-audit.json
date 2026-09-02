@@ -1,0 +1,290 @@
+{
+  "source": "yonsei-mileage-original.md",
+  "sourceSha256": "953fa421eaa2f7285e3640e25d3b735db823abc971e4153e2c366e77e8011a40",
+  "note": "User approved repairing corrupted math/code notation. Two Markdown emphasis pairs were converted to equivalent strong tags. All prose and captions preserved. Offsets apply sequentially to imported source with frontmatter and figures.",
+  "formattingRepairs": [
+    {
+      "before": "\\$\\$ P_i(m)\n\nP$\\text{과목 }i\\text{ 수강 성공}\\mid \\text{배분 마일리지}=m$ \\$\\$",
+      "after": "$$\nP_i(m) = P\\left(\\text{과목 }i\\text{ 수강 성공}\\mid \\text{배분 마일리지}=m\\right)\n$$",
+      "offset": 2604
+    },
+    {
+      "before": "\\$\\$ L$\\alpha,\\beta$\n\n`\\left`{=tex}(I\\_{x\\_{10}}$\\alpha,\\beta$-0.1`\\right`{=tex})\\^2 +\n`\\left`{=tex}(I\\_{x\\_{50}}$\\alpha,\\beta$-0.5`\\right`{=tex})\\^2 +\n`\\left`{=tex}(I\\_{x\\_{90}}$\\alpha,\\beta$-0.9`\\right`{=tex})\\^2 \\$\\$",
+      "after": "$$\nL(\\alpha,\\beta) = \\left(I_{x_{10}}(\\alpha,\\beta)-0.1\\right)^2 + \\left(I_{x_{50}}(\\alpha,\\beta)-0.5\\right)^2 + \\left(I_{x_{90}}(\\alpha,\\beta)-0.9\\right)^2\n$$",
+      "offset": 5345
+    },
+    {
+      "before": "\\$\\$ P_i(m)\n\np\\_{`\\text{under}`{=tex}} + $1-p\\_{\\text{under}}$ I\\_{m/M}$\\alpha,\\beta$\n`\\qquad`{=tex}$m\\ge1$ \\$\\$",
+      "after": "$$\nP_i(m) = p_{\\text{under}} + (1-p_{\\text{under}}) I_{m/M}(\\alpha,\\beta)\\qquad(m\\ge1)\n$$",
+      "offset": 5804
+    },
+    {
+      "before": "\\$\\$ dp\\_{`\\text{new}`{=tex}}\\[m+b\\]\n\n```{=tex}\n\\max\n```\n`\\left`{=tex}( dp\\_{`\\text{new}`{=tex}}\\[m+b\\],\ndp\\_{`\\text{old}`{=tex}}\\[m\\]+w_iP_i(b) `\\right`{=tex}) \\$\\$",
+      "after": "$$\ndp_{\\text{new}}[m+b] = \\max\\left(dp_{\\text{new}}[m+b], dp_{\\text{old}}[m]+w_iP_i(b)\\right)\n$$",
+      "offset": 7899
+    },
+    {
+      "before": "\\$\\$ MAE\n\n`\\frac`{=tex}1n`\\sum`{=tex}\\_{i=1}\\^{n} \\|`\\hat `{=tex}y_i-y_i\\| \\$\\$",
+      "after": "$$\n\\mathrm{MAE} = \\frac{1}{n}\\sum_{i=1}^{n}\\left|\\hat y_i-y_i\\right|\n$$",
+      "offset": 12269
+    },
+    {
+      "before": "predictor_g.predict_quantiles$X_inf$",
+      "after": "predictor_g.predict_quantiles(X_inf)",
+      "offset": 13802
+    },
+    {
+      "before": "(P_i(0),P_i(1),`\\ldots`{=tex},P_i(36))",
+      "after": "$P_i(0),P_i(1),\\ldots,P_i(36)$",
+      "offset": 5007
+    },
+    {
+      "before": "(w_iP_i$m\\_i$)",
+      "after": "$w_iP_i(m_i)$",
+      "offset": 7312
+    },
+    {
+      "before": "\\sum\\_{i=1}^{K}w\\_iP\\_i$m\\_i$",
+      "after": "\\sum_{i=1}^{K}w_iP_i(m_i)",
+      "offset": 7356
+    },
+    {
+      "before": "X\\_i\\sim\\operatorname{Bernoulli}(P\\_i$\\hat m\\_i$)",
+      "after": "X_i\\sim\\operatorname{Bernoulli}(P_i(\\hat m_i))",
+      "offset": 9645
+    },
+    {
+      "before": "\\max\\_{{m\\_i}}",
+      "after": "\\max_{\\{m_i\\}}",
+      "offset": 7341
+    },
+    {
+      "before": "P\\_i:{0,1,\\ldots,36}",
+      "after": "P_i:\\{0,1,\\ldots,36\\}",
+      "offset": 2736
+    },
+    {
+      "before": "m\\_i\\in{0,1,\\ldots,36}",
+      "after": "m_i\\in\\{0,1,\\ldots,36\\}",
+      "offset": 7459
+    },
+    {
+      "before": "$$\nQ\\_{10},\\quad Q\\_{50},\\quad Q\\_{90}\n$$",
+      "after": "$$\nQ_{10},\\quad Q_{50},\\quad Q_{90}\n$$",
+      "offset": 3537
+    },
+    {
+      "before": "$Q\\_{10}=5,\\ Q\\_{50}=10,\\ Q\\_{90}=17$",
+      "after": "$Q_{10}=5,\\ Q_{50}=10,\\ Q_{90}=17$",
+      "offset": 3666
+    },
+    {
+      "before": "$Q\\_{10},Q\\_{50},Q\\_{90}$",
+      "after": "$Q_{10},Q_{50},Q_{90}$",
+      "offset": 4963
+    },
+    {
+      "before": "$$\nx\\_{10}=\\frac{Q\\_{10}}{M},\\qquad\nx\\_{50}=\\frac{Q\\_{50}}{M},\\qquad\nx\\_{90}=\\frac{Q\\_{90}}{M}\n$$",
+      "after": "$$\nx_{10}=\\frac{Q_{10}}{M},\\qquad\nx_{50}=\\frac{Q_{50}}{M},\\qquad\nx_{90}=\\frac{Q_{90}}{M}\n$$",
+      "offset": 5139
+    },
+    {
+      "before": "$p\\_{\\text{under}}$",
+      "after": "$p_{\\text{under}}$",
+      "offset": 5747
+    },
+    {
+      "before": "$Q\\_{10}=1.00,\\ Q\\_{50}=4.24,\\ Q\\_{90}=35.35$",
+      "after": "$Q_{10}=1.00,\\ Q_{50}=4.24,\\ Q_{90}=35.35$",
+      "offset": 6095
+    },
+    {
+      "before": "$p\\_{\\text{under}}=0$",
+      "after": "$p_{\\text{under}}=0$",
+      "offset": 6140
+    },
+    {
+      "before": "$w\\_i$",
+      "after": "$w_i$",
+      "offset": 7246
+    },
+    {
+      "before": "$m\\_i$",
+      "after": "$m_i$",
+      "offset": 7269
+    },
+    {
+      "before": "$$\n\\sum\\_{i=1}^{K}m\\_i\\le72,\\qquad\nm_i\\in\\{0,1,\\ldots,36\\}\n$$",
+      "after": "$$\n\\sum_{i=1}^{K}m_i\\le72,\\qquad\nm_i\\in\\{0,1,\\ldots,36\\}\n$$",
+      "offset": 7402
+    },
+    {
+      "before": "$w\\_i=1$",
+      "after": "$w_i=1$",
+      "offset": 7523
+    },
+    {
+      "before": "$\\hat m\\_1,\\ldots,\\hat m\\_K$",
+      "after": "$\\hat m_1,\\ldots,\\hat m_K$",
+      "offset": 9561
+    },
+    {
+      "before": "$\\sum\\_i X\\_i\\cdot \\text{credits}\\_i$",
+      "after": "$\\sum_i X_i\\cdot \\text{credits}_i$",
+      "offset": 9723
+    },
+    {
+      "before": "$\\sum\\_i X\\_iw\\_i$",
+      "after": "$\\sum_i X_iw_i$",
+      "offset": 9765
+    },
+    {
+      "before": "$Q\\_{10}=Q\\_{50}=Q\\_{90}=36$",
+      "after": "$Q_{10}=Q_{50}=Q_{90}=36$",
+      "offset": 14209
+    },
+    {
+      "before": "(\\[5,1,10,6,6,1\\])",
+      "after": "$[5,1,10,6,6,1]$",
+      "offset": 18569
+    },
+    {
+      "before": "(\\[13,1,35,22,0,1\\])",
+      "after": "$[13,1,35,22,0,1]$",
+      "offset": 18531
+    },
+    {
+      "before": "(P_i(1))",
+      "after": "$P_i(1)$",
+      "offset": 8530
+    },
+    {
+      "before": "(b)",
+      "after": "$b$",
+      "offset": 7847
+    },
+    {
+      "before": "(m)",
+      "after": "$m$",
+      "offset": 7802
+    },
+    {
+      "before": "(dp\\[m\\])",
+      "after": "$dp[m]$",
+      "offset": 7775
+    },
+    {
+      "before": "(5.0)",
+      "after": "$5.0$",
+      "offset": 7495
+    },
+    {
+      "before": "(0.1)",
+      "after": "$0.1$",
+      "offset": 7487
+    },
+    {
+      "before": "(i)",
+      "after": "$i$",
+      "offset": 7264
+    },
+    {
+      "before": "(K)",
+      "after": "$K$",
+      "offset": 7227
+    },
+    {
+      "before": "(P_i(m))",
+      "after": "$P_i(m)$",
+      "offset": 7179
+    },
+    {
+      "before": "(P_i(0)=0)",
+      "after": "$P_i(0)=0$",
+      "offset": 5894
+    },
+    {
+      "before": "(M)",
+      "after": "$M$",
+      "offset": 5236
+    },
+    {
+      "before": "(1)",
+      "after": "$1$",
+      "offset": 5122
+    },
+    {
+      "before": "(0)",
+      "after": "$0$",
+      "offset": 5117
+    },
+    {
+      "before": "(P_i(m))",
+      "after": "$P_i(m)$",
+      "offset": 3149
+    },
+    {
+      "before": "(m)",
+      "after": "$m$",
+      "offset": 2583
+    },
+    {
+      "before": "(i)",
+      "after": "$i$",
+      "offset": 2578
+    },
+    {
+      "before": "(m)",
+      "after": "$m$",
+      "offset": 2532
+    },
+    {
+      "before": "**\"이\n과목에 $m$점을 넣었을 때 수강에 성공할 확률은 얼마일까?\"**",
+      "after": "<strong>\"이\n과목에 $m$점을 넣었을 때 수강에 성공할 확률은 얼마일까?\"</strong>",
+      "offset": 2523
+    },
+    {
+      "before": "**Multi-Choice Knapsack Problem(MCKP)**",
+      "after": "<strong>Multi-Choice Knapsack Problem(MCKP)</strong>",
+      "offset": 7624
+    }
+  ],
+  "figures": [
+    {
+      "original": "\\[그림 1 삽입: figure-01-service-overview.png\\] *Yonsei Mileage의 실제\n서비스 화면. 과목 검색, 시간표 구성, 마일리지 배분 결과를 하나의\n화면에서 확인할 수 있다.*",
+      "rendered": "<figure id=\"figure-1\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-01-service-overview.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 1 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-01-service-overview.png\" alt=\"Yonsei Mileage의 실제 서비스 화면. 과목 검색, 시간표 구성, 마일리지 배분 결과를 하나의 화면에서 확인할 수 있다.\" width=\"1705\" height=\"1115\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>Yonsei Mileage의 실제\n서비스 화면. 과목 검색, 시간표 구성, 마일리지 배분 결과를 하나의\n화면에서 확인할 수 있다.</em></figcaption>\n</figure>",
+      "width": 1705,
+      "height": 1115
+    },
+    {
+      "original": "\\[그림 2 삽입: figure-02-probability-curve.png\\] *실제 과목에 대해\n생성된 마일리지별 수강 성공확률 곡선(MAT3113-01 예시). 세 분위수 예측을\n바탕으로 각 마일리지 수준의 성공확률을 계산한다. 위 CNT2109-01 수치와는\n별개의 예시다.*",
+      "rendered": "<figure id=\"figure-2\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-02-probability-curve.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 2 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-02-probability-curve.png\" alt=\"실제 과목에 대해 생성된 마일리지별 수강 성공확률 곡선(MAT3113-01 예시). 세 분위수 예측을 바탕으로 각 마일리지 수준의 성공확률을 계산한다. 위 CNT2109-01 수치와는 별개의 예시다.\" width=\"1015\" height=\"850\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>실제 과목에 대해\n생성된 마일리지별 수강 성공확률 곡선(MAT3113-01 예시). 세 분위수 예측을\n바탕으로 각 마일리지 수준의 성공확률을 계산한다. 위 CNT2109-01 수치와는\n별개의 예시다.</em></figcaption>\n</figure>",
+      "width": 1015,
+      "height": 850
+    },
+    {
+      "original": "\\[그림 3 삽입: figure-03-monte-carlo-risk.png\\] *최적 배분 이후 10,000회\nMonte Carlo simulation으로 계산한 취득 학점 분포와 위험 지표.*",
+      "rendered": "<figure id=\"figure-3\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-03-monte-carlo-risk.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 3 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-03-monte-carlo-risk.png\" alt=\"최적 배분 이후 10,000회 Monte Carlo simulation으로 계산한 취득 학점 분포와 위험 지표.\" width=\"1195\" height=\"1095\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>최적 배분 이후 10,000회\nMonte Carlo simulation으로 계산한 취득 학점 분포와 위험 지표.</em></figcaption>\n</figure>",
+      "width": 1195,
+      "height": 1095
+    },
+    {
+      "original": "\\[그림 4 삽입: figure-04-prospective-mae-comparison.png\\] *2,623개\n분반에 대한 cutoff 예측 MAE. 사전에 고정한 모델은 과거 평균보다 낮은\n오차를 기록했지만, 실제 배포 결과물에서는 사전 계산 과정의 오류로 오차가\n크게 증가했다. 오류를 수정해 다시 생성한 결과물은 원래 모델과 비슷한\n수준의 성능을 회복했다.*",
+      "rendered": "<figure id=\"figure-4\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-04-prospective-mae-comparison.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 4 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-04-prospective-mae-comparison.png\" alt=\"2,623개 분반에 대한 cutoff 예측 MAE. 사전에 고정한 모델은 과거 평균보다 낮은 오차를 기록했지만, 실제 배포 결과물에서는 사전 계산 과정의 오류로 오차가 크게 증가했다. 오류를 수정해 다시 생성한 결과물은 원래 모델과 비슷한 수준의 성능을 회복했다.\" width=\"1535\" height=\"883\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>2,623개\n분반에 대한 cutoff 예측 MAE. 사전에 고정한 모델은 과거 평균보다 낮은\n오차를 기록했지만, 실제 배포 결과물에서는 사전 계산 과정의 오류로 오차가\n크게 증가했다. 오류를 수정해 다시 생성한 결과물은 원래 모델과 비슷한\n수준의 성능을 회복했다.</em></figcaption>\n</figure>",
+      "width": 1535,
+      "height": 883
+    },
+    {
+      "original": "\\[그림 5 삽입: figure-05-decision-utility-vs-oracle.png\\] *Oracle 대비\n실제 배분 효용. 예측 오차가 훨씬 컸던 실제 배포 전략 C가 오류를 수정한\n전략 B보다 근소하게 높은 평균 효용을 기록했다. (y축은 0에서 시작하며, 두\n전략의 차이는 그래프상 보이는 것 이상으로 확대 해석하지 않는다.)*",
+      "rendered": "<figure id=\"figure-5\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 5 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png\" alt=\"Oracle 대비 실제 배분 효용. 예측 오차가 훨씬 컸던 실제 배포 전략 C가 오류를 수정한 전략 B보다 근소하게 높은 평균 효용을 기록했다. (y축은 0에서 시작하며, 두 전략의 차이는 그래프상 보이는 것 이상으로 확대 해석하지 않는다.)\" width=\"1535\" height=\"882\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>Oracle 대비\n실제 배분 효용. 예측 오차가 훨씬 컸던 실제 배포 전략 C가 오류를 수정한\n전략 B보다 근소하게 높은 평균 효용을 기록했다. (y축은 0에서 시작하며, 두\n전략의 차이는 그래프상 보이는 것 이상으로 확대 해석하지 않는다.)</em></figcaption>\n</figure>",
+      "width": 1535,
+      "height": 882
+    },
+    {
+      "original": "\\[그림 6 삽입: figure-06-policy-outcome-breakdown.png\\] *886개 주요 과목\n조합에서 전략 B와 C의 실제 효용 비교. 664개(74.94%)에서는 두 전략의\n효용이 같았다.*",
+      "rendered": "<figure id=\"figure-6\" class=\"article-figure\">\n<a href=\"/images/yonsei-mileage/figure-06-policy-outcome-breakdown.png\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"그림 6 원본 크기로 보기\">\n<img src=\"/images/yonsei-mileage/figure-06-policy-outcome-breakdown.png\" alt=\"886개 주요 과목 조합에서 전략 B와 C의 실제 효용 비교. 664개(74.94%)에서는 두 전략의 효용이 같았다.\" width=\"1484\" height=\"529\" loading=\"lazy\" decoding=\"async\" />\n</a>\n<figcaption><em>886개 주요 과목\n조합에서 전략 B와 C의 실제 효용 비교. 664개(74.94%)에서는 두 전략의\n효용이 같았다.</em></figcaption>\n</figure>",
+      "width": 1484,
+      "height": 529
+    }
+  ]
+}

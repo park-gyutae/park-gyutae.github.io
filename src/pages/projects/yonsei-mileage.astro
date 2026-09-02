@@ -1,0 +1,107 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { mileage } from '../../data/portfolio';
+import Math from '../../components/Math.astro';
+import 'katex/dist/katex-swap.min.css';
+---
+<Layout title="Yonsei Mileage | 박규태" description={mileage.description} image="/images/yonsei-mileage/figure-01-service-overview.png">
+  <article class="reading-width">
+    <header class="page-intro">
+      <a class="text-link" href="/projects/">← 프로젝트</a>
+      <p class="eyebrow" style="margin-top: 2rem;">개인 프로젝트 · 확률적 의사결정과 최적화</p>
+      <h1>Yonsei Mileage</h1>
+      <h2 class="project-subtitle">수강신청을 확률과 배분의 문제로</h2>
+      <p>연세대학교의 마일리지 수강신청을 <strong>불확실한 환경에서 제한된 72점을 여러 과목에 배분하는 확률적 의사결정 문제</strong>로 모델링했습니다.</p>
+      <p>과거 수강신청 데이터로 과목별 성공확률을 추정하고, 사용자의 선호도와 마일리지 예산을 반영해 최적 배분을 계산합니다. 이후 실제 다음 학기 데이터까지 기다려 예측 성능뿐 아니라 <strong>그 예측으로 내린 의사결정의 성과</strong>까지 검증했습니다.</p>
+      <div class="action-links"><a class="button-primary" href={mileage.article}>연구 및 구현 과정 읽기 ↗</a><a class="text-link" href={mileage.demo} target="_blank" rel="noopener noreferrer">서비스 ↗</a><a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+    </header>
+    <figure class="project-screenshot"><a href="/images/yonsei-mileage/figure-01-service-overview.png" target="_blank" rel="noopener noreferrer" aria-label="서비스 화면 원본 보기"><img src="/images/yonsei-mileage/figure-01-service-overview.png" alt="Yonsei Mileage의 과목 검색, 시간표 구성 및 마일리지 배분 화면" width="1705" height="1115" loading="eager" decoding="async" /></a></figure>
+    <div class="prose">
+      <hr />
+      <h2>출발한 질문</h2>
+      <p>2026년 1학기에는 원하는 과목들의 마일리지를 거의 감으로 배분했습니다. 결과적으로 여러 과목을 놓쳤고, 전공필수 과목 하나는 별도로 부탁드린 끝에 수강할 수 있었습니다.</p>
+      <p>연세대학교 수강신청 시스템에는 과거의 정원, 신청 인원, 실제 마일리지 배분 결과가 공개되어 있습니다. 이 자료를 이용하면 단순히 다음 학기의 cutoff를 예측하는 것을 넘어,</p>
+      <blockquote><p><strong>“72점을 어떻게 나누어야 원하는 과목을 가장 잘 확보할 수 있을까?”</strong></p></blockquote>
+      <p>라는 문제를 직접 다룰 수 있지 않을까 생각했습니다.</p>
+      <p>이 질문에서 프로젝트를 시작했습니다.</p>
+      <hr />
+      <h2>문제를 어떻게 바꾸었는가</h2>
+      <p>처음에는 다음 학기의 cutoff를 정확히 예측하는 문제라고 생각했습니다.</p>
+      <p>하지만 실제 학생의 목적은 cutoff 자체를 맞히는 것이 아니라 <strong>과목을 얻는 것</strong>입니다. 또한 한 과목에 사용한 마일리지는 다른 과목에 사용할 수 없습니다.</p>
+      <p>그래서 과목 <Math expression="i" />에 <Math expression="m" />점을 배분했을 때의 수강 성공확률</p>
+      <Math display expression={String.raw`P_i(m)=P(\text{과목 }i\text{ 수강 성공}\mid\text{배분 마일리지}=m)`} />
+      <p>을 추정하고, 이 확률을 이용해 72점을 배분하는 문제로 다시 정의했습니다.</p>
+      <p>전체 흐름은 다음과 같습니다.</p>
+      <p><strong>과거 데이터 → cutoff 불확실성 → 성공확률 <Math expression="P_i(m)" /> → 최적 마일리지 배분 → 위험 평가 → 실제 결과 검증</strong></p>
+      <hr />
+      <h2>어떻게 구성했는가</h2>
+      <h3>1. Cutoff 불확실성 예측</h3>
+      <p>전공자와 비전공자를 분리한 LightGBM 분위수 회귀 모델로 다음 학기의</p>
+      <Math display expression={String.raw`Q_{10},\quad Q_{50},\quad Q_{90}`} />
+      <p>cutoff를 예측합니다.</p>
+      <p>하나의 점 추정치 대신 여러 분위수를 사용해 다음 학기의 불확실성을 표현했습니다.</p>
+      <h3>2. 성공확률 구성</h3>
+      <p>예측된 세 분위수를 Beta CDF와 과거 미달 비율에 연결해 각 마일리지 수준의 성공확률</p>
+      <Math display expression={String.raw`P_i(0),P_i(1),\ldots,P_i(36)`} />
+      <p>을 구성합니다.</p>
+      <p>이를 통해 “예상 cutoff가 몇 점인가?”뿐 아니라 “5점과 10점을 넣었을 때 성공확률이 얼마나 달라지는가?”를 비교할 수 있습니다.</p>
+      <h3>3. 72점 최적 배분</h3>
+      <p>과목별 중요도를 <Math expression="w_i" />, 배분할 마일리지를 <Math expression="m_i" />라고 두고</p>
+      <Math display expression={String.raw`\max \sum_i w_iP_i(m_i)`} />
+      <p>subject to</p>
+      <Math display expression={String.raw`\sum_i m_i\le72,\qquad m_i\in\{0,\ldots,36\}`} />
+      <p>인 문제를 구성했습니다.</p>
+      <p>이를 Multi-Choice Knapsack Problem(MCKP)으로 보고 동적 계획법으로 정확한 최적해를 계산합니다.</p>
+      <h3>4. 위험 평가</h3>
+      <p>최적화가 끝난 뒤에는 10,000회 Monte Carlo simulation을 통해 취득 학점의 분포와 하방 위험을 평가합니다.</p>
+      <p>이 단계는 최적 배분을 다시 수정하는 것이 아니라, <strong>이미 선택된 배분이 실제로 얼마나 불안정한지 진단하는 과정</strong>입니다.</p>
+      <hr />
+      <h2>실제 다음 학기에서 검증하기</h2>
+      <p>과거 데이터에서 성능이 좋다는 것만으로는 실제로 사용할 수 있는 모델이라고 판단하기 어려웠습니다.</p>
+      <p>그래서 <strong>2026-2 수강신청 결과가 나오기 전에 모델과 예측 결과를 고정</strong>하고, 실제 결과가 나온 뒤 prospective validation을 진행했습니다.</p>
+      <p>실제 자료에는 2,625개 분반과 89,286개의 마일리지 입찰이 있었고, 이 가운데 2,623개 분반(99.92%)을 예측 결과와 매칭해 평가했습니다.</p>
+      <table><thead><tr><th scope="col">방법</th><th scope="col">MAE</th></tr></thead><tbody><tr><td>Historical Mean</td><td>2.2410</td></tr><tr><td>Prospectively Frozen Model</td><td><strong>1.5519</strong></td></tr></tbody></table>
+      <p>실제 미래 학기에 대한 cutoff 예측에서 과거 평균 대비 <strong>MAE가 30.75% 감소</strong>했습니다.</p>
+      <p>하지만 여기서 프로젝트가 끝나지는 않았습니다.</p>
+      <hr />
+      <h2>모델과 실제 서비스는 같은 것이 아니었다</h2>
+      <p>실제 2026년 7월 서비스에 배포했던 예측 결과물을 같은 방식으로 평가하자 MAE가 <strong>5.6515</strong>까지 증가했습니다.</p>
+      <p>원인을 추적한 결과, 예측 과정에서 존재하지 않는 메서드를 호출하면서 <code>AttributeError</code>가 발생했고, 포괄적인 예외 처리가 이를 숨긴 채 과거 cutoff를 대신 사용하고 있었습니다.</p>
+      <p>즉 모델 자체의 성능과 <strong>사용자가 실제 서비스에서 받은 값의 성능</strong>이 달랐습니다.</p>
+      <p>예측 인터페이스를 수정해 결과물을 다시 생성하자 MAE는 <strong>1.5822</strong> 수준으로 회복되었고, 25,496건의 분위수 예측이 모두 정상 처리되어 fallback은 0건이었습니다.</p>
+      <p>이 경험 이후에는 모델의 평가와 배포 결과물의 검증을 별개의 단계로 보게 되었습니다.</p>
+      <hr />
+      <h2>더 정확한 예측이 더 좋은 배분을 만들었을까?</h2>
+      <p>프로젝트의 최종 목표는 cutoff를 정확하게 맞히는 것이 아니라 <strong>72점을 잘 나누는 것</strong>이었습니다.</p>
+      <p>그래서 886개의 주요 과목 조합을 대상으로 실제 2026-2 결과를 이용해 두 배분 전략의 성과를 다시 계산했습니다.</p>
+      <ul><li>오류가 있었던 실제 배포 전략: <strong>Oracle 대비 평균 효용 87.44%</strong></li><li>정상적인 사전 예측 전략: <strong>Oracle 대비 평균 효용 85.74%</strong></li></ul>
+      <p>예상과 달리 예측 오차가 훨씬 컸던 배포 전략의 평균 효용이 근소하게 높았습니다.</p>
+      <p>두 전략을 직접 비교하면 886개 조합 가운데</p>
+      <ul><li><strong>664개(74.94%)</strong>: 동일한 효용</li><li><strong>144개(16.25%)</strong>: 배포 전략 우세</li><li><strong>78개(8.80%)</strong>: 정상 전략 우세</li></ul>
+      <p>였습니다.</p>
+      <p>2026-2의 배분 재현 실험에 포함된 과목 중 85.22%가 미달 과목이었기 때문에, 상당수의 예측 오차는 실제 합격 여부를 바꾸지 않았습니다. 일부 경우에는 왜곡된 확률 곡선이 마일리지를 경쟁 과목에 집중시키면서 우연히 더 높은 성과를 만들기도 했습니다.</p>
+      <p>따라서 이 결과를 잘못된 모델이 더 좋았다는 의미로 해석할 수는 없습니다.</p>
+      <p>제가 이 실험에서 얻은 결론은 오히려 다음에 가깝습니다.</p>
+      <blockquote><p><strong>예측 정확도만으로 실제 의사결정의 성과를 충분히 평가하기는 어렵다.</strong></p></blockquote>
+      <p>예측 오차가 얼마나 큰가뿐 아니라, 그 오차가 실제 의사결정의 경계를 바꾸었는지를 함께 봐야 했습니다.</p>
+      <hr />
+      <h2>남아 있는 한계</h2>
+      <p>이번 검증은 실제 개인별 수강신청 로그가 아니라 이를 근사해 구성한 과목 조합을 사용했습니다. 실제 동점자 처리 규칙도 경험적으로 근사했으며, 완전한 prospective validation은 현재 2026-2 한 학기뿐입니다.</p>
+      <p>특히 2026-2는 미달 과목이 많았던 특수한 환경이었기 때문에, 다른 학기에서도 같은 결과가 나타난다고 일반화할 수 없습니다.</p>
+      <p>또한 현재 모델은 과거 데이터를 이용한 예측 모델입니다. 많은 학생이 같은 추천 시스템을 사용할 경우 학생들의 행동 자체가 바뀌면서 cutoff가 달라질 가능성까지 설명하는 구조적 게임이론 모델은 아닙니다.</p>
+      <p>더 자세한 검증 방법과 결과는 기술 글에 정리했습니다.</p>
+      <p><a href={mileage.article}>최종 기술 글에서 수치와 해석 확인하기 →</a></p>
+      <hr />
+      <h2>작업 방식과 기여</h2>
+      <p>Google Antigravity를 포함한 AI 코딩 에이전트를 적극적으로 활용했습니다. 구현의 상당 부분은 AI의 도움을 받아 진행했고, 저는 <strong>문제 정의, 모델링 선택, 검증 설계, 최적화 문제 구성, 결과 해석과 배포 결과물 검증</strong>에 집중했습니다.</p>
+      <p>처음부터 다시 만든다면 검색과 시간표 같은 주변 기능은 분리하고, 과목별 불확실성을 추정해 마일리지를 배분하는 핵심 문제에 더 집중할 것 같습니다.</p>
+    </div>
+  </article>
+</Layout>
+<style>
+.project-subtitle { font-size: 1.5rem; margin-bottom: 1.5rem; word-break: keep-all; }
+.project-screenshot { margin: 0 0 2rem; }
+.project-screenshot img { display: block; width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+.prose h2 { border-bottom: 0; }
+th:last-child, td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+</style>

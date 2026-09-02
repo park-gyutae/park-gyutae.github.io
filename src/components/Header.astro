@@ -2,7 +2,7 @@
 const pathname = Astro.url.pathname;
 ---
 
-<header>
+<header class="site-header">
   <div class="container header-content">
     <a href="/" class="logo">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -12,12 +12,10 @@ const pathname = Astro.url.pathname;
       <span>park-gyutae</span>
     </a>
     
-    <nav class="nav-links">
-      <a href="/about" class={`nav-link ${pathname.startsWith('/about') ? 'active' : ''}`}>About</a>
-      <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>Projects</a>
-      <a href="/blog" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`}>Blog</a>
-      <a href="/lectures" class={`nav-link ${pathname.startsWith('/lectures') ? 'active' : ''}`}>Lectures</a>
-      <a href="/tags" class={`nav-link ${pathname.startsWith('/tags') ? 'active' : ''}`}>Tags</a>
+    <nav id="primary-navigation" class="nav-links" aria-label="주 메뉴">
+      <a href="/projects/" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`} aria-current={pathname.startsWith('/projects') ? 'page' : undefined}>Projects</a>
+      <a href="/blog/" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`} aria-current={pathname.startsWith('/blog') ? 'page' : undefined}>Writing</a>
+      <a href="/about/" class={`nav-link ${pathname.startsWith('/about') ? 'active' : ''}`} aria-current={pathname.startsWith('/about') ? 'page' : undefined}>About</a>
       <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme">
         <!-- Sun Icon (Visible in dark mode) -->
         <svg id="theme-toggle-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -39,7 +37,7 @@ const pathname = Astro.url.pathname;
     </nav>
 
     <!-- Mobile Hamburger Toggle Button -->
-    <button id="mobile-menu-toggle" class="hamburger-btn" aria-label="Toggle navigation menu">
+    <button id="mobile-menu-toggle" class="hamburger-btn" aria-label="메뉴 열기" aria-controls="primary-navigation" aria-expanded="false">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="3" y1="12" x2="21" y2="12"></line>
         <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -62,6 +60,7 @@ const pathname = Astro.url.pathname;
   const moonIcon = document.getElementById('theme-toggle-moon');
 
   const updateIcons = (theme: string) => {
+    themeToggle?.setAttribute('aria-label', theme === 'dark' ? '밝은 테마로 전환' : '어두운 테마로 전환');
     if (theme === 'dark') {
       sunIcon?.classList.remove('hidden');
       moonIcon?.classList.add('hidden');
@@ -79,7 +78,7 @@ const pathname = Astro.url.pathname;
     const nextTheme = isDark ? 'light' : 'dark';
     
     document.documentElement.setAttribute('data-theme', nextTheme);
-    localStorage.setItem('theme', nextTheme);
+    try { localStorage.setItem('theme', nextTheme); } catch { /* Storage may be blocked. */ }
     updateIcons(nextTheme);
   });
 
@@ -87,15 +86,23 @@ const pathname = Astro.url.pathname;
   const menuToggle = document.getElementById('mobile-menu-toggle');
   const navLinks = document.querySelector('.nav-links');
 
-  menuToggle?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    navLinks?.classList.toggle('active');
+  const setMenuOpen = (open: boolean) => {
+    navLinks?.classList.toggle('active', open);
+    menuToggle?.setAttribute('aria-expanded', String(open));
+    menuToggle?.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+  };
+  menuToggle?.addEventListener('click', () => {
+    setMenuOpen(menuToggle.getAttribute('aria-expanded') !== 'true');
   });
-
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (navLinks?.classList.contains('active') && !navLinks.contains(e.target as Node) && e.target !== menuToggle) {
-      navLinks.classList.remove('active');
+  document.addEventListener('click', (event) => {
+    if (!navLinks?.contains(event.target as Node) && !menuToggle?.contains(event.target as Node)) setMenuOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      setMenuOpen(false);
+      menuToggle.focus();
     }
   });
+  navLinks?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenuOpen(false)));
+  window.matchMedia('(max-width: 768px)').addEventListener('change', () => setMenuOpen(false));
 </script>

@@ -1,4 +1,5 @@
 import rss from '@astrojs/rss';
+import { profile } from '../data/portfolio';
 import { getCollection } from 'astro:content';
 
 export async function GET(context) {
@@ -6,8 +7,8 @@ export async function GET(context) {
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 	return rss({
-		title: 'DevLog | Technical Blog',
-		description: "A professional developer's technical blog for sharing insights, projects, and tutorials.",
+		title: '박규태 | 프로젝트 기록',
+		description: profile.description,
 		site: context.site,
 		items: posts.map((post) => ({
 			title: post.data.title,
