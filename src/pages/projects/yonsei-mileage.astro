@@ -106,6 +106,7 @@ import 'katex/dist/katex-swap.min.css';
   </article>
 </Layout>
 <style>
+.page-intro h1 { font-family: var(--font-editorial); font-size: clamp(3.25rem, 8vw, 5.8rem); font-style: italic; font-weight: 500; line-height: .95; letter-spacing: -.045em; }
 .project-subtitle { font-size: 1.5rem; margin-bottom: 1.5rem; word-break: keep-all; }
 .project-screenshot { margin: 0 0 2rem; overflow: hidden; border: 1px solid var(--border-color); border-radius: 18px; box-shadow: 0 12px 35px rgba(0,0,0,.06); background: var(--card-bg); }
 .project-screenshot img { display: block; width: 100%; height: auto; border-top: 1px solid var(--border-color); }
@@ -116,7 +117,7 @@ import 'katex/dist/katex-swap.min.css';
 .project-metrics div { padding: 1.25rem 0; }
 .project-metrics div + div { border-left: 1px solid var(--border-color); padding-left: 1.5rem; }
 .project-metrics dt { color: var(--text-muted); font-size: .78rem; margin-bottom: .35rem; }
-.project-metrics dd { color: var(--text-color); font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.project-metrics dd { color: var(--primary-color); font-family: var(--font-number); font-size: 1.95rem; font-style: normal; font-weight: 400; line-height: 1; font-variant-numeric: lining-nums tabular-nums; letter-spacing: -.065em; }
 .prose h2 { border-bottom: 0; }
 th:last-child, td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 520px) {
