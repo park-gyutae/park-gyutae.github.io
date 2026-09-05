@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import MathFormula from '../../components/Math.astro';
 import 'katex/dist/katex-swap.min.css';
 import { profile, mileage } from '../../data/portfolio';
 
@@ -64,18 +65,27 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 			</div>
 
 			<header class="article-header">
-				<div class="article-meta">
+				<div class="article-meta" aria-label="글 정보">
 					<time datetime={pubDate.toISOString()}>{formattedDate}</time>
-					<span aria-hidden="true"> · </span><span>약 {readingMinutes}분</span>
+					<span>읽는 시간 {readingMinutes}분</span>
+					<span>{project === 'yonsei-mileage' ? '확률 · 최적화' : tags.slice(0, 2).join(' · ')}</span>
+					<span>Research Note</span>
 					{formattedUpdatedDate && (
 						<span class="updated-date">
-							• (수정일: {formattedUpdatedDate})
+							수정 {formattedUpdatedDate}
 						</span>
 					)}
 				</div>
 				
 				<h1 class="article-title">{title}</h1>
 				<p class="article-desc">{subtitle || description}</p>
+
+				{project === 'yonsei-mileage' && (
+					<div class="article-signature-equation" aria-label="이 글의 핵심 최적화 식">
+						<span>CORE MODEL</span>
+						<MathFormula display expression={String.raw`\max_{m_1,\ldots,m_n}\;\sum_i w_iP_i(m_i)\quad\text{s.t.}\quad\sum_i m_i\le72`} />
+					</div>
+				)}
 
 				{tags && tags.length > 0 && (
 					<div class="article-tags">
@@ -254,17 +264,24 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 	}
 
 	.article-header {
-		margin-bottom: 2rem;
+		margin-bottom: 2.5rem;
 		max-width: 720px;
 		margin-inline: auto;
 	}
 
 	.article-meta {
-		font-size: 0.95rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: .45rem;
+		font-size: .72rem;
 		color: var(--text-muted);
-		margin-bottom: 0.75rem;
-		font-weight: 500;
+		margin-bottom: 1.35rem;
+		font-weight: 650;
+		letter-spacing: .025em;
 	}
+
+	.article-meta > * { padding: .34rem .62rem; border: 1px solid var(--border-color); border-radius: 999px; background: color-mix(in srgb, var(--card-bg) 76%, transparent); }
+	.article-meta time, .article-meta > span:last-of-type { color: var(--primary-color); }
 
 	.article-title {
 		font-size: clamp(2.1rem, 4.5vw, 3.4rem);
@@ -282,6 +299,11 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 		margin-bottom: 1.5rem;
 		line-height: 1.75;
 	}
+
+	.article-signature-equation { position: relative; margin: 2.25rem 0 1.75rem; padding: 2.25rem 1.5rem 1.4rem; overflow-x: auto; border-block: 1px solid var(--border-color); background-image: linear-gradient(color-mix(in srgb, var(--primary-color) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-color) 5%, transparent) 1px, transparent 1px); background-size: 24px 24px; }
+	.article-signature-equation > span { position: absolute; top: .65rem; left: .75rem; color: var(--primary-color); font-size: .62rem; font-weight: 700; letter-spacing: .1em; }
+	.article-signature-equation :global(.katex-display) { margin: .5rem 0 0; }
+	.article-signature-equation :global(.katex) { font-size: clamp(.92rem, 2.4vw, 1.18rem); }
 
 	.article-tags {
 		display: flex;
@@ -700,16 +722,16 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 		}
 	});
 
-	// GitHub-style callouts: > [!NOTE], [!WARNING], [!THEOREM], [!DEFINITION], [!PROOF]
+	// GitHub-style callouts plus editorial summaries.
 	document.querySelectorAll<HTMLElement>('.prose blockquote').forEach((quote) => {
 		const first = quote.querySelector('p');
 		if (!first) return;
-		const match = first.textContent?.trim().match(/^\[!(NOTE|WARNING|THEOREM|DEFINITION|PROOF)\]/i);
+		const match = first.textContent?.trim().match(/^\[!(NOTE|SUMMARY|WARNING|THEOREM|DEFINITION|PROOF)\]/i);
 		if (!match) return;
 		const type = match[1].toLowerCase();
 		quote.classList.add('callout', `callout-${type}`);
-		first.innerHTML = first.innerHTML.replace(/^\[!(NOTE|WARNING|THEOREM|DEFINITION|PROOF)\]\s*/i, '');
-		quote.dataset.calloutLabel = match[1];
+		first.innerHTML = first.innerHTML.replace(/^\[!(NOTE|SUMMARY|WARNING|THEOREM|DEFINITION|PROOF)\]\s*/i, '');
+		quote.dataset.calloutLabel = type === 'summary' ? '중간 결론' : match[1];
 	});
 
 	// In-page image lightbox

@@ -12,17 +12,17 @@ import 'katex/dist/katex-swap.min.css';
       <h1>Yonsei Mileage</h1>
       <h2 class="project-subtitle">수강신청을 확률과 배분의 문제로</h2>
       <p>연세대학교 수강신청을 <strong>불확실한 환경에서 제한된 72점을 배분하는 확률적 의사결정 문제</strong>로 모델링하고, 실제 다음 학기 결과로 검증했습니다.</p>
+      <dl class="project-metrics" aria-label="프로젝트 핵심 결과">
+        <div><dt>검증 분반</dt><dd>2,623</dd></div>
+        <div><dt>예측 MAE</dt><dd>1.5519</dd></div>
+        <div><dt>오차 감소</dt><dd>30.75%</dd></div>
+      </dl>
       <div class="action-links"><a class="button-primary" href={mileage.article}>연구 및 구현 과정 읽기 ↗</a><a class="text-link" href={mileage.demo} target="_blank" rel="noopener noreferrer">서비스 ↗</a><a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
     </header>
     <figure class="project-screenshot">
       <div class="browser-bar" aria-hidden="true"><span></span><span></span><span></span><p>yonsei-timetable.vercel.app</p></div>
       <a href="/images/yonsei-mileage/figure-01-service-overview.png" target="_blank" rel="noopener noreferrer" aria-label="서비스 화면 원본 보기"><img src="/images/yonsei-mileage/figure-01-service-overview.png" alt="Yonsei Mileage의 과목 검색, 시간표 구성 및 마일리지 배분 화면" width="1705" height="1115" loading="eager" decoding="async" /></a>
     </figure>
-    <dl class="project-metrics" aria-label="프로젝트 핵심 결과">
-      <div><dt>검증 분반</dt><dd>2,623</dd></div>
-      <div><dt>예측 MAE</dt><dd>1.5519</dd></div>
-      <div><dt>오차 감소</dt><dd>30.75%</dd></div>
-    </dl>
     <div class="prose">
       <hr />
       <h2>출발한 질문</h2>
@@ -113,7 +113,7 @@ import 'katex/dist/katex-swap.min.css';
 .browser-bar { display: flex; align-items: center; gap: .4rem; height: 2.65rem; padding: 0 .9rem; }
 .browser-bar span { width: .55rem; height: .55rem; border-radius: 50%; background: #c9c9cc; }
 .browser-bar p { margin: 0 auto; padding-right: 3rem; color: var(--text-muted); font-size: .68rem; }
-.project-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 0 2.5rem; padding: .4rem 1.5rem; background: var(--card-bg); border-radius: 18px; box-shadow: 0 8px 28px rgba(0,0,0,.045); }
+.project-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin: 2rem 0; padding: .4rem 1.5rem; background: var(--card-bg); border-radius: 18px; box-shadow: 0 8px 28px rgba(0,0,0,.045); }
 .project-metrics div { padding: 1.25rem 0; }
 .project-metrics div + div { border-left: 1px solid var(--border-color); padding-left: 1.5rem; }
 .project-metrics dt { color: var(--text-muted); font-size: .78rem; margin-bottom: .35rem; }

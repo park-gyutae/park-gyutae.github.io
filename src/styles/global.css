@@ -690,6 +690,14 @@ html[data-theme="dark"] { color-scheme: dark; }
   text-align: center;
 }
 .hero-copy { max-width: 900px; margin: 0 auto; }
+.hero-person { display: grid; grid-template-columns: 44px auto auto; align-items: center; width: fit-content; max-width: 100%; gap: .8rem; margin: 0 auto 2.25rem; padding: .45rem .55rem .45rem .45rem; border: 1px solid var(--border-color); border-radius: 999px; background: color-mix(in srgb, var(--card-bg) 82%, transparent); text-align: left; box-shadow: 0 8px 26px rgba(0,0,0,.04); transition: transform .2s ease, border-color .2s ease; }
+.hero-person:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border-color)); }
+.hero-person img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.hero-person span { min-width: 0; }
+.hero-person strong, .hero-person small { display: block; }
+.hero-person strong { font-size: .88rem; line-height: 1.35; }
+.hero-person small { max-width: 350px; margin-top: .1rem; overflow: hidden; color: var(--text-muted); font-size: .7rem; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.hero-person b { padding: 0 .45rem; color: var(--primary-color); font-size: .7rem; font-weight: 700; white-space: nowrap; }
 .hero-kicker { display: flex; align-items: center; justify-content: center; gap: .7rem; margin-bottom: 2rem; font-size: .78rem; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; color: var(--text-muted); }
 .hero-kicker span { width: .55rem; height: .55rem; border-radius: 50%; background: var(--primary-color); }
 .portfolio-intro h1 { font-family: var(--font-display); font-size: clamp(3rem, 6.4vw, 6rem); line-height: 1.06; letter-spacing: -.055em; margin: 0 0 1.6rem; font-weight: 700; word-break: keep-all; }
@@ -747,6 +755,9 @@ footer { background: transparent; color: var(--text-muted); border-top: 1px soli
 
 @media (max-width: 520px) {
   .portfolio-intro h1 { font-size: 3.35rem; }
+  .hero-person { grid-template-columns: 40px minmax(0, 1fr); width: 100%; border-radius: 18px; }
+  .hero-person img { width: 40px; height: 40px; }
+  .hero-person b { display: none; }
   .hero-actions { align-items: flex-start; }
   .interest-list { padding: 1.4rem; border-radius: 18px; }
 }
