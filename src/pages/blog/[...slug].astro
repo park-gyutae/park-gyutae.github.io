@@ -39,11 +39,15 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	month: 'long',
 	day: 'numeric',
 }) : null;
+const plainBody = post.body.replace(/<[^>]+>|[#>*_`$\[\]()-]/g, ' ');
+const readingMinutes = Math.max(1, Math.ceil(plainBody.split(/\s+/).filter(Boolean).length / 350));
+const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 ---
 
 <Layout title={title} description={description} image={heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
+	<div id="reading-section-status" class="reading-section-status" aria-hidden="true"></div>
 
 	<!-- Responsive 2-column post page layout container -->
 	<div class="post-layout-container">
@@ -62,6 +66,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 			<header class="article-header">
 				<div class="article-meta">
 					<time datetime={pubDate.toISOString()}>{formattedDate}</time>
+					<span aria-hidden="true"> · </span><span>약 {readingMinutes}분</span>
 					{formattedUpdatedDate && (
 						<span class="updated-date">
 							• (수정일: {formattedUpdatedDate})
@@ -97,9 +102,9 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 			<!-- 1. Mobile-Only Inline Table of Contents (Visible only on mobile/tablet) -->
 			{headings && headings.length > 0 && (
 				<details class="post-toc-inline">
-					<summary class="toc-title">목차 펼치기</summary>
+					<summary class="toc-title"><span>목차</span><small>{tocHeadings.length} sections</small></summary>
 					<ul class="toc-list">
-						{headings.filter(h => h.depth <= tocDepth).map((h) => (
+						{tocHeadings.map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
 								<a href={`#${h.slug}`} class="toc-link">{h.text}</a>
 							</li>
@@ -162,9 +167,10 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		{headings && headings.length > 0 && (
 			<aside class="post-toc-sidebar" aria-label="글 목차">
 				<div class="toc-sticky-container">
-					<h3 class="toc-title">목차</h3>
+					<div class="toc-header"><div><p>On this page</p><span>{tocHeadings.length} sections</span></div><span class="toc-symbol" aria-hidden="true">∴</span></div>
+					<div class="toc-progress-track" aria-hidden="true"><span id="toc-progress-fill"></span></div>
 					<ul class="toc-list">
-						{headings.filter(h => h.depth <= tocDepth).map((h) => (
+						{tocHeadings.map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
 								<a href={`#${h.slug}`} class="toc-link" data-slug={h.slug}>{h.text}</a>
 							</li>
@@ -181,6 +187,12 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 			<polyline points="18 15 12 9 6 15"></polyline>
 		</svg>
 	</button>
+
+	<dialog id="image-lightbox" class="image-lightbox" aria-label="확대 이미지">
+		<button class="lightbox-close" type="button" aria-label="확대 이미지 닫기">×</button>
+		<img src="" alt="" />
+		<p></p>
+	</dialog>
 </Layout>
 
 <style>
@@ -190,10 +202,13 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		left: 0;
 		width: 0%;
 		height: 4px;
-		background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+		background: var(--primary-color);
 		z-index: 101;
 		transition: width 0.1s ease-out;
 	}
+
+	.reading-section-status { position: fixed; top: 5rem; left: 50%; z-index: 45; max-width: min(520px, 70vw); padding: .42rem .8rem; overflow: hidden; border: 1px solid var(--border-color); border-top: 0; border-radius: 0 0 10px 10px; background: var(--header-bg); color: var(--text-muted); font-size: .72rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; opacity: 0; transform: translate(-50%, -8px); backdrop-filter: blur(18px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; }
+	.reading-section-status.visible { opacity: 1; transform: translate(-50%, 0); }
 
 	/* 2-column post page layout container */
 	.post-layout-container {
@@ -240,6 +255,8 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 	.article-header {
 		margin-bottom: 2rem;
+		max-width: 720px;
+		margin-inline: auto;
 	}
 
 	.article-meta {
@@ -250,10 +267,11 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	}
 
 	.article-title {
-		font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+		font-size: clamp(2.1rem, 4.5vw, 3.4rem);
 		word-break: keep-all;
 		font-weight: 800;
-		line-height: 1.25;
+		line-height: 1.22;
+		letter-spacing: -.04em;
 		margin-bottom: 1rem;
 		color: var(--text-color);
 	}
@@ -262,7 +280,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		font-size: 1.15rem;
 		color: var(--text-muted);
 		margin-bottom: 1.5rem;
-		line-height: 1.6;
+		line-height: 1.75;
 	}
 
 	.article-tags {
@@ -276,7 +294,8 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		font-weight: 600;
 		padding: 0.25rem 0.75rem;
 		border-radius: 9999px;
-		background-color: var(--border-color);
+		background-color: transparent;
+		border: 1px solid var(--border-color);
 		color: var(--text-muted);
 		transition: all var(--transition-speed) ease;
 	}
@@ -308,13 +327,15 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 	/* 1. Mobile-Only Inline Table of Contents */
 	.post-toc-inline {
-		background-color: var(--card-bg);
 		border: 1px solid var(--border-color);
-		border-radius: 0.5rem;
-		padding: 1.5rem;
+		border-radius: 14px;
+		padding: 0;
 		margin-bottom: 2.5rem;
+		background: var(--card-bg);
 		display: block;
 	}
+	.post-toc-inline[open] { padding-bottom: .75rem; }
+	.post-toc-inline[open] .toc-title { border-bottom: 1px solid var(--border-color); }
 
 	@media (min-width: 1024px) {
 		.post-toc-inline {
@@ -323,15 +344,19 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	}
 
 	.toc-title {
-		font-size: 0.95rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 1.1rem;
+		font-size: 0.9rem;
 		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		margin-bottom: 0.75rem;
+		margin: 0;
 		color: var(--text-color);
-		border-bottom: 1px solid var(--border-color);
-		padding-bottom: 0.5rem;
+		cursor: pointer;
 	}
+	.toc-title small { color: var(--text-muted); font-size: .68rem; font-weight: 500; }
+	.toc-title::marker { color: var(--primary-color); }
 
 	.toc-list {
 		list-style: none;
@@ -339,24 +364,38 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		margin: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.12rem;
 	}
+	.post-toc-inline .toc-list { padding: .7rem; }
 
 	.toc-item.depth-3 {
 		padding-left: 1.25rem;
 	}
 
 	.toc-link {
-		font-size: 0.92rem;
+		display: block;
+		padding: .48rem .65rem;
+		border-radius: 8px;
+		font-size: 0.78rem;
+		line-height: 1.48;
 		color: var(--text-muted);
-		transition: color var(--transition-speed) ease;
+		transition: color var(--transition-speed) ease, background var(--transition-speed) ease;
 		text-decoration: none;
 	}
 
-	.toc-link:hover, .toc-link.active {
+	.toc-link:hover {
+		background: color-mix(in srgb, var(--text-color) 4%, transparent);
+		color: var(--text-color);
+	}
+
+	.toc-link.active {
+		background: color-mix(in srgb, var(--primary-color) 9%, transparent);
 		color: var(--primary-color);
 		font-weight: 600;
 	}
+
+	.toc-link.active { position: relative; }
+	.toc-link.active::before { content: ''; position: absolute; left: -.72rem; top: 50%; width: .38rem; height: .38rem; border-radius: 50%; background: var(--primary-color); transform: translateY(-50%); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 12%, transparent); }
 
 	/* 2. Desktop-Only Sticky Table of Contents Sidebar */
 	.post-toc-sidebar {
@@ -371,12 +410,22 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 	.toc-sticky-container {
 		position: sticky;
-		top: 2rem;
-		max-height: calc(100vh - 4rem);
+		top: 6.5rem;
+		max-height: calc(100vh - 8rem);
 		overflow-y: auto;
-		border-left: 1px solid var(--border-color);
-		padding-left: 1.25rem;
+		padding: 1rem;
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+		background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+		box-shadow: 0 12px 32px rgba(0,0,0,.045);
+		scrollbar-width: thin;
 	}
+	.toc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: .9rem; }
+	.toc-header p { margin: 0 0 .1rem; color: var(--text-color); font-size: .78rem; font-weight: 700; }
+	.toc-header span { color: var(--text-muted); font-size: .66rem; }
+	.toc-header .toc-symbol { color: var(--primary-color); font-size: 1rem; }
+	.toc-progress-track { height: 3px; margin-bottom: .8rem; overflow: hidden; border-radius: 999px; background: var(--border-color); }
+	.toc-progress-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--primary-color); transition: width .12s linear; }
 
 	/* Navigation controls */
 	.post-navigation {
@@ -541,6 +590,13 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 	.author-socials .social-link:hover {
 		color: var(--primary-color);
 	}
+
+	.image-lightbox { width: min(1100px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); padding: 0; overflow: hidden auto; border: 0; border-radius: 18px; background: var(--card-bg); color: var(--text-color); box-shadow: 0 30px 90px rgba(0,0,0,.35); }
+	.image-lightbox::backdrop { background: rgba(7,10,16,.76); backdrop-filter: blur(8px); }
+	.image-lightbox img { display: block; width: 100%; height: auto; }
+	.image-lightbox p { margin: 0; padding: 1rem 1.25rem; color: var(--text-muted); font-size: .82rem; }
+	.lightbox-close { position: sticky; float: right; top: .75rem; z-index: 2; width: 2.5rem; height: 2.5rem; margin: .75rem .75rem -3.25rem 0; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: rgba(20,20,22,.75); color: #fff; font-size: 1.5rem; cursor: pointer; backdrop-filter: blur(10px); }
+	@media (max-width: 760px) { .reading-section-status { display: none; } }
 </style>
 
 <script>
@@ -554,6 +610,8 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 		if (progressEl) {
 			progressEl.style.width = scrolled + '%';
 		}
+		const tocProgress = document.getElementById('toc-progress-fill');
+		if (tocProgress) tocProgress.style.width = scrolled + '%';
 
 		// Scroll to top button visibility
 		const scrollToTopBtn = document.getElementById('scroll-to-top');
@@ -564,6 +622,7 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 				scrollToTopBtn.classList.remove('visible');
 			}
 		}
+		if (readingStatus && winScroll <= 420) readingStatus.classList.remove('visible');
 	});
 
 	// Scroll to top action
@@ -577,7 +636,99 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 
 	// Active TOC Heading Tracking (Intersection Observer) - Desktop Only
 	const headingElements = document.querySelectorAll('.prose h2, .prose h3');
-	const tocLinks = document.querySelectorAll('.post-toc-sidebar .toc-link');
+	const tocLinks = document.querySelectorAll('.toc-link');
+	const readingStatus = document.getElementById('reading-section-status');
+
+	const copyText = async (text: string) => {
+		try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
+	};
+
+	// Copyable heading anchors
+	headingElements.forEach((heading) => {
+		if (!heading.id) return;
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'heading-anchor';
+		button.setAttribute('aria-label', '이 섹션 링크 복사');
+		button.textContent = '#';
+		button.addEventListener('click', async () => {
+			const url = `${location.origin}${location.pathname}#${heading.id}`;
+			if (await copyText(url)) {
+				button.textContent = '✓';
+				setTimeout(() => { button.textContent = '#'; }, 1200);
+			}
+		});
+		heading.append(button);
+	});
+
+	// Code language labels and copy controls
+	document.querySelectorAll<HTMLElement>('.prose pre').forEach((pre) => {
+		const language = (pre.dataset.language || 'code').toUpperCase();
+		const label = document.createElement('span');
+		label.className = 'code-language';
+		label.textContent = language;
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'code-copy';
+		button.textContent = 'Copy';
+		button.setAttribute('aria-label', `${language} 코드 복사`);
+		button.addEventListener('click', async () => {
+			const code = pre.querySelector('code')?.textContent || '';
+			if (await copyText(code)) {
+				button.textContent = 'Copied';
+				setTimeout(() => { button.textContent = 'Copy'; }, 1400);
+			}
+		});
+		pre.append(label, button);
+	});
+
+	// Linkable equation numbers and a one-time mobile overflow hint
+	document.querySelectorAll<HTMLElement>('.prose .katex-display').forEach((equation, index) => {
+		equation.id = `equation-${index + 1}`;
+		const anchor = document.createElement('a');
+		anchor.className = 'equation-number';
+		anchor.href = `#${equation.id}`;
+		anchor.textContent = `EQ. ${String(index + 1).padStart(2, '0')}`;
+		anchor.setAttribute('aria-label', `수식 ${index + 1} 링크`);
+		equation.append(anchor);
+		if (equation.scrollWidth > equation.clientWidth) {
+			const hint = document.createElement('span');
+			hint.className = 'equation-hint';
+			hint.textContent = '옆으로 밀어보기 →';
+			equation.append(hint);
+			equation.addEventListener('scroll', () => hint.remove(), { once: true });
+		}
+	});
+
+	// GitHub-style callouts: > [!NOTE], [!WARNING], [!THEOREM], [!DEFINITION], [!PROOF]
+	document.querySelectorAll<HTMLElement>('.prose blockquote').forEach((quote) => {
+		const first = quote.querySelector('p');
+		if (!first) return;
+		const match = first.textContent?.trim().match(/^\[!(NOTE|WARNING|THEOREM|DEFINITION|PROOF)\]/i);
+		if (!match) return;
+		const type = match[1].toLowerCase();
+		quote.classList.add('callout', `callout-${type}`);
+		first.innerHTML = first.innerHTML.replace(/^\[!(NOTE|WARNING|THEOREM|DEFINITION|PROOF)\]\s*/i, '');
+		quote.dataset.calloutLabel = match[1];
+	});
+
+	// In-page image lightbox
+	const lightbox = document.getElementById('image-lightbox') as HTMLDialogElement | null;
+	const lightboxImage = lightbox?.querySelector('img');
+	const lightboxCaption = lightbox?.querySelector('p');
+	document.querySelectorAll<HTMLAnchorElement>('.article-figure > a').forEach((link) => {
+		link.addEventListener('click', (event) => {
+			if (event.metaKey || event.ctrlKey || event.shiftKey || !lightbox || !lightboxImage) return;
+			event.preventDefault();
+			const source = link.querySelector('img');
+			lightboxImage.src = link.href;
+			lightboxImage.alt = source?.alt || '';
+			if (lightboxCaption) lightboxCaption.textContent = link.parentElement?.querySelector('figcaption')?.textContent || source?.alt || '';
+			lightbox.showModal();
+		});
+	});
+	lightbox?.querySelector('.lightbox-close')?.addEventListener('click', () => lightbox.close());
+	lightbox?.addEventListener('click', (event) => { if (event.target === lightbox) lightbox.close(); });
 
 	if (headingElements.length > 0 && tocLinks.length > 0) {
 		const observerOptions = {
@@ -593,14 +744,27 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 				if (entry.isIntersecting) {
 					currentActiveId = entry.target.id;
 					
+					let activeLink: Element | null = null;
 					tocLinks.forEach(link => {
 						const href = link.getAttribute('href');
 						if (href === `#${currentActiveId}`) {
 							link.classList.add('active');
+							if (link.closest('.post-toc-sidebar')) activeLink = link;
 						} else {
 							link.classList.remove('active');
 						}
 					});
+					if (readingStatus) {
+						readingStatus.textContent = entry.target.textContent?.replace(/[✓#]$/, '').trim() || '';
+						readingStatus.classList.toggle('visible', window.scrollY > 420);
+					}
+					if (activeLink) {
+						const panel = activeLink.closest('.toc-sticky-container') as HTMLElement | null;
+						const item = activeLink as HTMLElement;
+						if (panel && (item.offsetTop < panel.scrollTop + 70 || item.offsetTop > panel.scrollTop + panel.clientHeight - 50)) {
+							panel.scrollTo({ top: Math.max(0, item.offsetTop - 90), behavior: 'smooth' });
+						}
+					}
 				}
 			});
 		}, observerOptions);

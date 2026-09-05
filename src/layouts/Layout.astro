@@ -16,7 +16,7 @@ const { frontmatter } = Astro.props;
 
 const title = frontmatter?.title || Astro.props.title || "park-gyutae";
 const description = frontmatter?.description || Astro.props.description || profile.description;
-const image = frontmatter?.image || Astro.props.image || "/avatar.png";
+const image = frontmatter?.image || Astro.props.image || "/og.png";
 const isWide = frontmatter?.isWide || Astro.props.isWide || false;
 
 const { article } = Astro.props;
@@ -74,7 +74,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyu
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap" rel="stylesheet" />
 		<link href="https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css" rel="stylesheet" type="text/css" />
 
 

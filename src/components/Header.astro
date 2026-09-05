@@ -5,16 +5,13 @@ const pathname = Astro.url.pathname;
 <header class="site-header">
   <div class="container header-content">
     <a href="/" class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="16 18 22 12 16 6"></polyline>
-        <polyline points="8 6 2 12 8 18"></polyline>
-      </svg>
-      <span>park-gyutae</span>
+      <span class="logo-mark">∴</span>
+      <span>GYUTAE.PARK</span>
     </a>
     
     <nav id="primary-navigation" class="nav-links" aria-label="주 메뉴">
       <a href="/projects/" class={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`} aria-current={pathname.startsWith('/projects') ? 'page' : undefined}>Projects</a>
-      <a href="/blog/" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`} aria-current={pathname.startsWith('/blog') ? 'page' : undefined}>Writing</a>
+      <a href="/blog/" class={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`} aria-current={pathname.startsWith('/blog') ? 'page' : undefined}>Notes</a>
       <a href="/about/" class={`nav-link ${pathname.startsWith('/about') ? 'active' : ''}`} aria-current={pathname.startsWith('/about') ? 'page' : undefined}>About</a>
       <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme">
         <!-- Sun Icon (Visible in dark mode) -->

@@ -66,17 +66,18 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 <style>
 	.page-header {
-		padding: 2rem 0;
+		padding: 4rem 0 3rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
 		border-bottom: 1px solid var(--border-color);
-		margin-bottom: 2.5rem;
+		margin-bottom: 2rem;
 	}
 
 	.page-title {
-		font-size: 2.5rem;
+		font-size: clamp(2.4rem, 5vw, 4rem);
 		font-weight: 800;
+		letter-spacing: -.055em;
 	}
 
 	.page-subtitle {
@@ -114,7 +115,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 		background-color: var(--card-bg);
 		color: var(--text-color);
 		border: 1px solid var(--border-color);
-		border-radius: 0.75rem;
+		border-radius: 999px;
 		box-shadow: var(--card-shadow);
 		outline: none;
 		transition: all var(--transition-speed) ease;
@@ -132,10 +133,9 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	}
 
 	.tag-filter-btn {
-		font-size: 0.9rem;
-		font-weight: 600;
+		font: 500 .72rem var(--font-mono);
 		padding: 0.4rem 1rem;
-		border-radius: 0.5rem;
+		border-radius: 999px;
 		border: 1px solid var(--border-color);
 		background-color: var(--card-bg);
 		color: var(--text-muted);
@@ -157,14 +157,12 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	/* Posts grid */
 	.posts-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
+		display: block;
 	}
 
 	@media (min-width: 640px) {
 		.posts-grid {
-			grid-template-columns: repeat(2, 1fr);
+			display: block;
 		}
 	}
 

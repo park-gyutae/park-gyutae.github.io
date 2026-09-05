@@ -5,17 +5,31 @@ import { profile, mileage } from '../data/portfolio';
 ---
 <Layout title="박규태 | 수학, 통계, 그리고 구현" description={profile.description}>
   <section class="portfolio-intro">
-    <div class="intro-identity"><img src="/avatar.webp" alt="" width="56" height="56" /><p>박규태 <span>Mathematics · Statistics · Computing</span></p></div>
-    <h1>문제를 수학으로 표현하고,<br />코드로 실험합니다.</h1>
-    <p class="intro-description">수학과 통계를 공부하며 현실의 문제를 모델링합니다.<br class="desktop-break" /> 직접 만든 도구와, 그 과정에서 바뀐 생각을 기록합니다.</p>
-    <a class="text-link" href="/about/">어떤 생각으로 만드는지 →</a>
+    <div class="hero-copy hero-reveal">
+      <p class="hero-kicker"><span></span> Mathematics · Statistics · Computing</p>
+      <h1>현실의 질문을<br /><em>수학의 언어로.</em></h1>
+      <p class="intro-description">문제를 모델로 바꾸고, 코드로 실험합니다.<br class="desktop-break" /> 그 과정의 가설과 실패, 발견을 기록합니다.</p>
+      <div class="hero-actions">
+        <a class="button-primary" href="/projects/">프로젝트 보기 <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="/blog/">글 읽기 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <aside class="interest-list hero-reveal hero-reveal-delay" aria-label="현재 관심 분야">
+      <p class="interest-heading">Exploring</p>
+      <ol>
+        <li><a href="/blog/?q=algebra">Algebra <span>↗</span></a></li>
+        <li><a href="/blog/?q=probability">Probability <span>↗</span></a></li>
+        <li><a href="/blog/?q=optimization">Optimization <span>↗</span></a></li>
+        <li><a href="/blog/?q=cryptography">Cryptography <span>↗</span></a></li>
+      </ol>
+    </aside>
   </section>
   <section class="portfolio-section" aria-labelledby="projects-heading">
-    <div class="section-heading"><h2 id="projects-heading">대표 프로젝트</h2><span class="section-caption">Selected work / 01</span></div>
+    <div class="section-heading numbered-heading"><span class="section-number">01</span><div><p>Selected Projects</p><h2 id="projects-heading">직접 만든 것들</h2></div></div>
     <ProjectFeature />
   </section>
   <section class="portfolio-section" aria-labelledby="writing-heading">
-    <div class="section-heading"><h2 id="writing-heading">프로젝트 기록</h2><a class="text-link" href="/blog/">모든 글 →</a></div>
+    <div class="section-heading numbered-heading"><span class="section-number">02</span><div><p>Recent Notes</p><h2 id="writing-heading">프로젝트 기록</h2></div><a class="text-link" href="/blog/">모든 글 →</a></div>
     <a class="writing-preview" href={mileage.article}>
       <div><p class="eyebrow">Yonsei Mileage · 개발과 검증</p><h3>예측은 훨씬 정확해졌는데, 왜 더 나쁜 배분이 나왔을까?</h3><p>수강신청에서 출발해 확률 모델, 최적화, 실제 결과 검증으로 이어진 과정.</p></div>
       <span class="writing-arrow" aria-hidden="true">↗</span>
