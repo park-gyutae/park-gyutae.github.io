@@ -2,7 +2,7 @@ export const profile = {
   name: '박규태',
   handle: 'park-gyutae',
   github: 'https://github.com/park-gyutae',
-  description: '수학과 통계를 공부하며, 실제 문제를 모델링하고 코드로 실험하는 박규태의 포트폴리오입니다.',
+  description: '연세대학교 수학과 박규태의 포트폴리오. 대수학과 정수론을 공부하며, 현실의 질문을 수학적 모델과 코드로 구현하고 검증합니다.',
 };
 
 export const mileage = {
