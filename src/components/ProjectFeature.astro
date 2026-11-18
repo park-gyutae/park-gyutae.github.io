@@ -4,13 +4,14 @@ import { mileage } from '../data/portfolio';
 <article class="featured-project">
   <a class="project-cover" href={mileage.href} aria-label={`${mileage.title} 프로젝트 보기`}>
     <img src="/images/yonsei-mileage/figure-01-service-overview.png" alt="Yonsei Mileage 서비스 화면" width="1705" height="1115" loading="lazy" decoding="async" />
+    <span class="cover-arrow" aria-hidden="true">↗</span>
   </a>
   <div class="project-card-body">
     <div class="project-story">
-      <p class="eyebrow">PROJECT 01 · {mileage.category}</p>
+      <p class="eyebrow">PERSONAL PROJECT · {mileage.category}</p>
       <h2><a href={mileage.href}>{mileage.title}</a></h2>
       <p class="project-subtitle">{mileage.subtitle}</p>
-      <p class="project-description">과거 수강신청 데이터로 성공확률을 추정하고, 제한된 72점을 최적으로 배분하는 의사결정 도구입니다.</p>
+      <p class="project-description">제한된 마일리지로 원하는 과목을 확보하려면 어떻게 배분해야 할까? 과거 수강신청 데이터를 이용해 성공확률을 추정하고, 배분안을 비교하는 의사결정 도구를 만들었습니다.</p>
       <ul class="topic-list" aria-label="프로젝트 주제">
         {mileage.tags.slice(0, 3).map(tag => <li>{tag}</li>)}
       </ul>
@@ -20,8 +21,10 @@ import { mileage } from '../data/portfolio';
       </div>
     </div>
     <dl class="project-result">
-      <dt>Key result</dt>
-      <dd><strong>30.75%</strong><span>과거 평균 대비<br />예측 오차 감소</span></dd>
+      <dt>MODEL CHECK</dt>
+      <dd><strong>30.75%</strong><span>과거 평균 대비<br />사전 예측 오차 감소</span></dd>
+      <dt class="result-secondary-label">DECISION CHECK</dt>
+      <dd class="result-secondary"><span>예측 정확도와 실제 배분 성과를 따로 검증했습니다.</span></dd>
     </dl>
   </div>
 </article>

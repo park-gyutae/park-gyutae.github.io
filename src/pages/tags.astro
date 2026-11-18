@@ -36,29 +36,33 @@ const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
 
 <style>
   .page-header {
-    padding: 2rem 0;
+    padding: clamp(2.5rem, 6vw, 5rem) 0 1.7rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .page-title {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 500;
+    line-height: .98;
+    letter-spacing: -.09em;
   }
 
   .page-subtitle {
-    font-size: 1.1rem;
+    max-width: 620px;
+    font-size: .98rem;
     color: var(--text-muted);
+    line-height: 1.8;
   }
 
   /* Tags Grid */
   .tags-grid-page {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 2rem;
   }
 
   @media (min-width: 640px) {
@@ -76,25 +80,24 @@ const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
   .tag-item-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 1.5rem;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    text-align: center;
-    transition: all var(--transition-speed) ease;
+    min-height: 88px;
+    padding: 1rem 0;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    text-align: left;
+    transition: border-color var(--transition-speed) ease;
   }
 
   .tag-item-card:hover {
-    transform: translateY(-2px);
     border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   }
 
   .tag-name {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 500;
     color: var(--text-color);
     margin-bottom: 0.25rem;
     transition: color var(--transition-speed) ease;
@@ -105,7 +108,7 @@ const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
   }
 
   .tag-count {
-    font-size: 0.85rem;
+    font: 500 .62rem var(--font-mono);
     color: var(--text-muted);
     font-weight: 500;
   }

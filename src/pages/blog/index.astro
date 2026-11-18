@@ -66,7 +66,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 <style>
 	.page-header {
-		padding: 4rem 0 3rem;
+		padding: clamp(2.5rem, 6vw, 5rem) 0 1.7rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
@@ -75,22 +75,24 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	}
 
 	.page-title {
-		font-size: clamp(2.4rem, 5vw, 4rem);
-		font-weight: 800;
+		font-size: clamp(3.5rem, 8vw, 7rem);
+		font-weight: 500;
+		line-height: .98;
 		letter-spacing: -.055em;
 	}
 
 	.page-subtitle {
-		font-size: 1.1rem;
+		font-size: .98rem;
 		color: var(--text-muted);
+		line-height: 1.8;
 	}
 
 	/* Filter and Search Section */
 	.filter-section {
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
-		margin-bottom: 2.5rem;
+		gap: 1rem;
+		margin: 1.5rem 0 2rem;
 	}
 
 	.search-container {
@@ -100,7 +102,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	.search-icon {
 		position: absolute;
-		left: 1.25rem;
+		left: .3rem;
 		top: 50%;
 		transform: translateY(-50%);
 		color: var(--text-muted);
@@ -109,21 +111,22 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	#search-input {
 		width: 100%;
-		padding: 1rem 1rem 1rem 3.25rem;
-		font-size: 1.05rem;
+		padding: .8rem .4rem .8rem 2.7rem;
+		font-size: .95rem;
 		font-family: inherit;
-		background-color: var(--card-bg);
+		background-color: transparent;
 		color: var(--text-color);
-		border: 1px solid var(--border-color);
-		border-radius: 999px;
-		box-shadow: var(--card-shadow);
+		border: 0;
+		border-bottom: 1px solid var(--border-color);
+		border-radius: 0;
+		box-shadow: none;
 		outline: none;
 		transition: all var(--transition-speed) ease;
 	}
 
 	#search-input:focus {
 		border-color: var(--primary-color);
-		box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
+		box-shadow: 0 1px 0 var(--primary-color);
 	}
 
 	.tags-container {
@@ -134,10 +137,11 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	.tag-filter-btn {
 		font: 500 .72rem var(--font-mono);
-		padding: 0.4rem 1rem;
-		border-radius: 999px;
+		min-height: 36px;
+		padding: .35rem .65rem;
+		border-radius: 0;
 		border: 1px solid var(--border-color);
-		background-color: var(--card-bg);
+		background-color: transparent;
 		color: var(--text-muted);
 		cursor: pointer;
 		transition: all var(--transition-speed) ease;
@@ -149,10 +153,10 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	}
 
 	.tag-filter-btn.active {
-		background-color: var(--primary-color);
-		border-color: var(--primary-color);
-		color: #ffffff;
-		box-shadow: 0 4px 6px -1px rgba(0, 71, 171, 0.2);
+		background-color: var(--text-color);
+		border-color: var(--text-color);
+		color: var(--bg-color);
+		box-shadow: none;
 	}
 
 	/* Posts grid */
@@ -167,13 +171,14 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	}
 
 	.no-posts, .no-results {
-		text-align: center;
-		padding: 4rem 0;
+		text-align: left;
+		padding: 3rem 0;
 		color: var(--text-muted);
 		font-size: 1.1rem;
-		background-color: var(--card-bg);
-		border: 1px dashed var(--border-color);
-		border-radius: 0.75rem;
+		background-color: transparent;
+		border: 0;
+		border-block: 1px solid var(--border-color);
+		border-radius: 0;
 	}
 
 	.hidden {

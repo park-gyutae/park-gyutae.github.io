@@ -32,7 +32,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
 <style>
   .post-card {
     border-top: 1px solid var(--border-color);
-    transition: border-color var(--transition-speed) ease;
+    transition: border-color .2s ease;
   }
 
   .post-card:hover {
@@ -42,13 +42,13 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
   .card-link {
     display: grid;
     grid-template-columns: 130px minmax(0, 1fr) auto;
-    gap: clamp(1.25rem, 4vw, 3rem);
+    gap: clamp(1rem, 3vw, 2.5rem);
     align-items: start;
-    padding: 2rem 0;
+    padding: 1.55rem 0;
   }
 
   .card-meta {
-    font: 500 0.7rem var(--font-mono);
+    font: 500 0.62rem var(--font-mono);
     color: var(--text-muted);
     padding-top: .3rem;
   }
@@ -59,19 +59,19 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
 
   .meta-category {
     color: var(--primary-color);
-    font-weight: 700;
-    font-size: 0.75rem;
-    letter-spacing: 0.03em;
-    margin-bottom: .55rem;
+    font: 500 .62rem var(--font-mono);
+    letter-spacing: .06em;
+    margin-bottom: .4rem;
+    text-transform: uppercase;
   }
 
   .card-title {
-    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
-    font-weight: 700;
-    margin-bottom: 0.6rem;
+    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+    font-weight: 500;
+    margin-bottom: .5rem;
     color: var(--text-color);
-    line-height: 1.45;
-    letter-spacing: -.025em;
+    line-height: 1.35;
+    letter-spacing: -.045em;
     transition: color var(--transition-speed) ease;
   }
 
@@ -80,10 +80,10 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
   }
 
   .card-desc {
-    font-size: 0.92rem;
+    font-size: .86rem;
     color: var(--text-muted);
     margin-bottom: 0;
-    line-height: 1.65;
+    line-height: 1.75;
   }
   .card-arrow { color: var(--text-muted); font-size: 1.3rem; transition: color .2s ease, transform .2s ease; }
   .post-card:hover .card-arrow { color: var(--primary-color); transform: translate(2px, -2px); }
