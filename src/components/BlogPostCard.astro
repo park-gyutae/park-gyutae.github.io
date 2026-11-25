@@ -25,70 +25,32 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
       <h3 class="card-title">{title}</h3>
       <p class="card-desc">{description}</p>
     </div>
-    <span class="card-arrow" aria-hidden="true">↗</span>
+    <span class="card-arrow" aria-hidden="true">→</span>
   </a>
 </article>
 
 <style>
   .post-card {
-    border-top: 1px solid var(--border-color);
-    transition: border-color .2s ease;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
   }
-
-  .post-card:hover {
-    border-color: var(--primary-color);
-  }
-
+  .post-card:focus-within, .post-card:hover { border-color: var(--primary-color); }
   .card-link {
     display: grid;
-    grid-template-columns: 130px minmax(0, 1fr) auto;
-    gap: clamp(1rem, 3vw, 2.5rem);
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
     align-items: start;
-    padding: 1.55rem 0;
+    gap: 1rem;
+    padding: clamp(1rem, 3vw, 1.6rem);
+    border-radius: inherit;
   }
-
-  .card-meta {
-    font: 500 0.62rem var(--font-mono);
-    color: var(--text-muted);
-    padding-top: .3rem;
-  }
-
-  .meta-separator {
-    color: var(--border-color);
-  }
-
-  .meta-category {
-    color: var(--primary-color);
-    font: 500 .62rem var(--font-mono);
-    letter-spacing: .06em;
-    margin-bottom: .4rem;
-    text-transform: uppercase;
-  }
-
-  .card-title {
-    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-    font-weight: 500;
-    margin-bottom: .5rem;
-    color: var(--text-color);
-    line-height: 1.35;
-    letter-spacing: -.045em;
-    transition: color var(--transition-speed) ease;
-  }
-
-  .post-card:hover .card-title {
-    color: var(--primary-color);
-  }
-
-  .card-desc {
-    font-size: .86rem;
-    color: var(--text-muted);
-    margin-bottom: 0;
-    line-height: 1.75;
-  }
-  .card-arrow { color: var(--text-muted); font-size: 1.3rem; transition: color .2s ease, transform .2s ease; }
-  .post-card:hover .card-arrow { color: var(--primary-color); transform: translate(2px, -2px); }
+  .card-meta { color: var(--text-muted); font-size: .8rem; padding-top: .22rem; }
+  .meta-category { color: var(--primary-color); font-size: .76rem; font-weight: 700; margin-bottom: .35rem; }
+  .card-title { font-size: clamp(1.1rem, 2.4vw, 1.5rem); margin-bottom: .4rem; line-height: 1.35; letter-spacing: -.035em; overflow-wrap: anywhere; }
+  .card-desc { color: var(--text-muted); margin: 0; line-height: 1.7; overflow-wrap: anywhere; }
+  .card-arrow { color: var(--primary-color); font-size: 1.25rem; }
   @media (max-width: 640px) {
-    .card-link { grid-template-columns: 1fr auto; gap: .75rem 1rem; }
+    .card-link { grid-template-columns: minmax(0, 1fr) auto; gap: .55rem .75rem; }
     .card-meta { grid-column: 1 / -1; padding: 0; }
   }
 </style>

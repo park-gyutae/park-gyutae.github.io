@@ -11,9 +11,9 @@ const posts = (await getCollection('blog', ({ data }) => {
 const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.trim().toLowerCase())))];
 ---
 
-<Layout title="프로젝트 기록 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
+<Layout title="글 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
 	<section class="page-header">
-		<h1 class="page-title">프로젝트 기록</h1>
+		<h1 class="page-title">글</h1>
 		<p class="page-subtitle">문제를 정의하고, 만들고, 실제 결과를 확인하며 배운 것들.</p>
 	</section>
 
@@ -75,9 +75,9 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	}
 
 	.page-title {
-		font-size: clamp(3.5rem, 8vw, 7rem);
-		font-weight: 500;
-		line-height: .98;
+		font-size: clamp(2.75rem, 6vw, 4.8rem);
+		font-weight: 700;
+		line-height: 1.1;
 		letter-spacing: -.055em;
 	}
 
@@ -102,7 +102,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	.search-icon {
 		position: absolute;
-		left: .3rem;
+		left: .9rem;
 		top: 50%;
 		transform: translateY(-50%);
 		color: var(--text-muted);
@@ -114,11 +114,10 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 		padding: .8rem .4rem .8rem 2.7rem;
 		font-size: .95rem;
 		font-family: inherit;
-		background-color: transparent;
+		background-color: var(--card-bg);
 		color: var(--text-color);
-		border: 0;
-		border-bottom: 1px solid var(--border-color);
-		border-radius: 0;
+		border: 1px solid var(--border-color);
+		border-radius: 10px;
 		box-shadow: none;
 		outline: none;
 		transition: all var(--transition-speed) ease;
@@ -137,9 +136,9 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	.tag-filter-btn {
 		font: 500 .72rem var(--font-mono);
-		min-height: 36px;
+		min-height: 40px;
 		padding: .35rem .65rem;
-		border-radius: 0;
+		border-radius: 8px;
 		border: 1px solid var(--border-color);
 		background-color: transparent;
 		color: var(--text-muted);
@@ -161,13 +160,8 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 
 	/* Posts grid */
 	.posts-grid {
-		display: block;
-	}
-
-	@media (min-width: 640px) {
-		.posts-grid {
-			display: block;
-		}
+		display: grid;
+		gap: .75rem;
 	}
 
 	.no-posts, .no-results {

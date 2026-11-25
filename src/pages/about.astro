@@ -19,7 +19,6 @@ import { profile } from '../data/portfolio';
         <img src="/avatar.webp" alt="박규태의 프로필 사진" width="540" height="660" loading="eager" decoding="async" />
         <figcaption><span>SEOUL, KR</span><span>MATHEMATICS · 2024—</span></figcaption>
       </figure>
-      <div class="hero-index" aria-hidden="true">PROFILE / 01</div>
     </section>
 
     <section class="focus-section" aria-labelledby="focus-title">
@@ -81,20 +80,19 @@ import { profile } from '../data/portfolio';
 
 <style>
   .about-page {
-    --page-ink: #172421;
-    --page-muted: #69736d;
-    --page-accent: #bf5a35;
+    --page-ink: var(--text-color);
+    --page-muted: var(--text-muted);
+    --page-accent: var(--primary-color);
     --page-line: color-mix(in srgb, var(--text-color) 18%, transparent);
     color: var(--text-color);
     padding: clamp(2.2rem, 5vw, 4.75rem) 0 2rem;
   }
-  [data-theme="dark"] .about-page { --page-ink: #edf1eb; --page-muted: #a5ada5; --page-accent: #e79570; }
-  .about-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .72fr); align-items: center; gap: clamp(2.5rem, 7vw, 7rem); min-height: min(740px, calc(100svh - 8rem)); padding: 0 0 clamp(4rem, 8vw, 7rem); }
+  .about-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .72fr); align-items: center; gap: clamp(2.5rem, 7vw, 7rem); min-height: 0; padding: 0 0 clamp(4rem, 8vw, 7rem); }
   .hero-copy { position: relative; z-index: 1; }
   .eyebrow, .section-kicker, .hero-index, .portrait-frame figcaption, .work-overline, .focus-tags, .education-detail > span, .contact-label, .contact-meta { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; }
   .eyebrow { display: flex; align-items: center; gap: .7rem; margin-bottom: clamp(2rem, 5vw, 4.5rem); color: var(--text-muted); font-size: .7rem; }
   .eyebrow-mark { color: var(--page-accent); font-size: 1.3rem; }
-  .about-hero h1 { margin: 0 0 1.3rem; color: var(--page-ink); font-size: clamp(5.4rem, 13vw, 11.5rem); font-weight: 500; line-height: .84; letter-spacing: -.105em; }
+  .about-hero h1 { margin: 0 0 1.3rem; color: var(--page-ink); font-size: clamp(3.3rem, 8.5vw, 6.5rem); font-weight: 700; line-height: 1.04; letter-spacing: -.075em; }
   .name-period { color: var(--page-accent); }
   .hero-statement { margin: 0; color: var(--page-ink); font-size: clamp(1.5rem, 3vw, 2.6rem); font-weight: 500; line-height: 1.55; letter-spacing: -.06em; word-break: keep-all; }
   .hero-statement em { color: var(--page-accent); font-family: var(--font-serif); font-size: 1.12em; font-weight: 500; letter-spacing: -.035em; }
@@ -129,7 +127,7 @@ import { profile } from '../data/portfolio';
   .work-visual { position: relative; display: block; overflow: hidden; background: #121212; }
   .work-visual img { display: block; width: 100%; height: clamp(250px, 43vw, 560px); object-fit: cover; object-position: center 20%; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
   .work-visual:hover img { transform: scale(1.025); }
-  .visual-arrow { position: absolute; right: 1rem; bottom: 1rem; display: grid; place-items: center; width: 3rem; height: 3rem; background: #f4f2ed; color: #172421; font-size: 1.2rem; transition: background .2s ease, color .2s ease; }
+  .visual-arrow { position: absolute; right: 1rem; bottom: 1rem; display: grid; place-items: center; width: 3rem; height: 3rem; background: #f4f2ed; color: var(--text-color); font-size: 1.2rem; transition: background .2s ease, color .2s ease; }
   .work-visual:hover .visual-arrow { background: var(--page-accent); color: white; }
   .work-foot { display: grid; grid-template-columns: 1.2fr .8fr; align-items: start; gap: 2rem; padding-top: 1.3rem; }
   .work-foot > p { max-width: 650px; margin: 0; color: var(--page-muted); font-size: .92rem; line-height: 1.8; word-break: keep-all; }

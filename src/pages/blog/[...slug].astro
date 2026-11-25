@@ -69,7 +69,6 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 					<time datetime={pubDate.toISOString()}>{formattedDate}</time>
 					<span>읽는 시간 {readingMinutes}분</span>
 					<span>{project === 'yonsei-mileage' ? '확률 · 최적화' : tags.slice(0, 2).join(' · ')}</span>
-					<span>Research Note</span>
 					{formattedUpdatedDate && (
 						<span class="updated-date">
 							수정 {formattedUpdatedDate}
@@ -82,7 +81,7 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 
 				{project === 'yonsei-mileage' && (
 					<div class="article-signature-equation" aria-label="이 글의 핵심 최적화 식">
-						<span>CORE MODEL</span>
+						<span>핵심 모형</span>
 						<MathFormula display expression={String.raw`\max_{m_1,\ldots,m_n}\;\sum_i w_iP_i(m_i)\quad\text{s.t.}\quad\sum_i m_i\le72`} />
 					</div>
 				)}
@@ -112,7 +111,7 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 			<!-- 1. Mobile-Only Inline Table of Contents (Visible only on mobile/tablet) -->
 			{headings && headings.length > 0 && (
 				<details class="post-toc-inline">
-					<summary class="toc-title"><span>목차</span><small>{tocHeadings.length} sections</small></summary>
+					<summary class="toc-title"><span>목차</span><small>{tocHeadings.length}개</small></summary>
 					<ul class="toc-list">
 						{tocHeadings.map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
@@ -217,7 +216,7 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 		transition: width 0.1s ease-out;
 	}
 
-	.reading-section-status { position: fixed; top: 5rem; left: 50%; z-index: 45; max-width: min(520px, 70vw); padding: .42rem .8rem; overflow: hidden; border: 1px solid var(--border-color); border-top: 0; border-radius: 0 0 10px 10px; background: var(--header-bg); color: var(--text-muted); font-size: .72rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; opacity: 0; transform: translate(-50%, -8px); backdrop-filter: blur(18px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; }
+	.reading-section-status { position: fixed; top: 4.6rem; left: 50%; z-index: 45; max-width: min(520px, 70vw); padding: .42rem .8rem; overflow: hidden; border: 1px solid var(--border-color); border-top: 0; border-radius: 0 0 10px 10px; background: var(--header-bg); color: var(--text-muted); font-size: .72rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; opacity: 0; transform: translate(-50%, -8px); backdrop-filter: blur(18px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; }
 	.reading-section-status.visible { opacity: 1; transform: translate(-50%, 0); }
 
 	/* 2-column post page layout container */
@@ -266,14 +265,13 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 	.article-header {
 		margin-bottom: 2.5rem;
 		max-width: 720px;
-		margin-inline: auto;
 	}
 
 	.article-meta {
 		display: flex;
 		flex-wrap: wrap;
 		gap: .45rem 1rem;
-		font: 500 .62rem var(--font-mono);
+		font: 500 .85rem var(--font-sans);
 		color: var(--text-muted);
 		margin-bottom: 1.35rem;
 		font-weight: 500;
@@ -281,14 +279,15 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 	}
 
 	.article-meta > * { padding: 0; border: 0; border-radius: 0; background: none; }
-	.article-meta time, .article-meta > span:last-of-type { color: var(--primary-color); }
+	.article-meta time { color: var(--primary-color); }
 
 	.article-title {
-		font-size: clamp(2.5rem, 5.5vw, 4.8rem);
+		font-size: clamp(2rem, 4.75vw, 3.9rem);
 		word-break: keep-all;
-		font-weight: 500;
-		line-height: 1.1;
-		letter-spacing: -.07em;
+		font-weight: 700;
+		line-height: 1.18;
+		letter-spacing: -.045em;
+		overflow-wrap: anywhere;
 		margin-bottom: 1rem;
 		color: var(--text-color);
 	}
@@ -349,11 +348,10 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 	/* 1. Mobile-Only Inline Table of Contents */
 	.post-toc-inline {
 		border: 1px solid var(--border-color);
-		border-radius: 0;
+		border-radius: 12px;
 		padding: 0;
 		margin-bottom: 2.5rem;
-		background: transparent;
-		border-inline: 0;
+		background: var(--card-bg);
 		display: block;
 	}
 	.post-toc-inline[open] { padding-bottom: .75rem; }
@@ -436,11 +434,10 @@ const tocHeadings = headings.filter(h => h.depth <= tocDepth);
 		max-height: calc(100vh - 8rem);
 		overflow-y: auto;
 		padding: 1rem 0;
-		border: 0;
-		border-block: 1px solid var(--border-color);
-		border-radius: 0;
-		background: transparent;
-		box-shadow: none;
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		background: var(--card-bg);
+		padding: 1rem;
 		scrollbar-width: thin;
 	}
 	.toc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: .9rem; }
