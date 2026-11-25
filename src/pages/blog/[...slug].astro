@@ -47,7 +47,7 @@ const titleFont = `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@7
 const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 ---
 
-<Layout title={title} description={description} image={heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
+<Layout title={title} description={description} image={isMileage ? '/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png' : heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
 	{isMileage && <link slot="head" rel="stylesheet" href={titleFont} />}
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
@@ -107,7 +107,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 
 			<!-- 1. Mobile-Only Inline Table of Contents (Visible only on mobile/tablet) -->
 			{tocHeadings.length > 0 && (
-				<details class="post-toc-inline">
+				<details class="post-toc-inline" id="article-contents">
 					<summary class="toc-title"><span>목차</span><small>{tocHeadings.length}개</small></summary>
 					<ul class="toc-list">
 						{tocHeadings.map((h) => (
@@ -184,6 +184,8 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		)}
 	</div>
 
+	{tocHeadings.length > 0 && <button id="return-to-contents" class="return-to-contents" type="button" hidden>목차로</button>}
+
 	<!-- Scroll To Top Button -->
 	<button id="scroll-to-top" class="scroll-to-top-btn" aria-label="맨 위로">
 		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -243,6 +245,24 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
   .nav-card { display: flex; flex-direction: column; }
   .scroll-to-top-btn { position: fixed; bottom: 1rem; right: 1rem; display: none; place-items: center; width: 44px; height: 44px; padding: .35rem; border: 1px solid var(--text-muted); border-radius: 4px; background: var(--bg-color); color: var(--primary-color); cursor: pointer; }
   .scroll-to-top-btn.visible { display: grid; }
+  .return-to-contents { display: none; }
+  @media (max-width: 959px) {
+    .return-to-contents:not([hidden]) {
+      position: fixed;
+      bottom: 1rem;
+      right: 4.25rem;
+      z-index: 2;
+      display: block;
+      min-height: 44px;
+      padding: .3rem .65rem;
+      border: 1px solid var(--text-muted);
+      border-radius: 4px;
+      color: var(--primary-color);
+      background: var(--bg-color);
+      cursor: pointer;
+    }
+  }
+  @media print { .return-to-contents { display: none !important; } }
   .image-lightbox { width: min(1080px, 100% - 2rem); max-height: calc(100vh - 2rem); padding: .8rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-color); }
   .image-lightbox::backdrop { background: rgb(0 0 0 / .65); }
   .image-lightbox img { display: block; max-height: 74vh; margin-inline: auto; object-fit: contain; }
@@ -282,6 +302,25 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		mileageControl.hidden = false;
 	}
 
+	const inlineContents = document.querySelector<HTMLDetailsElement>('#article-contents');
+	const contentsButton = document.querySelector<HTMLButtonElement>('#return-to-contents');
+	const scrollToTopBtn = document.getElementById('scroll-to-top');
+
+	contentsButton?.addEventListener('click', () => {
+		if (!inlineContents) return;
+		inlineContents.open = true;
+		inlineContents.querySelector('summary')?.focus({ preventScroll: true });
+		inlineContents.scrollIntoView();
+	});
+	if (inlineContents && contentsButton) {
+		const updateContentsButton = () => {
+			contentsButton.hidden = inlineContents.getBoundingClientRect().bottom >= 0;
+		};
+		window.addEventListener('scroll', updateContentsButton, { passive: true });
+		window.addEventListener('resize', updateContentsButton);
+		updateContentsButton();
+	}
+
 	// Scroll progress indicator
 	window.addEventListener('scroll', () => {
 		const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
@@ -295,20 +334,11 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		const tocProgress = document.getElementById('toc-progress-fill');
 		if (tocProgress) tocProgress.style.width = scrolled + '%';
 
-		// Scroll to top button visibility
-		const scrollToTopBtn = document.getElementById('scroll-to-top');
-		if (scrollToTopBtn) {
-			if (winScroll > 300) {
-				scrollToTopBtn.classList.add('visible');
-			} else {
-				scrollToTopBtn.classList.remove('visible');
-			}
-		}
+		scrollToTopBtn?.classList.toggle('visible', winScroll > 300);
 		if (readingStatus && winScroll <= 420) readingStatus.classList.remove('visible');
 	});
 
 	// Scroll to top action
-	const scrollToTopBtn = document.getElementById('scroll-to-top');
 	scrollToTopBtn?.addEventListener('click', () => {
 		window.scrollTo({
 			top: 0,
@@ -424,9 +454,11 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 						const href = link.getAttribute('href');
 						if (href === `#${currentActiveId}`) {
 							link.classList.add('active');
+							link.setAttribute('aria-current', 'location');
 							if (link.closest('.post-toc-sidebar')) activeLink = link;
 						} else {
 							link.classList.remove('active');
+							link.removeAttribute('aria-current');
 						}
 					});
 					if (readingStatus) {
