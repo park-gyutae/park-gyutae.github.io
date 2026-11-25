@@ -5,7 +5,6 @@ const pathname = Astro.url.pathname;
 <header class="site-header">
   <div class="container header-content">
     <a href="/" class="logo">
-      <span class="logo-mark">∴</span>
       <span>박규태</span>
     </a>
     
@@ -101,5 +100,5 @@ const pathname = Astro.url.pathname;
     }
   });
   navLinks?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenuOpen(false)));
-  window.matchMedia('(max-width: 768px)').addEventListener('change', () => setMenuOpen(false));
+  window.matchMedia('(max-width: 540px)').addEventListener('change', () => setMenuOpen(false));
 </script>

@@ -3,15 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
 ---
 <Layout title="프로젝트 | 박규태" description="실제 문제를 수학과 통계로 모델링하고 구현한 프로젝트. Yonsei Mileage의 설계와 검증 과정을 소개합니다." isWide={true}>
-  <section class="projects-intro">
+  <section class="page-header">
     <h1>프로젝트</h1>
-    <p class="lead">실제 질문을 수학적 모델로 옮기고, 구현과 데이터로 그 가정을 확인합니다.</p>
+    <p class="page-subtitle">실제 질문을 수학적 모델로 옮기고, 구현과 데이터로 그 가정을 확인합니다.</p>
   </section>
   <ProjectFeature />
 </Layout>
-
-<style>
-  .projects-intro { max-width: 900px; padding: clamp(2rem, 6vw, 5rem) 0 clamp(3rem, 7vw, 6rem); }
-  .projects-intro h1 { margin: 0; font-size: clamp(2.75rem, 6vw, 4.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -.055em; word-break: keep-all; }
-  .projects-intro .lead { max-width: 600px; margin: 1.7rem 0 0; color: var(--text-muted); font-size: 1.03rem; line-height: 1.85; word-break: keep-all; }
-</style>
