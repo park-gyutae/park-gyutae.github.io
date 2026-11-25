@@ -3,7 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import MileageResults from '../../components/MileageResults.astro';
 import 'katex/dist/katex-swap.min.css';
-import { profile, mileage } from '../../data/portfolio';
+import { profile, mileage, rsr } from '../../data/portfolio';
 
 export async function getStaticPaths() {
 	const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -102,6 +102,9 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
               <a class="text-link" href={mileage.href}>프로젝트 개요</a>
               <a class="text-link" href={mileage.demo} target="_blank" rel="noopener noreferrer">서비스</a>
               <a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>}
+            {post.slug === rsr.slug && <nav class="article-project-links action-links" aria-label="관련 프로젝트">
+              <a class="text-link" href={rsr.href}>프로젝트 개요</a>
             </nav>}
             <hr class="header-divider" />
 

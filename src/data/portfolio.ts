@@ -16,3 +16,11 @@ export const mileage = {
   demo: 'https://yonsei-timetable.vercel.app/',
   tags: ['통계적 모델링', '확률', '최적화', 'Python'],
 };
+
+export const rsr = {
+  title: 'Relational Stock Ranking 재현 연구',
+  subtitle: '관계 정보는 정말 주식 순위 예측에 도움이 되는가?',
+  description: '기업 관계 그래프 세 종류를 연도별로 구축하고, 실제 관계와 노드 셔플링 대조군의 주식 순위 예측 성능을 비교했습니다.',
+  href: '/projects/rsr-reproduction/',
+  slug: 'rsr-research-retrospective',
+};

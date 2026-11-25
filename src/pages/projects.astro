@@ -2,19 +2,25 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
+import { rsr } from '../data/portfolio';
 
-const rsr = await getEntry('blog', 'rsr-research-retrospective');
+const rsrPost = await getEntry('blog', rsr.slug);
 ---
-<Layout title="프로젝트 | 박규태" description="실제 문제를 수학과 통계로 모델링하고 구현한 프로젝트. Yonsei Mileage의 설계와 검증 과정을 소개합니다." isWide={true}>
+<Layout title="프로젝트 | 박규태" description="실제 문제를 수학과 통계로 모델링하고 구현한 프로젝트. Yonsei Mileage와 RSR 재현 연구의 설계와 검증 과정을 소개합니다." isWide={true}>
   <section class="page-header">
     <h1>프로젝트</h1>
     <p class="page-subtitle">실제 질문을 수학적 모델로 옮기고, 구현과 데이터로 그 가정을 확인합니다.</p>
   </section>
   <ProjectFeature />
-  {rsr && !rsr.data.draft && (
-    <section class="reading-width">
-      <h2><a href={`/blog/${rsr.slug}/`}>{rsr.data.title}</a></h2>
-      <p>{rsr.data.subtitle}</p>
-    </section>
+  {rsrPost && !rsrPost.data.draft && (
+    <article class="reading-width">
+      <h2><a href={rsr.href}>{rsr.title}</a></h2>
+      <p>{rsr.description}</p>
+      <p>NASDAQ 2017년 테스트에서 실제 결합 그래프의 평균 MRR은 0.0388, 셔플 그래프는 0.0384였습니다.</p>
+      <div class="action-links">
+        <a href={rsr.href + '#results'}>검증 결과</a>
+        <a href={`/blog/${rsr.slug}/`}>기술 글</a>
+      </div>
+    </article>
   )}
 </Layout>
