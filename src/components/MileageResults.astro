@@ -1,0 +1,73 @@
+---
+const panels = [
+  {
+    title: '예측 오차 (MAE)',
+    context: '2,623개 분반 · 낮을수록 좋음',
+    max: 6,
+    end: '6점',
+    rows: [
+      { label: '과거 평균', value: 2.2410 },
+      { label: '사전 모델', value: 1.5519, highlight: true },
+      { label: '기존 배포', value: 5.6515 },
+    ],
+    format: (value: number) => value.toFixed(4),
+  },
+  {
+    title: '실제 배분 효용',
+    context: '886개 재현 조합 · 최적 배분 대비 · 높을수록 좋음',
+    max: 100,
+    end: '100%',
+    rows: [
+      { label: '사전 모델', value: 85.74, highlight: true },
+      { label: '기존 배포', value: 87.44 },
+    ],
+    format: (value: number) => `${value.toFixed(2)}%`,
+  },
+];
+---
+
+<figure class="mileage-results">
+  <figcaption>Yonsei Mileage · 2026-2 검증 결과</figcaption>
+  <div class="result-panels">
+    {panels.map(panel => (
+      <section aria-label={panel.title}>
+        <p class="metric-title">{panel.title}</p>
+        <p class="metric-context">{panel.context}</p>
+        <dl>
+          {panel.rows.map(row => (
+            <div class:list={['metric-row', { highlight: row.highlight }]}>
+              <dt>{row.label}</dt>
+              <dd>
+                <span class="track" aria-hidden="true">
+                  <span class="bar" style={`width: ${row.value / panel.max * 100}%`}></span>
+                </span>
+                <span class="value">{panel.format(row.value)}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <div class="axis" aria-hidden="true"><span>0</span><span>{panel.end}</span></div>
+      </section>
+    ))}
+  </div>
+</figure>
+
+<style>
+  .mileage-results { margin-block: 1.25rem; padding-block: .75rem; border-block: 1px solid var(--border-color); }
+  figcaption { margin: 0 0 .7rem; color: var(--text-color); font-size: .88rem; font-weight: 650; }
+  .result-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem 1.2rem; }
+  .metric-title { margin: 0; font-size: .9rem; font-weight: 650; }
+  .metric-context { margin: 0 0 .45rem; color: var(--text-muted); font-size: .75rem; line-height: 1.45; }
+  dl { margin: 0; font-size: .76rem; font-variant-numeric: tabular-nums; }
+  .metric-row { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); align-items: center; }
+  .axis { display: flex; justify-content: space-between; margin: .1rem 3.65rem 0 4.25rem; color: var(--text-muted); font-size: .68rem; }
+  dd { display: grid; grid-template-columns: minmax(0, 1fr) 3.65rem; align-items: center; margin: 0; }
+  .track { height: .5rem; background: var(--card-bg); }
+  .bar { display: block; height: 100%; background: var(--text-muted); }
+  .value { text-align: right; }
+  .highlight .bar { background: var(--primary-color); }
+  .highlight .value { color: var(--primary-color); font-weight: 700; }
+  @media (max-width: 550px) {
+    .result-panels { grid-template-columns: 1fr; }
+  }
+</style>

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import BlogPostCard from '../components/BlogPostCard.astro';
+import MileageResults from '../components/MileageResults.astro';
 import { mileage, profile } from '../data/portfolio';
 
 const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -29,12 +30,17 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
 
   <section class="portfolio-section" aria-labelledby="projects-heading">
     <div class="section-heading"><h2 id="projects-heading">대표 프로젝트</h2><a class="text-link" href="/projects/">모든 프로젝트</a></div>
-    <h3>Yonsei Mileage</h3>
-    <p class="project-question">한정된 수강신청 마일리지를 원하는 과목에 어떻게 나눠야 할까? 예측 오차를 줄인 모델이 실제 배분 성과도 높였는지 검증했습니다.</p>
-    <div class="action-links">
-      <a href={mileage.href}>프로젝트 개요</a>
-      <a href={mileage.article}>기술 글</a>
-      <a href={mileage.github}>코드</a>
+    <div class="selected-work">
+      <div>
+        <h3>Yonsei Mileage</h3>
+        <p class="project-question">한정된 수강신청 마일리지를 원하는 과목에 어떻게 나눠야 할까? 예측 오차를 줄인 모델이 실제 배분 성과도 높였는지 검증했습니다.</p>
+        <div class="action-links">
+          <a href={mileage.href}>프로젝트 개요</a>
+          <a href={mileage.article}>기술 글</a>
+          <a href={mileage.github}>코드</a>
+        </div>
+      </div>
+      <MileageResults />
     </div>
   </section>
 
@@ -57,6 +63,9 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .home-focus-label { margin-bottom: .2rem; font-weight: 650; }
   .home-focus ul { display: flex; flex-wrap: wrap; gap: .15rem 1.35rem; list-style: none; padding: 0; margin: 0; color: var(--text-muted); }
   .portfolio-section { margin-top: 2rem; }
+  .selected-work { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 1rem 2rem; }
+  .selected-work > :global(.mileage-results) { margin-block: 0; }
+  @media (max-width: 900px) { .selected-work { grid-template-columns: minmax(0, 1fr); } }
   .project-question { max-width: var(--article-width); margin-bottom: .4rem; }
   @media (max-width: 480px) {
     .home-introduction { grid-template-columns: minmax(0, 1fr) 82px; gap: .85rem; }

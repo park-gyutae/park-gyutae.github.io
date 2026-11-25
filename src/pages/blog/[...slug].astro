@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import MileageResults from '../../components/MileageResults.astro';
 import 'katex/dist/katex-swap.min.css';
 import { profile, mileage } from '../../data/portfolio';
 
@@ -41,10 +42,13 @@ const formattedUpdatedDate = updatedDate ? new Date(updatedDate).toLocaleDateStr
 }) : null;
 const plainBody = post.body.replace(/<[^>]+>|[#>*_`$\[\]()-]/g, ' ');
 const readingMinutes = Math.max(1, Math.ceil(plainBody.split(/\s+/).filter(Boolean).length / 350));
+const isMileage = project === 'yonsei-mileage';
+const titleFont = `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap&text=${encodeURIComponent(title)}`;
 const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 ---
 
 <Layout title={title} description={description} image={heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
+	{isMileage && <link slot="head" rel="stylesheet" href={titleFont} />}
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
 	<div id="reading-section-status" class="reading-section-status" aria-hidden="true"></div>
@@ -69,11 +73,13 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 					)}
 				</div>
 				
-				<h1 class="article-title">{title}</h1>
+				<h1 class:list={['article-title', { 'article-title-serif': isMileage }]}>{title}</h1>
 
 				{project === 'yonsei-mileage' && (
 					<p class="article-finding">2026-2 수강신청을 검증한 결과, 사전 모델은 과거 평균보다 예측 오차를 30.75% 줄였습니다. 하지만 886개 과목 조합을 재현한 실험에서 이 모델로 배분했을 때의 평균 확보 효용은 기존 배포 모델로 배분했을 때보다 낮았습니다.</p>
 				)}
+
+				{isMileage && <MileageResults />}
 
 				<p class="article-desc">{subtitle || description}</p>
 
@@ -202,6 +208,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
   .article-meta, .article-tags { display: flex; flex-wrap: wrap; gap: .2rem .85rem; font-size: .85rem; }
   .article-meta { margin-bottom: .6rem; color: var(--text-muted); }
   .article-title { font-size: clamp(1.85rem, 3.6vw, 2.55rem); overflow-wrap: anywhere; }
+  .article-title-serif { font-family: "Noto Serif KR", "Noto Serif CJK KR", Batang, serif; font-weight: 700; line-height: 1.38; letter-spacing: -.045em; word-break: keep-all; }
   .article-desc { color: var(--text-muted); }
   .article-project-links { margin: .85rem 0 0; }
   .hero-image { display: block; margin-top: 1rem; }
@@ -241,9 +248,40 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
   .image-lightbox img { display: block; max-height: 74vh; margin-inline: auto; object-fit: contain; }
   .image-lightbox p { margin: .65rem 0 0; color: var(--text-muted); font-size: .88rem; }
   .lightbox-close { display: block; width: 44px; height: 44px; margin: 0 0 .5rem auto; border: 1px solid var(--text-muted); border-radius: 3px; background: var(--bg-color); color: var(--text-color); cursor: pointer; }
+  .prose :global(.mileage-example) { margin-block: 1.5rem; padding: .8rem 1rem; background: var(--card-bg); }
+  .prose :global(.mileage-example figcaption) { margin: 0 0 .6rem; }
+  .prose :global(.mileage-example output) { display: block; margin-block: .45rem; }
+  .prose :global(.mileage-example select) { margin-left: .45rem; min-height: 44px; padding-inline: .35rem; font: inherit; color: var(--text-color); background: var(--bg-color); border: 1px solid var(--text-muted); border-radius: 3px; }
+  .prose :global(.mileage-example-track) { display: block; height: .5rem; background: var(--border-color); }
+  .prose :global(.mileage-example-track > span) { display: block; height: 100%; background: var(--primary-color); }
+  .prose :global(.mileage-example p) { margin: .5rem 0 0; color: var(--text-muted); font-size: .84rem; }
 </style>
 
 <script>
+	const mileageExample = document.querySelector('#mileage-example');
+	const mileageSelect = mileageExample?.querySelector('select');
+	const mileageOutput = mileageExample?.querySelector('output');
+	const mileageBar = mileageExample?.querySelector<HTMLElement>('.mileage-example-track > span');
+	const mileageControl = mileageExample?.querySelector<HTMLElement>('.mileage-control');
+
+	if (mileageSelect && mileageOutput && mileageBar && mileageControl) {
+		const updateMileage = () => {
+			const selected = mileageSelect.options[mileageSelect.selectedIndex];
+			const previous = mileageSelect.options[mileageSelect.selectedIndex - 1];
+			const probability = Number(selected.value);
+			const change = previous
+				? ` ${previous.text}보다 ${(probability - Number(previous.value)).toFixed(2)}%p 높습니다.`
+				: '';
+			const value = document.createElement('strong');
+			value.textContent = `${probability.toFixed(2)}%`;
+			mileageOutput.replaceChildren(`${selected.text}에서 성공확률 `, value, '.', change);
+			mileageBar.style.width = `${probability}%`;
+		};
+		mileageSelect.addEventListener('change', updateMileage);
+		updateMileage();
+		mileageControl.hidden = false;
+	}
+
 	// Scroll progress indicator
 	window.addEventListener('scroll', () => {
 		const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
