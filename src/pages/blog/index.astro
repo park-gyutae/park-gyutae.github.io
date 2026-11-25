@@ -11,16 +11,16 @@ const posts = (await getCollection('blog', ({ data }) => {
 const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.trim().toLowerCase())))];
 ---
 
-<Layout title="프로젝트 기록 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
+<Layout title="글 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
 	<section class="page-header">
-		<h1 class="page-title">프로젝트 기록</h1>
+		<h1 class="page-title">글</h1>
 		<p class="page-subtitle">문제를 정의하고, 만들고, 실제 결과를 확인하며 배운 것들.</p>
 	</section>
 
 	<!-- Filter / Search Section -->
-	<section class="filter-section">
+	<section class="filter-section" aria-label="글 검색과 태그 필터">
 		<div class="search-container">
-			<svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<svg aria-hidden="true" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<circle cx="11" cy="11" r="8"></circle>
 				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 			</svg>
@@ -53,7 +53,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 						data-description={post.data.description.toLowerCase()}
 						data-tags={JSON.stringify(post.data.tags.map(t => t.trim().toLowerCase()))}
 					>
-						<BlogPostCard post={post} />
+						<BlogPostCard post={post} headingLevel="h2" />
 					</div>
 				))}
 			</div>
@@ -65,125 +65,18 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 </Layout>
 
 <style>
-	.page-header {
-		padding: clamp(2.5rem, 6vw, 5rem) 0 1.7rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		border-bottom: 1px solid var(--border-color);
-		margin-bottom: 2rem;
-	}
-
-	.page-title {
-		font-size: clamp(3.5rem, 8vw, 7rem);
-		font-weight: 500;
-		line-height: .98;
-		letter-spacing: -.055em;
-	}
-
-	.page-subtitle {
-		font-size: .98rem;
-		color: var(--text-muted);
-		line-height: 1.8;
-	}
-
-	/* Filter and Search Section */
-	.filter-section {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		margin: 1.5rem 0 2rem;
-	}
-
-	.search-container {
-		position: relative;
-		width: 100%;
-	}
-
-	.search-icon {
-		position: absolute;
-		left: .3rem;
-		top: 50%;
-		transform: translateY(-50%);
-		color: var(--text-muted);
-		pointer-events: none;
-	}
-
-	#search-input {
-		width: 100%;
-		padding: .8rem .4rem .8rem 2.7rem;
-		font-size: .95rem;
-		font-family: inherit;
-		background-color: transparent;
-		color: var(--text-color);
-		border: 0;
-		border-bottom: 1px solid var(--border-color);
-		border-radius: 0;
-		box-shadow: none;
-		outline: none;
-		transition: all var(--transition-speed) ease;
-	}
-
-	#search-input:focus {
-		border-color: var(--primary-color);
-		box-shadow: 0 1px 0 var(--primary-color);
-	}
-
-	.tags-container {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.tag-filter-btn {
-		font: 500 .72rem var(--font-mono);
-		min-height: 36px;
-		padding: .35rem .65rem;
-		border-radius: 0;
-		border: 1px solid var(--border-color);
-		background-color: transparent;
-		color: var(--text-muted);
-		cursor: pointer;
-		transition: all var(--transition-speed) ease;
-	}
-
-	.tag-filter-btn:hover {
-		background-color: var(--border-color);
-		color: var(--text-color);
-	}
-
-	.tag-filter-btn.active {
-		background-color: var(--text-color);
-		border-color: var(--text-color);
-		color: var(--bg-color);
-		box-shadow: none;
-	}
-
-	/* Posts grid */
-	.posts-grid {
-		display: block;
-	}
-
-	@media (min-width: 640px) {
-		.posts-grid {
-			display: block;
-		}
-	}
-
-	.no-posts, .no-results {
-		text-align: left;
-		padding: 3rem 0;
-		color: var(--text-muted);
-		font-size: 1.1rem;
-		background-color: transparent;
-		border: 0;
-		border-block: 1px solid var(--border-color);
-		border-radius: 0;
-	}
-
-	.hidden {
-		display: none !important;
-	}
+  .filter-section { display: grid; gap: .7rem; max-width: var(--article-width); margin-bottom: 1.25rem; }
+  .search-container { position: relative; }
+  .search-icon { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+  #search-input { width: 100%; min-height: 42px; padding: .35rem .65rem .35rem 2.35rem; border: 1px solid var(--text-muted); border-radius: 3px; color: var(--text-color); background: var(--bg-color); }
+  .tags-container { display: flex; flex-wrap: wrap; gap: .2rem .8rem; }
+  .tag-filter-btn { min-height: 32px; padding: .05rem 0; border: 0; background: transparent; color: var(--primary-color); font-size: .9rem; cursor: pointer; }
+  .tag-filter-btn:is(.active, :hover) { text-decoration: underline; text-underline-offset: .2em; }
+  .tag-filter-btn.active { font-weight: 700; }
+  #search-status { color: var(--text-muted); font-size: .88rem; }
+  .posts-grid { display: grid; gap: 1.35rem; }
+  .no-posts, .no-results { color: var(--text-muted); }
+  .hidden { display: none !important; }
 </style>
 
 <script>

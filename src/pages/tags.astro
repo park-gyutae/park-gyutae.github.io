@@ -23,93 +23,17 @@ const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
   </section>
 
   <section class="tags-section">
-    <div class="tags-grid-page">
+    <ul class="tag-list">
       {tags.map((tag) => (
-        <a href={`/blog?tag=${encodeURIComponent(tag)}`} class="tag-item-card">
-          <span class="tag-name">#{tag}</span>
+        <li><a href={`/blog?tag=${encodeURIComponent(tag)}`}>#{tag}</a>
           <span class="tag-count">{tagCounts[tag]} posts</span>
-        </a>
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
 </Layout>
 
 <style>
-  .page-header {
-    padding: clamp(2.5rem, 6vw, 5rem) 0 1.7rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 2rem;
-  }
-
-  .page-title {
-    font-size: clamp(3.5rem, 8vw, 7rem);
-    font-weight: 500;
-    line-height: .98;
-    letter-spacing: -.09em;
-  }
-
-  .page-subtitle {
-    max-width: 620px;
-    font-size: .98rem;
-    color: var(--text-muted);
-    line-height: 1.8;
-  }
-
-  /* Tags Grid */
-  .tags-grid-page {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 2rem;
-  }
-
-  @media (min-width: 640px) {
-    .tags-grid-page {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 768px) {
-    .tags-grid-page {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .tag-item-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    min-height: 88px;
-    padding: 1rem 0;
-    background: transparent;
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    text-align: left;
-    transition: border-color var(--transition-speed) ease;
-  }
-
-  .tag-item-card:hover {
-    border-color: var(--primary-color);
-  }
-
-  .tag-name {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 0.25rem;
-    transition: color var(--transition-speed) ease;
-  }
-
-  .tag-item-card:hover .tag-name {
-    color: var(--primary-color);
-  }
-
-  .tag-count {
-    font: 500 .62rem var(--font-mono);
-    color: var(--text-muted);
-    font-weight: 500;
-  }
+  .tag-list { display: grid; gap: .4rem; padding-left: 1.25rem; }
+  .tag-count { margin-left: .65rem; color: var(--text-muted); font-size: .88rem; }
 </style>

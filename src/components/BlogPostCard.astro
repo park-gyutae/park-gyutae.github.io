@@ -3,9 +3,10 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'blog'>;
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { post } = Astro.props;
+const { post, headingLevel: Heading = 'h3' } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
 
 const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
@@ -16,79 +17,26 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
 ---
 
 <article class="post-card">
-  <a href={`/blog/${post.slug}`} class="card-link">
+  <div class="post-entry">
     <div class="card-meta">
       <time datetime={pubDate.toISOString()}>{formattedDate}</time>
     </div>
     <div class="card-content">
       {tags && tags.length > 0 && <p class="meta-category">{tags.slice(0, 2).join(' · ')}</p>}
-      <h3 class="card-title">{title}</h3>
+      <Heading class="card-title"><a href={`/blog/${post.slug}`}>{title}</a></Heading>
       <p class="card-desc">{description}</p>
     </div>
-    <span class="card-arrow" aria-hidden="true">↗</span>
-  </a>
+  </div>
 </article>
 
 <style>
-  .post-card {
-    border-top: 1px solid var(--border-color);
-    transition: border-color .2s ease;
-  }
-
-  .post-card:hover {
-    border-color: var(--primary-color);
-  }
-
-  .card-link {
-    display: grid;
-    grid-template-columns: 130px minmax(0, 1fr) auto;
-    gap: clamp(1rem, 3vw, 2.5rem);
-    align-items: start;
-    padding: 1.55rem 0;
-  }
-
-  .card-meta {
-    font: 500 0.62rem var(--font-mono);
-    color: var(--text-muted);
-    padding-top: .3rem;
-  }
-
-  .meta-separator {
-    color: var(--border-color);
-  }
-
-  .meta-category {
-    color: var(--primary-color);
-    font: 500 .62rem var(--font-mono);
-    letter-spacing: .06em;
-    margin-bottom: .4rem;
-    text-transform: uppercase;
-  }
-
-  .card-title {
-    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-    font-weight: 500;
-    margin-bottom: .5rem;
-    color: var(--text-color);
-    line-height: 1.35;
-    letter-spacing: -.045em;
-    transition: color var(--transition-speed) ease;
-  }
-
-  .post-card:hover .card-title {
-    color: var(--primary-color);
-  }
-
-  .card-desc {
-    font-size: .86rem;
-    color: var(--text-muted);
-    margin-bottom: 0;
-    line-height: 1.75;
-  }
-  .card-arrow { color: var(--text-muted); font-size: 1.3rem; transition: color .2s ease, transform .2s ease; }
-  .post-card:hover .card-arrow { color: var(--primary-color); transform: translate(2px, -2px); }
-  @media (max-width: 640px) {
-    .card-link { grid-template-columns: 1fr auto; gap: .75rem 1rem; }
-    .card-meta { grid-column: 1 / -1; padding: 0; }
+  .post-card + .post-card { margin-top: 1.4rem; }
+  .post-entry { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: .15rem 1rem; align-items: baseline; }
+  .card-meta, .meta-category { color: var(--text-muted); font-size: .85rem; }
+  .meta-category { margin: 0 0 .25rem; }
+  .card-title { font-size: 1.16rem; margin: 0 0 .28rem; }
+  .card-desc { margin: 0; }
+  @media (max-width: 620px) {
+    .post-entry { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
