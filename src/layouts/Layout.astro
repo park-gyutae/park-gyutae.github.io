@@ -124,4 +124,49 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyu
     equation.after(hint);
     observer.observe(equation);
   });
+
+  const syncTables = new ResizeObserver(entries => {
+    for (const { target } of entries) {
+      const region = target.closest('.table-scroll');
+      if (!region) continue;
+      const canScroll = region.scrollWidth > region.clientWidth;
+      if (canScroll) {
+        region.setAttribute('tabindex', '0');
+        region.setAttribute('role', 'region');
+      } else {
+        region.removeAttribute('tabindex');
+        region.removeAttribute('role');
+      }
+    }
+  });
+
+  document.querySelectorAll('.prose').forEach(prose => {
+    let section = '본문';
+    prose.querySelectorAll<HTMLElement>('h2, h3, table').forEach(element => {
+      if (!(element instanceof HTMLTableElement)) {
+        section = element.textContent?.trim().replace(/[#✓]$/, '').trim() || section;
+        return;
+      }
+
+      const region = document.createElement('div');
+      region.className = 'table-scroll';
+      const title = element.previousElementSibling;
+      if (title?.classList.contains('table-title') && title.id) {
+        region.setAttribute('aria-labelledby', title.id);
+        element.setAttribute('aria-labelledby', title.id);
+      } else {
+        const caption = element.caption?.textContent?.trim() || `${section} 표`;
+        region.setAttribute('aria-label', caption);
+        if (!element.caption) element.setAttribute('aria-label', caption);
+      }
+
+      const hint = document.createElement('p');
+      hint.className = 'table-scroll-hint';
+      hint.textContent = '가로로 스크롤하여 표 전체 보기';
+      element.before(hint, region);
+      region.append(element);
+      syncTables.observe(region);
+      syncTables.observe(element);
+    });
+  });
 </script>

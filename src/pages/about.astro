@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { profile } from '../data/portfolio';
+import { mileage, profile } from '../data/portfolio';
 ---
 
 <Layout title="소개 | 박규태" description="연세대학교 수학과 박규태. 대수학과 정수론을 공부하며, 수학적 아이디어를 모델과 코드로 구현합니다." isWide={true}>
@@ -46,23 +46,9 @@ import { profile } from '../data/portfolio';
     </section>
 
     <section class="work-section" id="work" aria-labelledby="work-title">
-      <div class="work-content">
-        <h2 id="work-title">관련 활동</h2>
-        <div class="work-heading">
-          <div><p class="work-overline">PERSONAL PROJECT · DECISION SCIENCE</p><h3>Yonsei Mileage</h3></div>
-          <p class="work-subtitle">Course Registration Decision System</p>
-        </div>
-        <a class="work-visual" href="/projects/yonsei-mileage/" aria-label="Yonsei Mileage 프로젝트 자세히 보기">
-          <img src="/images/yonsei-mileage/figure-01-service-overview.png" alt="Yonsei Mileage 수강신청 도구의 시간표와 마일리지 배분 화면" width="1706" height="1115" loading="lazy" decoding="async" />
-        </a>
-        <div class="work-foot">
-          <p>제한된 마일리지를 원하는 과목에 어떻게 나눌까? 과거 수강신청 데이터로 과목별 성공 가능성을 추정하고, 선호도와 예산을 반영해 배분안을 비교하는 도구를 만들었습니다.</p>
-          <div class="work-links">
-            <a href="/projects/yonsei-mileage/">프로젝트 보기</a>
-            <a href={profile.github + '/yonsei-timetable'} target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </div>
+      <h2 id="work-title">관련 활동</h2>
+      <p><a href={mileage.href}>Yonsei Mileage</a> · 수강신청 도구를 구현하고, 예측과 배분 성능을 다음 학기 데이터로 검증했습니다.</p>
+      <p><a href={mileage.article}>기술 글</a> · <a href={mileage.github}>코드</a></p>
     </section>
 
     <footer class="about-contact">
@@ -76,15 +62,14 @@ import { profile } from '../data/portfolio';
   .about-page { max-width: var(--article-width); }
   .about-page > section + section, .about-contact { margin-top: 2.3rem; }
   .about-hero { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 1rem 1.5rem; }
-  .eyebrow, .focus-tags, .work-overline, .work-subtitle, .portrait-frame figcaption, .contact-meta { color: var(--text-muted); font-size: .85rem; }
-  .eyebrow, .work-overline { margin-bottom: .35rem; }
+  .eyebrow, .focus-tags, .portrait-frame figcaption, .contact-meta { color: var(--text-muted); font-size: .85rem; }
+  .eyebrow { margin-bottom: .35rem; }
   .hero-statement { font-weight: 600; }
-  .portrait-frame img, .work-visual img { display: block; border-radius: 3px; }
+  .portrait-frame img { display: block; border-radius: 3px; }
   .portrait-frame figcaption span { display: block; }
   .focus-row + .focus-row { margin-top: 1.2rem; }
   .focus-row p, .education-detail p { margin-bottom: .25rem; }
-  .work-visual { display: block; max-width: 380px; margin-block: .8rem; }
-  .work-links, .contact-meta { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; }
+  .contact-meta { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; }
   .education-detail { margin-bottom: .65rem; }
   .education-detail span { color: var(--text-muted); }
   .education-detail h3 { margin-bottom: .2rem; }

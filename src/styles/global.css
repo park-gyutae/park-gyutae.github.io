@@ -127,6 +127,13 @@ main.container, main.wide-container { flex: 1; min-width: 0; padding-block: clam
 .code-language { left: .65rem; }
 .code-copy { right: .65rem; border: 1px solid var(--border-color); border-radius: 3px; cursor: pointer; }
 .prose table { display: block; width: fit-content; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin-block: 1.35rem; font-size: .92rem; word-break: normal; overflow-wrap: normal; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin-block: 1.35rem .35rem; }
+.prose .table-scroll table { display: table; max-width: none; overflow: visible; margin: 0; }
+.prose .table-title, .prose caption { text-align: left; font-weight: 650; margin: 1rem 0 .35rem; }
+.prose .table-scroll-hint { display: none; margin: .2rem 0; color: var(--text-muted); font-size: .8rem; }
+.prose .table-scroll-hint:has(+ .table-scroll[tabindex]) { display: block; }
+.table-title + .table-scroll-hint + .table-scroll { margin-top: .4rem; }
+@media print { .prose .table-scroll-hint { display: none !important; } }
 .prose th, .prose td { padding: .4rem .65rem; border-bottom: 1px solid var(--border-color); text-align: left; }
 .prose th { background: var(--card-bg); }
 .article-figure { margin-block: 1.65rem; }

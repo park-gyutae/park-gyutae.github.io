@@ -1,46 +1,18 @@
 ---
 import { mileage } from '../data/portfolio';
 ---
+
 <article class="featured-project">
-  <div class="project-card-body">
-    <div class="project-story">
-      <p class="project-category">개인 프로젝트 · {mileage.category}</p>
-      <h2><a href={mileage.href}>{mileage.title}</a></h2>
-      <p class="project-subtitle">{mileage.subtitle}</p>
-      <p class="project-description">제한된 마일리지로 원하는 과목을 확보하려면 어떻게 배분해야 할까? 과거 수강신청 데이터를 이용해 성공확률을 추정하고, 배분안을 비교하는 의사결정 도구를 만들었습니다.</p>
-      <ul class="topic-list" aria-label="프로젝트 주제">
-        {mileage.tags.slice(0, 3).map(tag => <li>{tag}</li>)}
-      </ul>
-      <div class="action-links">
-        <a class="text-link" href={mileage.href}>자세히 보기</a>
-        <a class="text-link" href={mileage.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-      </div>
-    </div>
-    <dl class="project-result">
-      <dt>사전 예측 검증</dt>
-      <dd><strong>30.75%</strong><span>과거 평균 대비 사전 예측 오차 감소</span></dd>
-      <dt class="result-secondary-label">배분 검증</dt>
-      <dd class="result-secondary"><span>예측 정확도와 실제 배분 성과를 따로 검증했습니다.</span></dd>
-    </dl>
+  <h2><a href={mileage.href}>Yonsei Mileage</a></h2>
+  <p>한정된 수강신청 마일리지를 원하는 과목에 어떻게 나눠야 할까? 과거 입찰 기록으로 과목별 성공확률을 추정하고, 마일리지 배분안을 비교하는 도구를 구현했습니다.</p>
+  <p>2026-2 검증에서 사전 모델은 과거 평균 대비 예측 오차를 30.75% 줄였습니다. 그러나 886개 과목 조합을 재현한 실험에서는 기존 배포 정책보다 평균 확보 효용이 1.70%p 낮았습니다.</p>
+  <div class="action-links">
+    <a href={mileage.href + '#results'}>검증 결과</a>
+    <a href={mileage.article}>기술 글</a>
+    <a href={mileage.github}>코드</a>
   </div>
-  <a class="project-cover" href={mileage.href} aria-label={`${mileage.title} 프로젝트 보기`}>
-    <img src="/images/yonsei-mileage/figure-01-service-overview.png" alt="Yonsei Mileage 서비스 화면" width="1705" height="1115" loading="lazy" decoding="async" />
-  </a>
 </article>
 
 <style>
-  .featured-project { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 290px); gap: 1rem 2rem; align-items: start; }
-  .project-cover { grid-column: 2; grid-row: 1; }
-  .project-cover img { display: block; }
-  .project-card-body { grid-column: 1; grid-row: 1; }
-  .project-category { color: var(--text-muted); font-size: .88rem; }
-  .project-subtitle { font-weight: 600; }
-  .project-result { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; font-size: .9rem; }
-  .project-result dt { color: var(--text-muted); }
-  .project-result dd { margin: 0; }
-  .project-result strong { margin-right: .35em; }
-  @media (max-width: 680px) {
-    .featured-project { grid-template-columns: minmax(0, 1fr); }
-    .project-cover { grid-column: 1; grid-row: 2; max-width: 290px; }
-  }
+  .featured-project { max-width: var(--article-width); }
 </style>

@@ -7,8 +7,24 @@ const posts = (await getCollection('blog', ({ data }) => {
 	return data.draft !== true;
 })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// Collect all unique tags
-const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.trim().toLowerCase())))];
+const tagAliases: Record<string, string[]> = {
+	mathematics: ['수학'],
+	statistics: ['통계', '통계학'],
+	'machine-learning': ['machine learning', '머신러닝', '기계학습'],
+	optimization: ['최적화'],
+	'decision-making': ['decision making', '의사결정'],
+};
+const normalizeTag = (tag: string) => tag.trim().toLowerCase();
+const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(normalizeTag)))];
+
+const searchableText = ({ data, body }: typeof posts[number]) => {
+	const tags = data.tags.map(normalizeTag);
+	const text = body
+		.replace(/!?(?:\[([^\]]*)\])\([^)]*\)/g, '$1')
+		.replace(/<[^>]*>/g, ' ');
+	return [data.title, data.description, data.subtitle, text, ...tags, ...tags.flatMap(tag => tagAliases[tag] || [])]
+		.join(' ').normalize('NFKC').toLowerCase();
+};
 ---
 
 <Layout title="글 | 박규태" description="수학과 통계를 실제 문제에 적용하고, 구현과 검증을 거치며 배운 점을 기록합니다.">
@@ -28,9 +44,8 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 				{posts.map((post) => (
 					<div 
 						class="post-wrapper" 
-						data-title={post.data.title.toLowerCase()}
-						data-description={post.data.description.toLowerCase()}
-						data-tags={JSON.stringify(post.data.tags.map(t => t.trim().toLowerCase()))}
+						data-search={searchableText(post)}
+						data-tags={JSON.stringify(post.data.tags.map(normalizeTag))}
 					>
 						<BlogPostCard post={post} headingLevel="h2" />
 					</div>
@@ -49,7 +64,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 				<circle cx="11" cy="11" r="8"></circle>
 				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 			</svg>
-			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="글 검색" />
+			<input type="text" id="search-input" placeholder="제목, 본문 또는 태그 검색" aria-label="글 검색" />
 		</div>
 
 		{allTags.length > 0 && (
@@ -88,17 +103,17 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
 	const posts = [...document.querySelectorAll<HTMLElement>('.post-wrapper')].map(element => ({
 		element,
-		text: [element.dataset.title, element.dataset.description, ...(JSON.parse(element.dataset.tags || '[]') as string[])].join(' ').toLowerCase(),
+		text: element.dataset.search || '',
 		tags: JSON.parse(element.dataset.tags || '[]') as string[],
 	}));
 	const noResults = document.getElementById('no-results');
 	const status = document.getElementById('search-status');
 	let currentTag = '';
 	const filterPosts = () => {
-		const query = searchInput?.value.trim().toLowerCase() || '';
+		const terms = (searchInput?.value || '').normalize('NFKC').trim().toLowerCase().split(/\s+/).filter(Boolean);
 		let count = 0;
 		posts.forEach(({ element, text, tags }) => {
-			const visible = text.includes(query) && (!currentTag || tags.includes(currentTag));
+			const visible = terms.every(term => text.includes(term)) && (!currentTag || tags.includes(currentTag));
 			element.classList.toggle('hidden', !visible);
 			if (visible) count++;
 		});
