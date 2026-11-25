@@ -274,6 +274,25 @@ $$
 P(1)=0.1000,\quad P(5)=0.5765,\quad P(10)=0.8826,\quad P(15)=0.9774,\quad P(20)=0.9974,\quad P(36)=1.0000
 $$
 
+<figure class="mileage-example" id="mileage-example">
+  <figcaption><strong>마일리지에 따른 성공확률</strong> · 패션마케팅(CNT2109-01), 전공 3학년 기준</figcaption>
+  <div class="mileage-control" hidden>
+    <label for="mileage-checkpoint">배분할 마일리지</label>
+    <select id="mileage-checkpoint">
+      <option value="0">0점</option>
+      <option value="10">1점</option>
+      <option value="57.65">5점</option>
+      <option value="88.26">10점</option>
+      <option value="97.74">15점</option>
+      <option value="99.74" selected>20점</option>
+      <option value="100">36점</option>
+    </select>
+  </div>
+  <output for="mileage-checkpoint" aria-live="polite">20점에서 성공확률 <strong>99.74%</strong>. 15점보다 2.00%p 높습니다.</output>
+  <span class="mileage-example-track" aria-hidden="true"><span style="width: 99.74%"></span></span>
+  <p>본문에 공개한 계산 지점끼리 비교합니다. 예측 확률은 실제 합격을 보장하지 않습니다.</p>
+</figure>
+
 이제 시스템은 단순히 "예상 cutoff는 약 4.2점이다"라고 말하는 대신,
 <strong>5점을 넣을 때($57.65\%$)와 10점을 넣을 때($88.26\%$), 그리고 15점을 넣을
 때($97.74\%$) 각각 몇 퍼센트포인트의 성공확률을 추가로 살 수 있는지</strong>를

@@ -17,28 +17,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 		<p class="page-subtitle">문제를 정의하고, 만들고, 실제 결과를 확인하며 배운 것들.</p>
 	</section>
 
-	<!-- Filter / Search Section -->
-	<section class="filter-section" aria-label="글 검색과 태그 필터">
-		<div class="search-container">
-			<svg aria-hidden="true" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="11" cy="11" r="8"></circle>
-				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-			</svg>
-			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="글 검색" />
-		</div>
-
-		{allTags.length > 0 && (
-			<div class="tags-container">
-				<button class="tag-filter-btn active" data-tag="" aria-pressed="true">전체</button>
-				{allTags.map(tag => (
-					<button class="tag-filter-btn" data-tag={tag} aria-pressed="false">#{tag}</button>
-				))}
-			</div>
-		)}
-	</section>
-
 	<!-- Posts Grid Section -->
-	<p id="search-status" role="status" aria-live="polite">{posts.length}개의 글</p>
 	<section class="posts-section">
 		{posts.length === 0 ? (
 			<div class="no-posts">
@@ -62,10 +41,34 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 			</div>
 		)}
 	</section>
+	{posts.length > 0 && (
+	<details class="filter-section" id="post-filters" open={posts.length > 5}>
+		<summary>검색 및 태그</summary>
+		<div class="search-container">
+			<svg aria-hidden="true" class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="11" cy="11" r="8"></circle>
+				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+			</svg>
+			<input type="text" id="search-input" placeholder="글 제목, 설명 또는 태그 검색..." aria-label="글 검색" />
+		</div>
+
+		{allTags.length > 0 && (
+			<div class="tags-container">
+				<button class="tag-filter-btn active" data-tag="" aria-pressed="true">전체</button>
+				{allTags.map(tag => (
+					<button class="tag-filter-btn" data-tag={tag} aria-pressed="false">#{tag}</button>
+				))}
+			</div>
+		)}
+		<p id="search-status" role="status" aria-live="polite"></p>
+	</details>
+	)}
 </Layout>
 
 <style>
-  .filter-section { display: grid; gap: .7rem; max-width: var(--article-width); margin-bottom: 1.25rem; }
+  .filter-section { max-width: var(--article-width); margin-top: 1.25rem; }
+  .filter-section summary { width: fit-content; cursor: pointer; color: var(--primary-color); }
+  .filter-section summary ~ * { margin-top: .7rem; }
   .search-container { position: relative; }
   .search-icon { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
   #search-input { width: 100%; min-height: 42px; padding: .35rem .65rem .35rem 2.35rem; border: 1px solid var(--text-muted); border-radius: 3px; color: var(--text-color); background: var(--bg-color); }
@@ -80,7 +83,8 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 </style>
 
 <script>
-	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const searchInput = document.querySelector<HTMLInputElement>('#search-input');
+	const filters = document.querySelector<HTMLDetailsElement>('#post-filters');
 	const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
 	const posts = [...document.querySelectorAll<HTMLElement>('.post-wrapper')].map(element => ({
 		element,
@@ -91,7 +95,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	const status = document.getElementById('search-status');
 	let currentTag = '';
 	const filterPosts = () => {
-		const query = searchInput.value.trim().toLowerCase();
+		const query = searchInput?.value.trim().toLowerCase() || '';
 		let count = 0;
 		posts.forEach(({ element, text, tags }) => {
 			const visible = text.includes(query) && (!currentTag || tags.includes(currentTag));
@@ -109,19 +113,21 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags.map(tag => tag.
 	const restoreURL = () => {
 		const params = new URLSearchParams(location.search);
 		currentTag = (params.get('tag') || '').trim().toLowerCase();
-		searchInput.value = params.get('q') || '';
+		if (searchInput) searchInput.value = params.get('q') || '';
+		if (filters && (currentTag || searchInput?.value)) filters.open = true;
 		filterPosts();
 	};
 	const updateURL = (push: boolean) => {
 		const url = new URL(location.href);
 		if (currentTag) url.searchParams.set('tag', currentTag); else url.searchParams.delete('tag');
-		if (searchInput.value.trim()) url.searchParams.set('q', searchInput.value.trim()); else url.searchParams.delete('q');
+		const query = searchInput?.value.trim();
+		if (query) url.searchParams.set('q', query); else url.searchParams.delete('q');
 		if (url.href !== location.href) {
 			if (push) history.pushState(null, '', url); else history.replaceState(null, '', url);
 		}
 		filterPosts();
 	};
-	searchInput.addEventListener('input', () => updateURL(false));
+	searchInput?.addEventListener('input', () => updateURL(false));
 	tagButtons.forEach(button => button.addEventListener('click', () => {
 		currentTag = button.dataset.tag || '';
 		updateURL(true);
