@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { post, headingLevel: Heading = 'h3' } = Astro.props;
-const { title, description, pubDate, tags } = post.data;
+const { title, description, pubDate, tags, category } = post.data;
 
 const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
   year: 'numeric',
@@ -19,7 +19,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
 <article class="post-card">
   <div class="post-entry">
     <div class="card-meta">
-      <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      {category ?? <time datetime={pubDate.toISOString()}>{formattedDate}</time>}
     </div>
     <div class="card-content">
       {tags && tags.length > 0 && <p class="meta-category">{tags.slice(0, 2).join(' · ')}</p>}

@@ -13,8 +13,8 @@ export async function getStaticPaths() {
 		params: { slug: post.slug },
 		props: {
 			post,
-			prev: index < posts.length - 1 ? posts[index + 1] : null,
-			next: index > 0 ? posts[index - 1] : null,
+			prev: posts.slice(index + 1).find(candidate => candidate.data.category === post.data.category) ?? null,
+			next: posts.slice(0, index).reverse().find(candidate => candidate.data.category === post.data.category) ?? null,
 		},
 	}));
 }
@@ -26,7 +26,7 @@ interface Props {
 }
 
 const { post, prev, next } = Astro.props;
-const { title, description, pubDate, updatedDate, heroImage, tags, subtitle, showHero, tocDepth, project } = post.data;
+const { title, description, category, pubDate, updatedDate, heroImage, tags, subtitle, showHero, tocDepth, project } = post.data;
 const { Content, headings } = await post.render();
 
 const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
@@ -47,15 +47,15 @@ const titleFont = `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@7
 const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 ---
 
-<Layout title={title} description={description} image={isMileage ? '/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png' : heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, tags }}>
+<Layout title={title} description={description} image={isMileage ? '/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png' : heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, category, tags }}>
 	{isMileage && <link slot="head" rel="stylesheet" href={titleFont} />}
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
-	<div id="reading-section-status" class="reading-section-status" aria-hidden="true"></div>
+	{!category && <div id="reading-section-status" class="reading-section-status" aria-hidden="true"></div>}
 
 	<!-- Responsive 2-column post page layout container -->
 	<div class="post-layout-container">
-		<article class="post-article">
+		<article class="post-article" data-category={category}>
 			<!-- Back Button & Meta -->
 			<div class="article-navigation">
 				<a href="/blog" class="back-link">목록으로 돌아가기</a>
@@ -63,14 +63,16 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 
 			<header class="article-header">
 				<div class="article-meta" aria-label="글 정보">
-					<time datetime={pubDate.toISOString()}>{formattedDate}</time>
-					<span>읽는 시간 {readingMinutes}분</span>
-					<span>{project === 'yonsei-mileage' ? '확률 · 최적화' : tags.slice(0, 2).join(' · ')}</span>
-					{formattedUpdatedDate && (
-						<span class="updated-date">
-							수정 {formattedUpdatedDate}
-						</span>
-					)}
+					{category ?? <>
+						<time datetime={pubDate.toISOString()}>{formattedDate}</time>
+						<span>읽는 시간 {readingMinutes}분</span>
+						<span>{project === 'yonsei-mileage' ? '확률 · 최적화' : tags.slice(0, 2).join(' · ')}</span>
+						{formattedUpdatedDate && (
+							<span class="updated-date">
+								수정 {formattedUpdatedDate}
+							</span>
+						)}
+					</>}
 				</div>
 				
 				<h1 class:list={['article-title', { 'article-title-serif': isMileage }]}>{title}</h1>
@@ -111,7 +113,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 			<!-- 1. Mobile-Only Inline Table of Contents (Visible only on mobile/tablet) -->
 			{tocHeadings.length > 0 && (
 				<details class="post-toc-inline" id="article-contents">
-					<summary class="toc-title"><span>목차</span><small>{tocHeadings.length}개</small></summary>
+					<summary class="toc-title"><span>목차</span>{!category && <small>{tocHeadings.length}개</small>}</summary>
 					<ul class="toc-list">
 						{tocHeadings.map((h) => (
 							<li class={`toc-item depth-${h.depth}`}>
@@ -127,29 +129,31 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 				<Content />
 			</div>
 
-			<hr class="footer-divider" />
-
-			<!-- Author Bio Card -->
-			<div class="author-card">
-				<div class="author-avatar">
-					<img src="/avatar.webp" alt="박규태" width="56" height="56" loading="lazy" decoding="async" />
-				</div>
-				<div class="author-info">
-					<span class="author-label">Written by</span>
-					<p class="author-name">박규태</p>
-					<p class="author-bio">{profile.description}</p>
-					<div class="author-socials">
-						<a href="https://github.com/park-gyutae" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub Profile">
-							<span>GitHub</span>
-						</a>
+			{!category && <>
+				<hr class="footer-divider" />
+				<!-- Author Bio Card -->
+				<div class="author-card">
+					<div class="author-avatar">
+						<img src="/avatar.webp" alt="박규태" width="56" height="56" loading="lazy" decoding="async" />
+					</div>
+					<div class="author-info">
+						<span class="author-label">Written by</span>
+						<p class="author-name">박규태</p>
+						<p class="author-bio">{profile.description}</p>
+						<div class="author-socials">
+							<a href="https://github.com/park-gyutae" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub Profile">
+								<span>GitHub</span>
+							</a>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<hr class="footer-divider" />
+				<hr class="footer-divider" />
+
+			</>}
 
 			<!-- Previous / Next post links -->
-			<nav class="post-navigation">
+			{(prev || next) && <nav class="post-navigation">
 				<div class="nav-prev">
 					{prev && (
 						<a href={`/blog/${prev.slug}`} class="nav-card">
@@ -166,14 +170,14 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 						</a>
 					)}
 				</div>
-			</nav>
+			</nav>}
 		</article>
 
 		<!-- 2. Desktop-Only Sticky Table of Contents (Visible only on Desktop >= 1024px) -->
 		{tocHeadings.length > 0 && (
 			<aside class="post-toc-sidebar" aria-label="글 목차">
 				<div class="toc-sticky-container">
-					<div class="toc-header"><div><p>목차</p><span>{tocHeadings.length}개</span></div></div>
+					<div class="toc-header"><div><p>목차</p>{!category && <span>{tocHeadings.length}개</span>}</div></div>
 					<div class="toc-progress-track" aria-hidden="true"><span id="toc-progress-fill"></span></div>
 					<ul class="toc-list">
 						{tocHeadings.map((h) => (
@@ -187,14 +191,14 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		)}
 	</div>
 
-	{tocHeadings.length > 0 && <button id="return-to-contents" class="return-to-contents" type="button" hidden>목차로</button>}
+	{!category && tocHeadings.length > 0 && <button id="return-to-contents" class="return-to-contents" type="button" hidden>목차로</button>}
 
 	<!-- Scroll To Top Button -->
-	<button id="scroll-to-top" class="scroll-to-top-btn" aria-label="맨 위로">
+	{!category && <button id="scroll-to-top" class="scroll-to-top-btn" aria-label="맨 위로">
 		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 			<polyline points="18 15 12 9 6 15"></polyline>
 		</svg>
-	</button>
+	</button>}
 
 	<dialog id="image-lightbox" class="image-lightbox" aria-label="확대 이미지">
 		<button class="lightbox-close" type="button" aria-label="확대 이미지 닫기">×</button>
@@ -349,7 +353,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		});
 	});
 
-	// Active TOC Heading Tracking (Intersection Observer) - Desktop Only
+	// Keep both versions of the TOC synchronized with the article.
 	const headingElements = document.querySelectorAll('.prose h2, .prose h3');
 	const tocLinks = document.querySelectorAll('.toc-link');
 	const readingStatus = document.getElementById('reading-section-status');
@@ -398,7 +402,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 	});
 
 	// Linkable equation numbers
-	document.querySelectorAll<HTMLElement>('.prose .katex-display').forEach((equation, index) => {
+	document.querySelectorAll<HTMLElement>('.post-article:not([data-category]) .prose .katex-display').forEach((equation, index) => {
 		equation.id = `equation-${index + 1}`;
 		const anchor = document.createElement('a');
 		anchor.className = 'equation-number';
@@ -438,47 +442,49 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 	lightbox?.querySelector('.lightbox-close')?.addEventListener('click', () => lightbox.close());
 	lightbox?.addEventListener('click', (event) => { if (event.target === lightbox) lightbox.close(); });
 
-	if (headingElements.length > 0 && tocLinks.length > 0) {
-		const observerOptions = {
-			root: null,
-			rootMargin: '-100px 0px -70% 0px',
-			threshold: 0.1
+	const tocTargets = new Set([...tocLinks].map(link => link.getAttribute('href')));
+	const trackedHeadings = [...headingElements].filter(heading => tocTargets.has(`#${heading.id}`));
+	let activeHeading: Element | undefined;
+	let framePending = false;
+
+	const updateActiveHeading = () => {
+		framePending = false;
+		let heading: Element | undefined;
+		for (const candidate of trackedHeadings) {
+			if (candidate.getBoundingClientRect().top > 100) break;
+			heading = candidate;
+		}
+		if (heading === activeHeading) return;
+		activeHeading = heading;
+
+		tocLinks.forEach(link => {
+			const active = !!heading && link.getAttribute('href') === `#${heading.id}`;
+			link.classList.toggle('active', active);
+			if (active) link.setAttribute('aria-current', 'location');
+			else link.removeAttribute('aria-current');
+		});
+		if (readingStatus) {
+			readingStatus.textContent = heading?.textContent?.replace(/[✓#]$/, '').trim() || '';
+			readingStatus.classList.toggle('visible', !!heading && window.scrollY > 420);
+		}
+
+		const panel = document.querySelector<HTMLElement>('.toc-sticky-container');
+		const link = panel?.querySelector<HTMLElement>('.toc-link.active');
+		if (panel?.clientHeight && link &&
+			(link.offsetTop < panel.scrollTop || link.offsetTop + link.offsetHeight > panel.scrollTop + panel.clientHeight)) {
+			panel.scrollTop = Math.max(0, link.offsetTop - 40);
+		}
+	};
+
+	if (trackedHeadings.length) {
+		const scheduleHeadingUpdate = () => {
+			if (framePending) return;
+			framePending = true;
+			requestAnimationFrame(updateActiveHeading);
 		};
-
-		let currentActiveId = '';
-
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach(entry => {
-				if (entry.isIntersecting) {
-					currentActiveId = entry.target.id;
-					
-					let activeLink: Element | null = null;
-					tocLinks.forEach(link => {
-						const href = link.getAttribute('href');
-						if (href === `#${currentActiveId}`) {
-							link.classList.add('active');
-							link.setAttribute('aria-current', 'location');
-							if (link.closest('.post-toc-sidebar')) activeLink = link;
-						} else {
-							link.classList.remove('active');
-							link.removeAttribute('aria-current');
-						}
-					});
-					if (readingStatus) {
-						readingStatus.textContent = entry.target.textContent?.replace(/[✓#]$/, '').trim() || '';
-						readingStatus.classList.toggle('visible', window.scrollY > 420);
-					}
-					if (activeLink) {
-						const panel = activeLink.closest('.toc-sticky-container') as HTMLElement | null;
-						const item = activeLink as HTMLElement;
-						if (panel && (item.offsetTop < panel.scrollTop + 70 || item.offsetTop > panel.scrollTop + panel.clientHeight - 50)) {
-							panel.scrollTo({ top: Math.max(0, item.offsetTop - 90), behavior: 'smooth' });
-						}
-					}
-				}
-			});
-		}, observerOptions);
-
-		headingElements.forEach(el => observer.observe(el));
+		window.addEventListener('scroll', scheduleHeadingUpdate, { passive: true });
+		window.addEventListener('resize', scheduleHeadingUpdate);
+		window.addEventListener('load', scheduleHeadingUpdate);
+		scheduleHeadingUpdate();
 	}
 </script>

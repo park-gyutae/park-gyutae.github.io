@@ -7,6 +7,11 @@ const posts = (await getCollection('blog', ({ data }) => {
 	return data.draft !== true;
 })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+const groups = [
+	{ title: 'Concept Notes', entries: posts.filter(post => post.data.category === 'Concept Notes') },
+	{ title: '게시글', entries: posts.filter(post => !post.data.category) },
+];
+
 const tagAliases: Record<string, string[]> = {
 	mathematics: ['수학'],
 	statistics: ['통계', '통계학'],
@@ -22,7 +27,7 @@ const searchableText = ({ data, body }: typeof posts[number]) => {
 	const text = body
 		.replace(/!?(?:\[([^\]]*)\])\([^)]*\)/g, '$1')
 		.replace(/<[^>]*>/g, ' ');
-	return [data.title, data.description, data.subtitle, text, ...tags, ...tags.flatMap(tag => tagAliases[tag] || [])]
+	return [data.title, data.description, data.subtitle, data.category, text, ...tags, ...tags.flatMap(tag => tagAliases[tag] || [])]
 		.join(' ').normalize('NFKC').toLowerCase();
 };
 ---
@@ -40,20 +45,27 @@ const searchableText = ({ data, body }: typeof posts[number]) => {
 				<p>등록된 포스트가 없습니다.</p>
 			</div>
 		) : (
-			<div class="posts-grid" id="posts-grid">
-				{posts.map((post) => (
-					<div 
-						class="post-wrapper" 
-						data-search={searchableText(post)}
-						data-tags={JSON.stringify(post.data.tags.map(normalizeTag))}
-					>
-						<BlogPostCard post={post} headingLevel="h2" />
-					</div>
+			<>
+				{groups.filter(({ entries }) => entries.length > 0).map(({ title, entries }) => (
+					<section class="post-group">
+						<h2>{title}</h2>
+						<div class="posts-grid">
+							{entries.map(post => (
+								<div
+									class="post-wrapper"
+									data-search={searchableText(post)}
+									data-tags={JSON.stringify(post.data.tags.map(normalizeTag))}
+								>
+									<BlogPostCard post={post} />
+								</div>
+							))}
+						</div>
+					</section>
 				))}
-			</div>
-			<div class="no-results hidden" id="no-results">
-				<p>검색 결과와 일치하는 포스트가 없습니다.</p>
-			</div>
+				<div class="no-results hidden" id="no-results">
+					<p>검색 결과와 일치하는 포스트가 없습니다.</p>
+				</div>
+			</>
 		)}
 	</section>
 	{posts.length > 0 && (
@@ -92,6 +104,8 @@ const searchableText = ({ data, body }: typeof posts[number]) => {
   .tag-filter-btn:is(.active, :hover) { text-decoration: underline; text-underline-offset: .2em; }
   .tag-filter-btn.active { font-weight: 700; }
   #search-status { color: var(--text-muted); font-size: .88rem; }
+  .post-group + .post-group { margin-top: 2rem; }
+  .post-group:not(:has(.post-wrapper:not(.hidden))) { display: none; }
   .posts-grid { display: grid; gap: 1.35rem; }
   .no-posts, .no-results { color: var(--text-muted); }
   .hidden { display: none !important; }

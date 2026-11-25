@@ -6,6 +6,7 @@ const blog = defineCollection({
 		title: z.string(),
 		description: z.string(),
 		subtitle: z.string().optional(),
+		category: z.literal('Concept Notes').optional(),
 		showHero: z.boolean().default(true),
 		tocDepth: z.number().int().min(2).max(3).default(3),
 		project: z.enum(['yonsei-mileage']).optional(),
