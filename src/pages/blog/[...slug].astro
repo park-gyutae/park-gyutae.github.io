@@ -1,7 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import MathFormula from '../../components/Math.astro';
 import 'katex/dist/katex-swap.min.css';
 import { profile, mileage } from '../../data/portfolio';
 
@@ -71,14 +70,12 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 				</div>
 				
 				<h1 class="article-title">{title}</h1>
-				<p class="article-desc">{subtitle || description}</p>
 
 				{project === 'yonsei-mileage' && (
-					<div class="article-signature-equation" aria-label="이 글의 핵심 최적화 식">
-						<span>핵심 모형</span>
-						<MathFormula display expression={String.raw`\max_{m_1,\ldots,m_n}\;\sum_i w_iP_i(m_i)\quad\text{s.t.}\quad\sum_i m_i\le72`} />
-					</div>
+					<p class="article-finding">2026-2 수강신청을 검증한 결과, 사전 모델은 과거 평균보다 예측 오차를 30.75% 줄였습니다. 하지만 886개 과목 조합을 재현한 실험에서 이 모델로 배분했을 때의 평균 확보 효용은 기존 배포 모델로 배분했을 때보다 낮았습니다.</p>
 				)}
+
+				<p class="article-desc">{subtitle || description}</p>
 
 				{tags && tags.length > 0 && (
 					<div class="article-tags">
@@ -206,9 +203,6 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
   .article-meta { margin-bottom: .6rem; color: var(--text-muted); }
   .article-title { font-size: clamp(1.85rem, 3.6vw, 2.55rem); overflow-wrap: anywhere; }
   .article-desc { color: var(--text-muted); }
-  .article-signature-equation { margin: 1.2rem 0; padding: .55rem .8rem; background: var(--card-bg); }
-  .article-signature-equation > span { color: var(--text-muted); font-size: .85rem; }
-  .article-signature-equation :global(.katex-display) { margin: .35rem 0; }
   .article-project-links { margin: .85rem 0 0; }
   .hero-image { display: block; margin-top: 1rem; }
   .header-divider, .footer-divider { border: 0; border-top: 1px solid var(--border-color); margin: 1.45rem 0; }
