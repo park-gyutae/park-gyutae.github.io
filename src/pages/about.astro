@@ -1,81 +1,121 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { mileage, profile } from '../data/portfolio';
+import { mileage, profile, rsr } from '../data/portfolio';
+
+const description = '연세대학교에서 수학과 인지과학을 공부하는 박규태입니다. 그래프 머신러닝, 그래프 구조 학습과 신호 처리에 관심이 있습니다.';
 ---
 
-<Layout title="소개 | 박규태" description="연세대학교 수학과 박규태. 대수학과 정수론을 공부하며, 수학적 아이디어를 모델과 코드로 구현합니다." isWide={true}>
+<Layout title="소개 | 박규태" description={description} isWide={true}>
   <article class="about-page">
-    <section class="about-hero" aria-labelledby="about-title">
-      <div class="hero-copy">
-        <p class="eyebrow">Mathematics · Modeling · Computation</p>
-        <h1 id="about-title">박규태</h1>
-        <p class="hero-statement">수학의 구조를 공부하고, 현실의 질문을 모델로 만듭니다.</p>
-        <div class="hero-bottom">
-          <p>연세대학교 수학과에서 대수학과 정수론을 공부합니다. 추상적인 아이디어가 실제 문제를 설명하는 순간에 관심이 있습니다.</p>
-          <a class="hero-link" href="#work">작업 살펴보기</a>
-        </div>
+    <header class="about-hero">
+      <div>
+        <p class="entry-meta">연세대학교 · 수학과</p>
+        <h1>박규태</h1>
+        <p>연세대학교에서 수학을 전공하고 인지과학 연계전공을 이수하고 있습니다. 그래프의 구조와 신호가 학습 모델에 어떤 영향을 주는지 공부합니다.</p>
+        <p><a href="/gyutae-park-cv.pdf" download>CV 다운로드 (PDF)</a></p>
+        <nav class="action-links" aria-label="소개 페이지 목차">
+          <a href="#education">학력</a>
+          <a href="#interests">연구 관심사</a>
+          <a href="#work">연구와 프로젝트</a>
+          <a href="#activities">학술 활동과 발표</a>
+        </nav>
       </div>
-      <figure class="portrait-frame">
-        <img src="/avatar.webp" alt="박규태의 프로필 사진" width="540" height="660" loading="eager" decoding="async" />
-        <figcaption><span>SEOUL, KR</span><span>MATHEMATICS · 2024—</span></figcaption>
-      </figure>
+      <img src="/avatar.webp" alt="박규태의 프로필 이미지" width="540" height="660" decoding="async" />
+    </header>
+
+    <section id="education" aria-labelledby="education-title">
+      <h2 id="education-title">학력과 장학</h2>
+      <h3>연세대학교</h3>
+      <p class="entry-meta">2024년 3월 입학 · 2028년 2월 졸업 예정</p>
+      <p>수학 전공 · 인지과학 연계전공</p>
+      <details>
+        <summary>주요 수강 과목</summary>
+        <p>선형대수학 I, 추상대수학 I, 해석학 I, 확률론, 회귀분석, 수리통계학 I, 머신러닝의 수학적 기초를 공부했습니다. 선형대수학 II, 확률과정, 인공지능 알고리즘은 CV 작성 시점 기준 수강 중입니다.</p>
+      </details>
+      <p><strong>국가우수장학금(이공계)</strong> · 한국장학재단 · 2024년부터</p>
     </section>
 
-    <section class="education-section" aria-labelledby="education-title">
-      <div class="education-content">
-        <h2 id="education-title">학력</h2>
-        <div class="education-detail"><span>2024 — PRESENT</span><h3>Yonsei University</h3><p>B.S. in Mathematics</p></div>
-        <a class="text-link" href="/blog/">공부 노트 읽기</a>
+    <section id="interests" aria-labelledby="focus-title">
+      <h2 id="focus-title">연구 관심사</h2>
+      <p>그래프 머신러닝의 수학적 기초, 그래프 구조 학습, 그래프 신호 처리에 관심이 있습니다. 알고리즘 게임 이론, 수학적 최적화, 교육에서의 인공지능 활용도 함께 공부합니다.</p>
+    </section>
+
+    <section id="work" aria-labelledby="work-title">
+      <h2 id="work-title">연구와 프로젝트</h2>
+
+      <article class="entry">
+        <h3><a href={rsr.href}>{rsr.title}</a></h3>
+        <p class="entry-meta">2026년 11월 · ESC 금융 연구팀</p>
+        <p>5인 프로젝트의 진행을 조율하고, 기업 관계 그래프 구축과 NASDAQ·NYSE 데이터 탐색에 참여했습니다. 모델 재현, 데이터 누수 점검, 정규화 수정 결과를 정리하고 실제 관계 그래프와 셔플 대조군의 성능을 비교했습니다.</p>
+        <a href={`/blog/${rsr.slug}/`}>연구 회고</a>
+      </article>
+
+      <article class="entry">
+        <h3><a href={mileage.href}>Yonsei Mileage</a></h3>
+        <p class="entry-meta">2026년 7월부터 · 개인 프로젝트</p>
+        <p>수강신청 마일리지 배분을 다중선택 배낭 문제로 모델링하고, 과거 입찰 기록을 활용해 예측과 실제 배분 성과를 검증했습니다. 2,623개 분반에서 사전 모델의 예측 오차(MAE)는 과거 평균 대비 30.75% 줄었지만, 886개 과목 조합의 백테스트에서는 배분 효용이 개선되지 않았습니다.</p>
+        <div class="action-links"><a href={mileage.article}>기술 글</a><a href={mileage.github}>코드</a></div>
+      </article>
+
+      <article class="entry">
+        <h3>QED 수학 문제은행</h3>
+        <p class="entry-meta">2026년 · 개인 교육 기술 프로젝트</p>
+        <p>시험 77회분의 문항 2,998개를 SQLite에 정리했습니다. 문항 출처를 기록하고 자동 검증, Typst 조판, 수동 검토를 지원하는 작업 흐름을 만들었습니다.</p>
+      </article>
+
+      <article class="entry">
+        <h3><a href={profile.github + '/pitching-analysis-project'}>KBO 투구 기록 분석</a></h3>
+        <p class="entry-meta">2025년 6월 · 수업 프로젝트</p>
+        <p>Python으로 2005–2024년 팀 투구 데이터를 수집하고, 피어슨 상관계수와 시각화로 팀 성적과의 관련성을 살펴봤습니다.</p>
+      </article>
+    </section>
+
+    <section id="activities" aria-labelledby="activities-title">
+      <h2 id="activities-title">학술 활동과 발표</h2>
+      <p>2026년 7월부터 연세대학교 통계·데이터사이언스 학회 ESC 36기 학술팀에서 네트워크 추론과 그래프 신경망을 공부하고 있습니다. 같은 해 6–7월에는 베이지안 통계 스터디에 참여했습니다.</p>
+      <ul class="talk-list">
+        <li><time datetime="2026-10-29">2026.10.29</time><span><a href={mileage.href}>수강신청에서 예측 정확도와 의사결정 성과</a> · ESC 특별 세션, 개인 발표</span></li>
+        <li><time datetime="2026-10-01">2026.10.01</time><span>스펙트럴 그래프 합성곱 · ESC 가을 학술 세션</span></li>
+        <li><time datetime="2026-08-18">2026.08.18</time><span>GraphRAG · ESC 팀 논문 리뷰</span></li>
+        <li><time datetime="2026-08">2026.08</time><span>스펙트럴 방법 · ESC 여름 학술 세션, 팀 발표</span></li>
+      </ul>
+      <p><a href="/blog/">기술 글 보기</a></p>
+    </section>
+
+    <section id="teaching" aria-labelledby="teaching-title">
+      <h2 id="teaching-title">교육과 학생 활동</h2>
+      <p>고등학생에게 수학을 지도하고, 학원에서 수학 조교로 근무했습니다. 연세대학교 수학과 학생회 집행부장으로 학과 행사를 조율하고 이과대학 신입생 새내기 배움터 준비에 참여했습니다.</p>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">연락처</h2>
+      <div class="action-links">
+        <a href="mailto:rbparkxo@yonsei.ac.kr">이메일</a>
+        <a href={profile.github}>GitHub</a>
       </div>
     </section>
-
-    <section class="focus-section" aria-labelledby="focus-title">
-      <div class="focus-content">
-        <h2 id="focus-title">연구 관심사</h2>
-        <div class="focus-list">
-          <article class="focus-row">
-            <div><h3>대수학과 정수론</h3><p>대수적 구조가 수론의 문제를 어떻게 정리하고 풀어내는지 공부합니다. 장기적으로는 대수적 정수론과 수학적 암호학을 연구하고 싶습니다.</p></div>
-            <span class="focus-tags">ALGEBRA / NUMBER THEORY</span>
-          </article>
-          <article class="focus-row">
-            <div><h3>확률 모델과 계산</h3><p>확률·통계와 최적화를 사용해 문제를 모델링하고, 데이터와 코드로 가정을 검토합니다. 최근에는 관계형 데이터와 그래프 기반 머신러닝을 공부하고 있습니다.</p></div>
-            <span class="focus-tags">STATISTICS / GRAPH ML</span>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="work-section" id="work" aria-labelledby="work-title">
-      <h2 id="work-title">관련 활동</h2>
-      <p><a href={mileage.href}>Yonsei Mileage</a> · 수강신청 도구를 구현하고, 예측과 배분 성능을 다음 학기 데이터로 검증했습니다.</p>
-      <p><a href={mileage.article}>기술 글</a> · <a href={mileage.github}>코드</a></p>
-    </section>
-
-    <footer class="about-contact">
-      <div class="contact-main"><h2>연락처</h2><a href="mailto:rbparkxo@yonsei.ac.kr">이메일 보내기</a></div>
-      <div class="contact-meta"><span>MATHEMATICS · MODELING · COMPUTATION</span><a href={profile.github} target="_blank" rel="noopener noreferrer">GITHUB</a></div>
-    </footer>
   </article>
 </Layout>
 
 <style>
   .about-page { max-width: var(--article-width); }
-  .about-page > section + section, .about-contact { margin-top: 2.3rem; }
-  .about-hero { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 1rem 1.5rem; }
-  .eyebrow, .focus-tags, .portrait-frame figcaption, .contact-meta { color: var(--text-muted); font-size: .85rem; }
-  .eyebrow { margin-bottom: .35rem; }
-  .hero-statement { font-weight: 600; }
-  .portrait-frame img { display: block; border-radius: 3px; }
-  .portrait-frame figcaption span { display: block; }
-  .focus-row + .focus-row { margin-top: 1.2rem; }
-  .focus-row p, .education-detail p { margin-bottom: .25rem; }
-  .contact-meta { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; }
-  .education-detail { margin-bottom: .65rem; }
-  .education-detail span { color: var(--text-muted); }
-  .education-detail h3 { margin-bottom: .2rem; }
-  .contact-meta { margin-top: .65rem; }
+  .about-page > section { margin-top: 2rem; scroll-margin-top: 1rem; }
+  .about-hero { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 1rem 1.5rem; align-items: start; }
+  .about-hero img { display: block; border-radius: 3px; }
+  .entry-meta { margin-bottom: .35rem; color: var(--text-muted); font-size: .88rem; }
+  .entry + .entry { margin-top: 1.45rem; }
+  .entry h3 { margin-bottom: .3rem; }
+  .entry p:last-of-type { margin-bottom: .45rem; }
+  details { margin-bottom: .8rem; }
+  details p { margin: .4rem 0 0; }
+  summary { color: var(--primary-color); cursor: pointer; }
+  .talk-list { display: grid; gap: .45rem; padding: 0; list-style: none; }
+  .talk-list li { display: grid; grid-template-columns: 6.4rem minmax(0, 1fr); gap: .5rem; }
+  .talk-list time { color: var(--text-muted); font-size: .88rem; }
   @media (max-width: 500px) {
-    .about-hero { grid-template-columns: minmax(0, 1fr) 102px; gap: .75rem; }
-    .portrait-frame figcaption { font-size: .75rem; }
+    .about-hero { grid-template-columns: minmax(0, 1fr) 88px; gap: .8rem; }
+  }
+  @media (max-width: 380px) {
+    .talk-list li { grid-template-columns: 1fr; gap: 0; }
   }
 </style>
