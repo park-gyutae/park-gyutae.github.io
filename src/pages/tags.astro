@@ -25,7 +25,7 @@ const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
   <section class="tags-section">
     <ul class="tag-list">
       {tags.map((tag) => (
-        <li><a href={`/blog?tag=${encodeURIComponent(tag)}`}>#{tag}</a>
+        <li><a href={`/blog/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>
           <span class="tag-count">{tagCounts[tag]} posts</span>
         </li>
       ))}

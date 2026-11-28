@@ -23,7 +23,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString('ko-KR', {
     </div>
     <div class="card-content">
       {tags && tags.length > 0 && <p class="meta-category">{tags.slice(0, 2).join(' · ')}</p>}
-      <Heading class="card-title"><a href={`/blog/${post.slug}`}>{title}</a></Heading>
+      <Heading class="card-title"><a href={`/blog/${post.slug}/`}>{title}</a></Heading>
       <p class="card-desc">{description}</p>
     </div>
   </div>

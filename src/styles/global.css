@@ -78,14 +78,14 @@ main.container, main.wide-container { flex: 1; min-width: 0; padding-block: clam
   cursor: pointer;
 }
 .theme-toggle-btn:hover, .hamburger-btn:hover { color: var(--primary-color); }
-.hamburger-btn { display: none; }
+.hamburger-btn, .theme-toggle-btn[hidden] { display: none; }
 .site-footer { border-top: 1px solid var(--border-color); padding-block: 1.15rem; color: var(--text-muted); font-size: .85rem; }
 .site-footer p { margin: 0; }
 @media (max-width: 540px) {
   .header-content { position: relative; }
-  .hamburger-btn { display: inline-grid; }
-  .nav-links { display: none; order: 1; width: 100%; padding-bottom: .65rem; }
-  .nav-links.active { display: flex; }
+  .menu-ready .hamburger-btn { display: inline-grid; }
+  .nav-links { order: 1; width: 100%; padding-bottom: .65rem; }
+  .menu-ready .nav-links:not(.active) { display: none; }
 }
 
 .page-header { margin-bottom: 1.65rem; }

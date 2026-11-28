@@ -5,6 +5,9 @@ import Footer from '../components/Footer.astro';
 import { profile } from '../data/portfolio';
 
 interface Props {
+	profilePage?: boolean;
+	noindex?: boolean;
+	parent?: { name: string; path: string };
 	title?: string;
 	description?: string;
 	image?: string;
@@ -19,8 +22,56 @@ const description = frontmatter?.description || Astro.props.description || profi
 const image = frontmatter?.image || Astro.props.image || "/og.png";
 const isWide = frontmatter?.isWide || Astro.props.isWide || false;
 
-const { article } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyutae.github.io');
+const { article, profilePage, noindex, parent } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const homeURL = new URL('/', canonicalURL).href;
+const aboutURL = new URL('/about/', canonicalURL).href;
+const personId = `${aboutURL}#person`;
+const siteId = `${homeURL}#website`;
+const schema: Record<string, unknown>[] = [];
+
+if (canonicalURL.href === homeURL) {
+	schema.push({
+		'@type': 'WebSite', '@id': siteId, url: homeURL,
+		name: profile.name, alternateName: profile.alternateName, inLanguage: 'ko',
+		creator: { '@id': personId },
+	});
+}
+
+if (profilePage) {
+	schema.push({
+		'@type': 'ProfilePage', '@id': `${aboutURL}#profile`, url: aboutURL,
+		name: title, description, inLanguage: 'ko', isPartOf: { '@id': siteId },
+		mainEntity: {
+			'@type': 'Person', '@id': personId, url: aboutURL, name: profile.name,
+			alternateName: profile.alternateName, sameAs: [profile.github],
+			image: new URL('/avatar.webp', canonicalURL).href,
+		},
+	});
+}
+
+if (article) {
+	schema.push({
+		'@type': article.category ? 'TechArticle' : 'BlogPosting',
+		headline: title.replace(/ \| park-gyutae$/, ''), description,
+		image: new URL(image, canonicalURL).href, url: canonicalURL.href,
+		mainEntityOfPage: canonicalURL.href, inLanguage: 'ko',
+		articleSection: article.category,
+		datePublished: article.published.toISOString(),
+		dateModified: (article.modified || article.published).toISOString(),
+		author: { '@type': 'Person', '@id': personId, name: profile.name, url: aboutURL },
+	});
+}
+
+if (parent) {
+	schema.push({
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: parent.name, item: new URL(parent.path, canonicalURL).href },
+			{ '@type': 'ListItem', position: 2, name: title.replace(/ \| (park-gyutae|박규태)$/, ''), item: canonicalURL.href },
+		],
+	});
+}
 ---
 
 <!DOCTYPE html>
@@ -33,7 +84,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyu
 		<meta name="generator" content={Astro.generator} />
 
 		<!-- Canonical URL -->
-		<link rel="canonical" href={canonicalURL} />
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonicalURL} />}
 
 		<!-- Primary Meta Tags -->
 		<title>{title}</title>
@@ -42,14 +93,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyu
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content={article ? "article" : "website"} />
-		<meta property="og:url" content={canonicalURL} />
+		{!noindex && <meta property="og:url" content={canonicalURL} />}
+		<meta property="og:locale" content="ko_KR" />
+		<meta property="og:site_name" content={profile.name} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={new URL(image, canonicalURL)} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={canonicalURL} />
+		{!noindex && <meta property="twitter:url" content={canonicalURL} />}
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={new URL(image, canonicalURL)} />
@@ -60,17 +113,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://park-gyu
 			<meta property="article:modified_time" content={(article.modified || article.published).toISOString()} />
 			{article.category && <meta property="article:section" content={article.category} />}
 			{article.tags.map(tag => <meta property="article:tag" content={tag} />)}
-			<script type="application/ld+json" set:html={JSON.stringify({
-				'@context': 'https://schema.org', '@type': article.category ? 'TechArticle' : 'BlogPosting',
-				headline: title.replace(/ \| park-gyutae$/, ''), description,
-				image: new URL(image, canonicalURL).href, url: canonicalURL.href,
-				mainEntityOfPage: canonicalURL.href,
-				articleSection: article.category,
-				datePublished: article.published.toISOString(),
-				dateModified: (article.modified || article.published).toISOString(),
-				author: { '@type': 'Person', name: '박규태', url: new URL('/about/', canonicalURL).href },
-			}).replace(/</g, '\\u003c')} />
+
 		</>}
+		{schema.length > 0 && <script type="application/ld+json" set:html={JSON.stringify({
+			'@context': 'https://schema.org', '@graph': schema,
+		}).replace(/</g, '\\u003c')} />}
 
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
 

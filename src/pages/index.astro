@@ -8,7 +8,7 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 ---
-<Layout title="박규태 | 수학과 그래프 머신러닝" description={profile.description}>
+<Layout title="박규태 (Gyutae Park) | 수학과 그래프 머신러닝" description={profile.description}>
   <section class="home-introduction" aria-labelledby="home-title">
     <div>
       <p class="home-affiliation">연세대학교 수학과</p>

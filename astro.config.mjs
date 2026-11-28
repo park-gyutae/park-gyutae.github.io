@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://park-gyutae.github.io',
+  trailingSlash: 'always',
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],

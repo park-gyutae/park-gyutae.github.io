@@ -47,7 +47,7 @@ const titleFont = `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@7
 const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 ---
 
-<Layout title={title} description={description} image={isMileage ? '/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png' : heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, category, tags }}>
+<Layout parent={{ name: "글", path: "/blog/" }} title={title} description={description} image={isMileage ? '/images/yonsei-mileage/figure-05-decision-utility-vs-oracle.png' : heroImage} isWide={true} article={{ published: pubDate, modified: updatedDate, category, tags }}>
 	{isMileage && <link slot="head" rel="stylesheet" href={titleFont} />}
 	<!-- Scroll Progress Bar -->
 	<div id="scroll-progress" class="scroll-progress-bar"></div>
@@ -58,7 +58,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 		<article class="post-article" data-category={category}>
 			<!-- Back Button & Meta -->
 			<div class="article-navigation">
-				<a href="/blog" class="back-link">목록으로 돌아가기</a>
+				<a href="/blog/" class="back-link">목록으로 돌아가기</a>
 			</div>
 
 			<header class="article-header">
@@ -88,7 +88,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 				{tags && tags.length > 0 && (
 					<div class="article-tags">
 						{tags.map((tag) => (
-							<a href={`/blog?tag=${encodeURIComponent(tag.trim().toLowerCase())}`} class="tag-badge">#{tag}</a>
+							<a href={`/blog/?tag=${encodeURIComponent(tag.trim().toLowerCase())}`} class="tag-badge">#{tag}</a>
 						))}
 					</div>
 				)}
@@ -156,7 +156,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 			{(prev || next) && <nav class="post-navigation">
 				<div class="nav-prev">
 					{prev && (
-						<a href={`/blog/${prev.slug}`} class="nav-card">
+						<a href={`/blog/${prev.slug}/`} class="nav-card">
 							<span class="nav-label">이전 글</span>
 							<span class="nav-title">{prev.data.title}</span>
 						</a>
@@ -164,7 +164,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= tocDepth);
 				</div>
 				<div class="nav-next">
 					{next && (
-						<a href={`/blog/${next.slug}`} class="nav-card">
+						<a href={`/blog/${next.slug}/`} class="nav-card">
 							<span class="nav-label">다음 글</span>
 							<span class="nav-title">{next.data.title}</span>
 						</a>

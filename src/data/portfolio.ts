@@ -1,5 +1,6 @@
 export const profile = {
   name: '박규태',
+  alternateName: 'Gyutae Park',
   handle: 'park-gyutae',
   github: 'https://github.com/park-gyutae',
   description: '연세대학교에서 수학을 전공하고 인지과학 연계전공을 이수하는 박규태입니다. 그래프 머신러닝, 그래프 구조 학습, 그래프 신호 처리에 관심이 있습니다.',
